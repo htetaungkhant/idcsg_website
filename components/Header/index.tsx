@@ -18,7 +18,7 @@ export default function Header({
   return (
     <section
       className={cn(
-        "z-100 fixed w-11/12 top-8 left-1/2 transform -translate-x-1/2 px-6 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-xl border border-white/10 shadow-lg rounded-4xl flex items-center justify-between gap-5",
+        "z-100 fixed w-11/12 top-8 left-1/2 transform -translate-x-1/2 px-6 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-xl border border-white/10 shadow-lg rounded-4xl flex items-center justify-between gap-3 xl:gap-5",
         color === "white" && "bg-white text-[#404040] shadow-sm",
         className
       )}
@@ -28,26 +28,26 @@ export default function Header({
         alt="Logo"
         width={100}
         height={100}
-        className="h-14 w-auto"
+        className="h-10 xl:h-14 w-auto"
       />
 
       <div>
-        <ul className="flex gap-2.5 lg:gap-5 items-center list-none font-(family-name:--font-ubuntu-condensed) text-xs border-b border-[#E6E6E6] py-2.5">
-          <li className="flex gap-1.5 items-center whitespace-nowrap">
+        <ul className="flex gap-2.5 xl:gap-5 items-center list-none font-(family-name:--font-ubuntu-condensed) text-[10px] xl:text-xs border-b border-[#E6E6E6] py-2.5">
+          <li className="flex gap-1 xl:gap-1.5 items-center whitespace-nowrap">
             <FaWhatsapp />
             <span>+65-96870775</span>
           </li>
-          <li className="flex gap-1.5 items-center whitespace-nowrap">
+          <li className="flex gap-1 xl:gap-1.5 items-center whitespace-nowrap">
             <FaFax />
             <span>+65-96870775</span>
           </li>
-          <li className="flex gap-1.5 items-center">
+          <li className="flex gap-1 xl:gap-1.5 items-center">
             <MdMailOutline />
             <span>admin@idcsg.com</span>
           </li>
-          <li className="flex gap-1.5 items-center">
+          <li className="flex gap-1 xl:gap-1.5 items-center">
             <FaLocationDot />
-            <span>
+            <span className="whitespace-nowrap">
               No 6 International Dental Centre, No.06 Gemmill Lane Singapore
               069249
             </span>
