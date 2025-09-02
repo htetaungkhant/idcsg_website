@@ -1,6 +1,8 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
+import Image from "next/image";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import { IoClose } from "react-icons/io5";
 
 import { cn } from "@/lib/utils";
 import { Doctor } from "@/types/global";
@@ -15,8 +17,7 @@ const Categories: React.FC<CategoriesProps> = ({
   className,
   onSelectCategory,
 }) => {
-  const [activeCategory, setActiveCategory] =
-    React.useState<Category>("doctors");
+  const [activeCategory, setActiveCategory] = useState<Category>("doctors");
 
   const handleCategorySelect = (category: Category) => {
     setActiveCategory(category);
@@ -63,12 +64,80 @@ const Categories: React.FC<CategoriesProps> = ({
   );
 };
 
+interface DoctorCardProps {
+  doctor: Doctor;
+  overlay?: boolean;
+  onClose?: () => void;
+  className?: string;
+}
+const DoctorCard: React.FC<DoctorCardProps> = ({
+  doctor,
+  overlay = false,
+  onClose,
+  className,
+}) => {
+  // disable document scroll
+  // React.useEffect(() => {
+  //   document.body.style.overflow = "hidden";
+
+  //   return () => {
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, []);
+
+  return (
+    <div className="fixed z-1000 inset-0">
+      {/* overlay */}
+      <div
+        className={cn(
+          "absolute inset-0 bg-black invisible opacity-30",
+          overlay && "visible"
+        )}
+      />
+
+      <div
+        className={cn(
+          "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[300px] max-w-4/5 max-h-[80vh] p-2.5 lg:p-4 text-[#233259] bg-white rounded-2xl border border-[#233259] shadow-lg flex gap-12 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
+          className
+        )}
+      >
+        <IoClose
+          className="absolute top-2 right-2 w-6 h-6 cursor-pointer"
+          onClick={onClose}
+        />
+        <Image
+          src={doctor.image.image}
+          alt={doctor.name}
+          width={300}
+          height={450}
+          className="rounded-2xl"
+        />
+        <div className="flex flex-col gap-4">
+          <div>
+            <h3 className="text-3xl font-semibold">{doctor.name}</h3>
+            <p className="text-lg">{doctor.degree}</p>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <h4 className="font-(family-name:--font-poppins) font-semibold">
+              About
+            </h4>
+            <p className="font-(family-name:--font-old-standard-tt)">
+              {doctor.about}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface TeamListProps {
   doctors: Doctor[];
+  className?: string;
 }
-
-export default function TeamList({ doctors }: TeamListProps) {
+export default function TeamList({ doctors, className }: TeamListProps) {
   const mobileScrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
 
   const handleLeftArrowClick = () => {
     if (mobileScrollContainerRef.current) {
@@ -102,11 +171,11 @@ export default function TeamList({ doctors }: TeamListProps) {
     }
   };
   return (
-    <div className="flex flex-col gap-8">
+    <div className={cn("flex flex-col gap-8", className)}>
       <Categories />
       <div
         ref={mobileScrollContainerRef}
-        className="flex overflow-x-hidden select-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="flex overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         {doctors?.length >= 5 &&
           doctors.map((doctor, index) => (
@@ -120,11 +189,19 @@ export default function TeamList({ doctors }: TeamListProps) {
 
               <div className="min-w-[100%] h-full bg-black opacity-60 group-hover:-translate-x-full transition-all duration-500 ease-in-out"></div>
               <div className="min-w-[100%] h-full px-2.5 py-5 flex flex-col items-end justify-end group-hover:-translate-x-full transition-all duration-500 ease-in-out">
-                <PrimaryBtn1>View Details</PrimaryBtn1>
+                <PrimaryBtn1 onClick={() => setSelectedDoctor(doctor)}>
+                  View Details
+                </PrimaryBtn1>
               </div>
             </div>
           ))}
       </div>
+      {selectedDoctor && (
+        <DoctorCard
+          doctor={selectedDoctor}
+          onClose={() => setSelectedDoctor(null)}
+        />
+      )}
 
       {/* Mobile Navigation Arrows */}
       <div className={cn("relative flex justify-center mb-8")}>
