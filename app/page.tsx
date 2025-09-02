@@ -23,7 +23,7 @@ export default function Home() {
               International Dental Centre
             </h1>
 
-            <div className="flex gap-6 lg:gap-10 items-center">
+            <div className="flex gap-6 lg:gap-10 items-center max-md:flex-col">
               <HomePageBtn>Book Appointment</HomePageBtn>
               <HomePageBtn>Online Consultation</HomePageBtn>
             </div>

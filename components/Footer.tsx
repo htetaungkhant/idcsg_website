@@ -11,17 +11,17 @@ export default function Footer({ className }: FooterProps) {
   return (
     <section
       className={cn(
-        "px-6 pt-6 pb-3 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl flex flex-col items-center gap-6",
+        "px-6 pt-6 pb-3 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl flex flex-col items-center gap-6 max-md:gap-3",
         className
       )}
     >
-      <div className="flex justify-center items-center gap-8 max-lg:flex-col">
+      <div className="flex justify-center items-center gap-8 max-lg:flex-col max-lg:gap-4">
         <Image
-          src="/logo_with_text_1.png"
+          src="/logo_with_text_1.svg"
           alt="Logo"
           width={100}
           height={100}
-          className="h-14 w-auto"
+          className="h-15 w-auto"
         />
         <ul className="list-none flex items-center gap-4">
           <li>

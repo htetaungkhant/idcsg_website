@@ -14,12 +14,12 @@ export default function Header({ className }: HeaderProps) {
   return (
     <section
       className={cn(
-        "fixed w-11/12 top-8 left-1/2 transform -translate-x-1/2 px-6 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg border border-white/10 shadow-lg rounded-4xl flex items-center justify-between gap-5",
+        "z-100 fixed w-11/12 top-8 left-1/2 transform -translate-x-1/2 px-6 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-xl border border-white/10 shadow-lg rounded-4xl flex items-center justify-between gap-5",
         className
       )}
     >
       <Image
-        src="/logo_with_text.png"
+        src="/logo_with_text.svg"
         alt="Logo"
         width={100}
         height={100}
