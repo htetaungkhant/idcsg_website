@@ -19,14 +19,20 @@ export default function NavLinks({ className }: NavLinksProps) {
       )}
     >
       <li>
-        <Link href="/" className={pathname === "/" ? "font-bold" : ""}>
+        <Link
+          href="/"
+          className={cn("hover:underline", pathname === "/" && "font-bold")}
+        >
           Home
         </Link>
       </li>
       <li>
         <Link
           href="/teams"
-          className={pathname.startsWith("/teams") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/teams") && "font-bold"
+          )}
         >
           Teams
         </Link>
@@ -34,7 +40,10 @@ export default function NavLinks({ className }: NavLinksProps) {
       <li>
         <Link
           href="/services"
-          className={pathname.startsWith("/services") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/services") && "font-bold"
+          )}
         >
           Services
         </Link>
@@ -42,7 +51,10 @@ export default function NavLinks({ className }: NavLinksProps) {
       <li>
         <Link
           href="/information"
-          className={pathname.startsWith("/information") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/information") && "font-bold"
+          )}
         >
           Information
         </Link>
@@ -50,7 +62,10 @@ export default function NavLinks({ className }: NavLinksProps) {
       <li>
         <Link
           href="/blog"
-          className={pathname.startsWith("/blog") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/blog") && "font-bold"
+          )}
         >
           Blog
         </Link>
@@ -58,7 +73,10 @@ export default function NavLinks({ className }: NavLinksProps) {
       <li>
         <Link
           href="/shop"
-          className={pathname.startsWith("/shop") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/shop") && "font-bold"
+          )}
         >
           Shop
         </Link>
@@ -66,7 +84,10 @@ export default function NavLinks({ className }: NavLinksProps) {
       <li>
         <Link
           href="/pay"
-          className={pathname.startsWith("/pay") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/pay") && "font-bold"
+          )}
         >
           Pay
         </Link>
@@ -74,7 +95,10 @@ export default function NavLinks({ className }: NavLinksProps) {
       <li>
         <Link
           href="/contact"
-          className={pathname.startsWith("/contact") ? "font-bold" : ""}
+          className={cn(
+            "hover:underline",
+            pathname.startsWith("/contact") && "font-bold"
+          )}
         >
           Contact
         </Link>

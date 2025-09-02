@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 export default function Teams() {
   return (
     <div>
-      <Header theme="white" />
+      <Header color="white" />
     </div>
   );
 }
