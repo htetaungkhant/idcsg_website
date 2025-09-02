@@ -11,7 +11,7 @@ export const HomePageBtn: React.FC<
 > = ({ ...props }) => {
   const content = (
     <>
-      <span className="mr-2.5">{props.children}</span>
+      <span className="font-sans">{props.children}</span>
 
       <div className="bg-white rounded-full p-2.5 transition-all duration-300 group-hover:rotate-45 group-hover:bg-[#1e3a8a]">
         <svg
@@ -38,7 +38,7 @@ export const HomePageBtn: React.FC<
         href={props.href}
         {...props}
         className={cn(
-          "group flex items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer",
+          "group flex gap-2.5 items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer",
           props.className
         )}
       >
@@ -51,7 +51,7 @@ export const HomePageBtn: React.FC<
     <button
       {...props}
       className={cn(
-        "group flex items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer",
+        "group flex gap-2.5 items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer",
         props.className
       )}
     >
