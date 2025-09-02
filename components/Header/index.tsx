@@ -1,20 +1,25 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { FaWhatsapp, FaFax } from "react-icons/fa";
 import { MdMailOutline } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 
 import { cn } from "@/lib/utils";
+import NavLinks from "./NavLinks";
 
 interface HeaderProps {
+  theme?: "transparent" | "white";
   className?: string;
 }
-export default function Header({ className }: HeaderProps) {
+export default function Header({
+  className,
+  theme = "transparent",
+}: HeaderProps) {
   return (
     <section
       className={cn(
         "z-100 fixed w-11/12 top-8 left-1/2 transform -translate-x-1/2 px-6 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-xl border border-white/10 shadow-lg rounded-4xl flex items-center justify-between gap-5",
+        theme === "white" && "bg-white text-[#404040] shadow-sm",
         className
       )}
     >
@@ -47,10 +52,20 @@ export default function Header({ className }: HeaderProps) {
               069249
             </span>
           </li>
-          <button className="px-4 py-1.5 bg-[#38588066] rounded-full font-medium font-(family-name:--font-poppins)">
+          <button
+            className={cn(
+              "px-4 py-1.5 bg-[#38588066] rounded-full font-medium font-(family-name:--font-poppins)",
+              theme === "white" && "text-white bg-[#1e3a8a]"
+            )}
+          >
             Login
           </button>
-          <button className="px-4 py-1.5 bg-[#38588066] rounded-full font-medium font-(family-name:--font-poppins)">
+          <button
+            className={cn(
+              "px-4 py-1.5 bg-[#38588066] rounded-full font-medium font-(family-name:--font-poppins)",
+              theme === "white" && "text-white bg-[#1e3a8a]"
+            )}
+          >
             Register
           </button>
         </ul>
@@ -94,32 +109,7 @@ export default function Header({ className }: HeaderProps) {
               />
             </li>
           </ul>
-          <ul className="list-none flex items-center gap-3 xl:gap-6 font-(family-name:--font-oswald) text-base xl:text-lg">
-            <li>
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/teams">Teams</Link>
-            </li>
-            <li>
-              <Link href="/services">Services</Link>
-            </li>
-            <li>
-              <Link href="/information">Information</Link>
-            </li>
-            <li>
-              <Link href="/blog">Blog</Link>
-            </li>
-            <li>
-              <Link href="/shop">Shop</Link>
-            </li>
-            <li>
-              <Link href="/pay">Pay</Link>
-            </li>
-            <li>
-              <Link href="/contact">Contact</Link>
-            </li>
-          </ul>
+          <NavLinks />
         </div>
       </div>
     </section>
