@@ -8,6 +8,7 @@ import {
   Ubuntu,
   Ubuntu_Condensed,
 } from "next/font/google";
+import "react-international-phone/style.css";
 import "./globals.css";
 
 const oswald = Oswald({

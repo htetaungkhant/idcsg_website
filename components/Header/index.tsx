@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { FaWhatsapp, FaFax } from "react-icons/fa";
 import { MdMailOutline } from "react-icons/md";
@@ -23,13 +24,15 @@ export default function Header({
         className
       )}
     >
-      <Image
-        src="/logo_with_text.svg"
-        alt="Logo"
-        width={100}
-        height={100}
-        className="h-10 xl:h-14 w-auto"
-      />
+      <Link href="/">
+        <Image
+          src="/logo_with_text.svg"
+          alt="Logo"
+          width={100}
+          height={100}
+          className="h-10 xl:h-14 w-auto"
+        />
+      </Link>
 
       <div>
         <ul className="flex gap-2.5 xl:gap-5 items-center list-none font-(family-name:--font-ubuntu-condensed) text-[10px] xl:text-xs border-b border-[#E6E6E6] py-2.5">
@@ -72,41 +75,65 @@ export default function Header({
 
         <div className="py-2.5 flex items-center justify-between">
           <ul className="list-none flex items-center gap-1.5">
-            <li>
-              <Image
-                src="/google.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-4 h-4 object-contain"
-              />
+            <li className="hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.google.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/google.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-4 h-4 object-contain"
+                />
+              </Link>
             </li>
-            <li>
-              <Image
-                src="/facebook.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-4 h-4 object-contain"
-              />
+            <li className="hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.facebook.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/facebook.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-4 h-4 object-contain"
+                />
+              </Link>
             </li>
-            <li>
-              <Image
-                src="/youtube.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-5 h-5 object-contain"
-              />
+            <li className="hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.youtube.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/youtube.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-5 h-5 object-contain"
+                />
+              </Link>
             </li>
-            <li>
-              <Image
-                src="/instagram.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-4 h-4 object-contain"
-              />
+            <li className="hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.instagram.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/instagram.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-4 h-4 object-contain"
+                />
+              </Link>
             </li>
           </ul>
           <NavLinks />

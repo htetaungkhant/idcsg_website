@@ -16,49 +16,75 @@ export default function Footer({ className }: FooterProps) {
       )}
     >
       <div className="flex justify-center items-center gap-8 max-lg:flex-col max-lg:gap-4">
-        <Image
-          src="/logo_with_text_1.svg"
-          alt="Logo"
-          width={100}
-          height={100}
-          className="h-15 w-auto"
-        />
+        <Link href="/">
+          <Image
+            src="/logo_with_text_1.svg"
+            alt="Logo"
+            width={100}
+            height={100}
+            className="h-15 w-auto"
+          />
+        </Link>
         <ul className="list-none flex items-center gap-4">
-          <li>
-            <Image
-              src="/facebook.svg"
-              alt="Description of image"
-              width={19}
-              height={19}
-              className="w-6 h-6 rounded-sm object-contain"
-            />
+          <li className="hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.facebook.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/facebook.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-6 h-6 rounded-sm object-contain"
+              />
+            </Link>
           </li>
-          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center">
-            <Image
-              src="/youtube.svg"
-              alt="Description of image"
-              width={19}
-              height={19}
-              className="w-full h-full object-contain"
-            />
+          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.youtube.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/youtube.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-full h-full object-contain"
+              />
+            </Link>
           </li>
-          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center">
-            <Image
-              src="/google.svg"
-              alt="Description of image"
-              width={19}
-              height={19}
-              className="w-full h-full object-contain"
-            />
+          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.google.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/google.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-full h-full object-contain"
+              />
+            </Link>
           </li>
-          <li>
-            <Image
-              src="/instagram.svg"
-              alt="Description of image"
-              width={19}
-              height={19}
-              className="w-6 h-6 rounded-sm object-contain"
-            />
+          <li className="hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.instagram.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/instagram.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-6 h-6 rounded-sm object-contain"
+              />
+            </Link>
           </li>
         </ul>
       </div>
