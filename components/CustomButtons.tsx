@@ -116,3 +116,60 @@ export const PrimaryBtn1: React.FC<
     </button>
   );
 };
+
+export const PrimaryBtn2: React.FC<
+  React.ButtonHTMLAttributes<HTMLButtonElement> &
+    React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+      children: React.ReactNode;
+    }
+> = ({ ...props }) => {
+  const content = (
+    <>
+      <span className="font-sans">{props.children}</span>
+
+      <div className="bg-[#D4D1D1] rounded-full p-2.5 transition-all duration-300 group-hover/pbtn2:rotate-45 group-hover/pbtn2:bg-[#233259]">
+        <svg
+          className="w-4 h-4 text-[#233259] group-hover/pbtn2:text-white transition-all duration-300"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="2.5"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
+          />
+        </svg>
+      </div>
+    </>
+  );
+
+  if (props.href) {
+    return (
+      <Link
+        href={props.href}
+        {...props}
+        className={cn(
+          "group/pbtn2 flex gap-2.5 items-center justify-between bg-white border-[0.5px] border-[#233259]/50 text-[#233259] text-base font-medium rounded-full pl-5 pr-1 py-1 transition-all duration-300 transform focus-within:ring-0 cursor-pointer",
+          props.className
+        )}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      {...props}
+      className={cn(
+        "group/pbtn2 flex gap-2.5 items-center justify-between bg-white border-[0.5px] border-[#233259]/50 text-[#233259] text-base font-medium rounded-full pl-5 pr-1 py-1 transition-all duration-300 transform focus-within:ring-0 cursor-pointer",
+        props.className
+      )}
+    >
+      {content}
+    </button>
+  );
+};

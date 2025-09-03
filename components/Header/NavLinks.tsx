@@ -48,7 +48,7 @@ interface ServiceMenuItemProps {
 }
 const ServiceMenuItem = ({ name, children, onClick }: ServiceMenuItemProps) => (
   <Link
-    href={name ? `/services/${name}` : "#"}
+    href={name ? `/services/${encodeURIComponent(name)}` : "#"}
     onClick={onClick}
     className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
   >
