@@ -63,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning={true}
         className={`${oswald.variable} ${oldStandardTT.variable} ${poppins.variable} ${ubuntu.variable} ${ubuntuCondensed.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="font-(family-name:--font-oswald)">{children}</main>

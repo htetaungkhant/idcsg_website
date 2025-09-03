@@ -43,11 +43,13 @@ const dentalServicesData = {
 
 interface ServiceMenuItemProps {
   name?: string;
+  onClick?: () => void;
   children: React.ReactNode;
 }
-const ServiceMenuItem = ({ name, children }: ServiceMenuItemProps) => (
+const ServiceMenuItem = ({ name, children, onClick }: ServiceMenuItemProps) => (
   <Link
     href={name ? `/services/${name}` : "#"}
+    onClick={onClick}
     className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
   >
     <span>{children}</span>
@@ -64,6 +66,10 @@ export default function NavLinks({
   servicesData = dentalServicesData,
 }: NavLinksProps) {
   const pathname = usePathname();
+  const serviceRef = React.useRef<HTMLDivElement>(null);
+  const serviceDropdownRef = React.useRef<HTMLDivElement>(null);
+  const informationRef = React.useRef<HTMLDivElement>(null);
+  const informationDropdownRef = React.useRef<HTMLDivElement>(null);
 
   const { categoryTitles, serviceRows } = useMemo(() => {
     const titles = Object.keys(servicesData);
@@ -79,6 +85,41 @@ export default function NavLinks({
 
     return { categoryTitles: titles, serviceRows: rows };
   }, [servicesData]);
+
+  const toggleServiceDropdown = () => {
+    serviceDropdownRef.current?.classList.toggle("hidden");
+  };
+
+  const toggleInformationDropdown = () => {
+    informationDropdownRef.current?.classList.toggle("hidden");
+  };
+
+  React.useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        serviceDropdownRef.current &&
+        !serviceDropdownRef.current.contains(event.target as Node) &&
+        serviceRef.current &&
+        !serviceRef.current.contains(event.target as Node)
+      ) {
+        serviceDropdownRef.current.classList.add("hidden");
+      }
+
+      if (
+        informationDropdownRef.current &&
+        !informationDropdownRef.current.contains(event.target as Node) &&
+        informationRef.current &&
+        !informationRef.current.contains(event.target as Node)
+      ) {
+        informationDropdownRef.current.classList.add("hidden");
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   return (
     <ul
@@ -111,12 +152,21 @@ export default function NavLinks({
       </li>
       <li
         className={cn(
-          "w-16 text-center relative group",
+          "w-16 text-center relative",
           pathname.startsWith("/services") && "font-bold"
         )}
       >
-        <span className="w-full cursor-pointer">Services</span>
-        <div className="pt-8 absolute left-1/2 -translate-x-1/2 hidden group-hover:block">
+        <span
+          ref={serviceRef}
+          className="w-full cursor-pointer"
+          onClick={toggleServiceDropdown}
+        >
+          Services
+        </span>
+        <div
+          ref={serviceDropdownRef}
+          className="pt-8 absolute left-1/2 -translate-x-1/2 hidden"
+        >
           {/* top triangle */}
           <div className="absolute left-1/2 -translate-x-1/2 top-4 w-0 h-0 border-l-18 border-r-18 border-b-18 border-transparent border-b-white" />
 
@@ -132,7 +182,11 @@ export default function NavLinks({
             ))}
             {serviceRows.flat().map((service, index) =>
               service ? (
-                <ServiceMenuItem key={`${service}-${index}`} name={service}>
+                <ServiceMenuItem
+                  key={`${service}-${index}`}
+                  name={service}
+                  onClick={toggleServiceDropdown}
+                >
                   {service}
                 </ServiceMenuItem>
               ) : (
@@ -144,12 +198,21 @@ export default function NavLinks({
       </li>
       <li
         className={cn(
-          "w-22 text-center relative group",
+          "w-22 text-center relative",
           pathname.startsWith("/information") && "font-bold"
         )}
       >
-        <span className="w-full cursor-pointer">Information</span>
-        <div className="pt-8 absolute left-1/2 -translate-x-1/2 hidden group-hover:block">
+        <span
+          ref={informationRef}
+          className="w-full cursor-pointer"
+          onClick={toggleInformationDropdown}
+        >
+          Information
+        </span>
+        <div
+          ref={informationDropdownRef}
+          className="pt-8 absolute left-1/2 -translate-x-1/2 hidden"
+        >
           {/* top triangle */}
           <div className="absolute left-1/2 -translate-x-1/2 top-4 w-0 h-0 border-l-18 border-r-18 border-b-18 border-transparent border-b-white" />
 
@@ -167,6 +230,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/about/safe"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Safe</span>
@@ -176,6 +240,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/about/precise"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Precise</span>
@@ -185,6 +250,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/about/personal"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Personal</span>
@@ -196,6 +262,7 @@ export default function NavLinks({
             </div>
             <Link
               href="/information/warranty"
+              onClick={toggleInformationDropdown}
               className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
             >
               <span>Warranty</span>
@@ -203,6 +270,7 @@ export default function NavLinks({
             </Link>
             <Link
               href="/information/financing-insurance"
+              onClick={toggleInformationDropdown}
               className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
             >
               <span>Financing & Insurance</span>
@@ -217,6 +285,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/patient-info/office-policies"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Office Policies</span>
@@ -226,6 +295,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/patient-info/terms-of-service"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Terms of Service</span>
@@ -235,6 +305,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/patient-info/patient-instructions"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Patient Instructions</span>
@@ -244,6 +315,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/patient-info/first-visit"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>First Visit</span>
@@ -253,6 +325,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/patient-info/patient-forms"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Patient Forms</span>
@@ -262,6 +335,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/patient-info/privacy-policy"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Privacy Policy</span>
@@ -280,6 +354,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/technology/dental-technology"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Dental Technology</span>
@@ -289,6 +364,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/technology/cone-beam-imaging"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Cone Beam Imaging</span>
@@ -298,6 +374,7 @@ export default function NavLinks({
                   <li>
                     <Link
                       href="/information/technology/laser-dentistry"
+                      onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Laser Dentistry</span>
