@@ -195,14 +195,14 @@ export default function NavLinks({
               </div>
             </div>
             <Link
-              href="/warranty"
+              href="/information/warranty"
               className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
             >
               <span>Warranty</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              href="/financing-insurance"
+              href="/information/financing-insurance"
               className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
             >
               <span>Financing & Insurance</span>
@@ -234,7 +234,7 @@ export default function NavLinks({
                   </li>
                   <li>
                     <Link
-                      href="/information/patient-info/instructions"
+                      href="/information/patient-info/patient-instructions"
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Patient Instructions</span>
@@ -252,7 +252,7 @@ export default function NavLinks({
                   </li>
                   <li>
                     <Link
-                      href="/information/patient-info/forms"
+                      href="/information/patient-info/patient-forms"
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
                       <span>Patient Forms</span>
