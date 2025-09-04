@@ -99,3 +99,54 @@ export const CardCollectionStyle2: React.FC<CardCollectionStyle2Props> = ({
     </div>
   );
 };
+
+interface CardCollectionStyle3Props {
+  title: string | React.ReactNode;
+  imageTitle: string;
+  image: string;
+  bgCardColor?: string;
+  className?: string;
+  children?: React.ReactNode;
+}
+export const CardCollectionStyle3: React.FC<CardCollectionStyle3Props> = ({
+  title,
+  imageTitle,
+  image,
+  bgCardColor,
+  className,
+  children,
+}) => {
+  return (
+    <div className={cn("relative py-14 flex justify-center", className)}>
+      <div
+        className={cn(
+          "absolute top-0 h-full w-[90%] bg-gradient-to-r from-[#314765] to-[#2E374E]",
+          bgCardColor
+        )}
+      />
+      <div className="w-full flex items-center">
+        <div
+          className="flex-1 min-h-100 bg-cover bg-center bg-no-repeat rounded-2xl shadow-lg z-10"
+          style={{ backgroundImage: `url('${image}')` }}
+        >
+          {imageTitle && (
+            <h2 className="text-4xl text-white px-4 py-3 h-24 bg-gradient-to-b from-[#000000] to-[#00000000] rounded-t-2xl">
+              {imageTitle}
+            </h2>
+          )}
+        </div>
+        <div className="-ml-6 flex-1 flex flex-col gap-y-3 bg-white text-[#233259] px-4 py-5 pl-12 rounded-2xl shadow-lg relative">
+          {title &&
+            (typeof title === "string" ? (
+              <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl text-center">
+                {title}
+              </h3>
+            ) : (
+              title
+            ))}
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
