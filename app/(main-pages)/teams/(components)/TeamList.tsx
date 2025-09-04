@@ -76,6 +76,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
   onClose,
   className,
 }) => {
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
   // disable document scroll
   // React.useEffect(() => {
   //   document.body.style.overflow = "hidden";
@@ -85,8 +86,26 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
   //   };
   // }, []);
 
+  React.useEffect(() => {
+    if (doctor) {
+      setTimeout(() => {
+        containerRef.current?.classList?.add("opacity-100");
+      }, 100);
+    }
+  }, [doctor]);
+
+  const handleClose = () => {
+    containerRef.current?.classList?.remove("opacity-100");
+    setTimeout(() => {
+      onClose?.();
+    }, 200);
+  };
+
   return (
-    <div className="fixed z-1000 inset-0">
+    <div
+      ref={containerRef}
+      className="fixed z-1000 inset-0 opacity-0 transition-all duration-200 ease-in-out"
+    >
       {/* overlay */}
       <div
         className={cn(
@@ -103,7 +122,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
       >
         <IoClose
           className="absolute top-2 right-2 w-6 h-6 cursor-pointer"
-          onClick={onClose}
+          onClick={handleClose}
         />
         <Image
           src={doctor.image.image}
