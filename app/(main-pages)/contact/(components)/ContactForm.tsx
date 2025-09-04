@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 // Form validation schema
 const formSchema = z.object({
@@ -178,13 +179,18 @@ export default function ContactForm({ className }: ContactFormProps) {
                 </div>
               </div>
             </div>
-            <Image
-              src="/map.svg"
-              alt="Map"
-              width={500}
-              height={300}
-              className="flex-1 w-full h-auto max-h-80 object-cover rounded-4xl shadow-lg"
-            />
+            <Link
+              href="https://www.google.com/maps/place/International+Dental+Centre+Pte+Ltd/@1.282558,103.846992,14z/data=!4m6!3m5!1s0x31da190cfc9866a1:0x42565d78ea85c125!8m2!3d1.282558!4d103.846992!16s%2Fg%2F1wk7nd23?hl=en&entry=ttu&g_ep=EgoyMDI1MDgzMC4wIKXMDSoASAFQAw%3D%3D"
+              className="flex-1 flex justify-center h-fit"
+            >
+              <Image
+                src="/map.svg"
+                alt="Map"
+                width={500}
+                height={300}
+                className="w-full h-auto max-h-80 object-cover rounded-4xl shadow-lg"
+              />
+            </Link>
           </div>
         </div>
 
