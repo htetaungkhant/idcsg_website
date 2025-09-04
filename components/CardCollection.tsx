@@ -130,15 +130,15 @@ export const CardCollectionStyle3: React.FC<CardCollectionStyle3Props> = ({
           style={{ backgroundImage: `url('${image}')` }}
         >
           {imageTitle && (
-            <h2 className="text-4xl text-white px-4 py-3 h-24 bg-gradient-to-b from-[#000000] to-[#00000000] rounded-t-2xl">
-              {imageTitle}
+            <h2 className="text-4xl text-white px-4 py-3 min-h-24 bg-gradient-to-b from-[#000000] to-[#00000000] rounded-t-2xl">
+              <span className="block w-[90%]">{imageTitle}</span>
             </h2>
           )}
         </div>
         <div className="-ml-6 flex-1 flex flex-col gap-y-3 bg-white text-[#233259] px-4 py-5 pl-12 rounded-2xl shadow-lg relative">
           {title &&
             (typeof title === "string" ? (
-              <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl text-center">
+              <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl">
                 {title}
               </h3>
             ) : (
