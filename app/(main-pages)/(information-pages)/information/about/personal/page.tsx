@@ -12,7 +12,7 @@ export default function Personal() {
 
       <div className="flex flex-col mt-20">
         <CardCollectionStyle1
-          image="/dummy-data/1.png"
+          image="/1.png"
           imageTitle="Personalised Care Approach"
           title="Care Built Around You"
         >
@@ -35,7 +35,7 @@ export default function Personal() {
 
         <CardCollectionStyle2
           title="Collaborative Specialist Team"
-          image="/dummy-data/2.png"
+          image="/2.png"
           imageTitle="Collaborative Specialist Team"
           className="mt-20"
         >
@@ -57,7 +57,7 @@ export default function Personal() {
         </CardCollectionStyle2>
 
         <CardCollectionStyle1
-          image="/dummy-data/1.png"
+          image="/1.png"
           imageTitle="One-Stop Wellness Destination"
           title={
             <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl text-center">

@@ -12,7 +12,7 @@ export default function Precise() {
 
       <div className="flex flex-col mt-20">
         <CardCollectionStyle1
-          image="/dummy-data/1.png"
+          image="/1.png"
           imageTitle="Advanced Diagnostics:"
           title={
             <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl text-center">
@@ -41,7 +41,7 @@ export default function Precise() {
 
         <CardCollectionStyle2
           title="Where Innovation Meets Care"
-          image="/dummy-data/2.png"
+          image="/2.png"
           imageTitle="Technology in Treatment"
           className="mt-20"
         >
@@ -63,7 +63,7 @@ export default function Precise() {
         </CardCollectionStyle2>
 
         <CardCollectionStyle1
-          image="/dummy-data/1.png"
+          image="/1.png"
           imageTitle="Experience & Expertise"
           title="Experience That Builds Trust"
           bgCardColor="bg-gradient-to-b from-[#B2966D] to-[#967253]"

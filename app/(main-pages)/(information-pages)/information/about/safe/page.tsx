@@ -12,7 +12,7 @@ export default function Safe() {
 
       <div className="flex flex-col mt-20">
         <CardCollectionStyle1
-          image="/dummy-data/1.png"
+          image="/1.png"
           imageTitle="Safety Protocols"
           title="Committed to Your Safety"
         >
@@ -35,7 +35,7 @@ export default function Safe() {
 
         <CardCollectionStyle2
           title="Minimal Contact, Maximum Care"
-          image="/dummy-data/2.png"
+          image="/2.png"
           imageTitle="Contactless Procedures"
           className="mt-20"
         >
@@ -57,7 +57,7 @@ export default function Safe() {
         </CardCollectionStyle2>
 
         <CardCollectionStyle1
-          image="/dummy-data/1.png"
+          image="/1.png"
           imageTitle="Sterilization Techniques"
           title="Sterilization at the Highest Standards"
           bgCardColor="bg-gradient-to-b from-[#B2966D] to-[#967253]"
