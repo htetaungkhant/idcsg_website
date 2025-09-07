@@ -2,9 +2,9 @@ import React from "react";
 import Image from "next/image";
 
 interface ServiceDetailsProps {
-  params: {
+  params: Promise<{
     serviceName: string;
-  };
+  }>;
 }
 export default async function ServiceDetails({ params }: ServiceDetailsProps) {
   const { serviceName } = await params;
