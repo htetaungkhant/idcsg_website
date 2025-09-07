@@ -4,9 +4,9 @@ import Link from "next/link";
 import { PrimaryBtn2 } from "@/components/CustomButtons";
 
 interface ServiceProps {
-  params: {
+  params: Promise<{
     serviceName: string;
-  };
+  }>;
 }
 
 export default async function Service({ params }: ServiceProps) {
