@@ -55,7 +55,7 @@ export default function Header({
               069249
             </span>
           </li>
-          <button
+          {/* <button
             className={cn(
               "px-4 py-1.5 bg-[#38588066] rounded-full font-medium font-(family-name:--font-poppins) cursor-pointer hover:shadow-md hover:scale-105 transition-all duration-300",
               color === "white" && "text-white bg-[#1e3a8a]"
@@ -70,7 +70,7 @@ export default function Header({
             )}
           >
             Register
-          </button>
+          </button> */}
         </ul>
 
         <div className="py-2.5 flex items-center justify-between">
