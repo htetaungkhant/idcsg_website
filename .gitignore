@@ -40,5 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local db
+# local database
 /lib/db/data
+/lib/db/migrations
