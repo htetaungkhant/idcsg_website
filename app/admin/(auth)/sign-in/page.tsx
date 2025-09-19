@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { auth, signIn } from "@/lib/auth";
 import { executeAction } from "@/lib/execute-action";
 
-const Page = async () => {
+export default async function Page() {
   const session = await auth();
   if (session) redirect("/admin/home-page-management");
 
@@ -45,6 +45,4 @@ const Page = async () => {
       </form>
     </div>
   );
-};
-
-export default Page;
+}
