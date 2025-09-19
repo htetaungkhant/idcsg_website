@@ -7,8 +7,6 @@ const authSchema = z.object({
 
 type AuthSchema = z.infer<typeof authSchema>;
 
-export { authSchema, type AuthSchema };
-
 const contactFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
@@ -26,4 +24,38 @@ const contactFormSchema = z.object({
 
 type ContactFormSchema = z.infer<typeof contactFormSchema>;
 
+const paymentFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  emailId: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  mobileNumber: z.string().min(10, {
+    message: "Please enter a valid mobile number.",
+  }),
+  serviceType: z.string().min(1, {
+    message: "Please select a service type.",
+  }),
+  paymentMethod: z.enum(
+    [
+      "credit_debit_card",
+      "paynow_upi",
+      "internet_banking",
+      "paypal",
+      "mobile_wallet",
+    ],
+    {
+      message: "Please select a payment method.",
+    }
+  ),
+  amount: z.number().min(1, {
+    message: "Please enter a valid amount.",
+  }),
+});
+
+type PaymentFormSchema = z.infer<typeof paymentFormSchema>;
+
+export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
+export { paymentFormSchema, type PaymentFormSchema };

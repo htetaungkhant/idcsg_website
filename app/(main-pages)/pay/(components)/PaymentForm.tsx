@@ -4,7 +4,6 @@ import { ArrowRight } from "lucide-react";
 import { PhoneInput } from "react-international-phone";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 import {
   Form,
@@ -16,44 +15,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-
-// Form validation schema
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  emailId: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  mobileNumber: z.string().min(10, {
-    message: "Please enter a valid mobile number.",
-  }),
-  serviceType: z.string().min(1, {
-    message: "Please select a service type.",
-  }),
-  paymentMethod: z.enum(
-    [
-      "credit_debit_card",
-      "paynow_upi",
-      "internet_banking",
-      "paypal",
-      "mobile_wallet",
-    ],
-    {
-      message: "Please select a payment method.",
-    }
-  ),
-  amount: z.number().min(1, {
-    message: "Please enter a valid amount.",
-  }),
-});
+import { paymentFormSchema, PaymentFormSchema } from "@/lib/schema";
 
 interface PaymentFormProps {
   className?: string;
 }
 export default function PaymentForm({ className }: PaymentFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<PaymentFormSchema>({
+    resolver: zodResolver(paymentFormSchema),
     defaultValues: {
       name: "",
       emailId: "",
@@ -64,7 +33,7 @@ export default function PaymentForm({ className }: PaymentFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: PaymentFormSchema) {
     console.log(values);
     // Handle form submission here
   }
