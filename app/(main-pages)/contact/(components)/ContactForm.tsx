@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { PhoneInput } from "react-international-phone";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 
 import {
   Form,
@@ -18,30 +18,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-
-// Form validation schema
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  emailId: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  mobileNumber: z.string().min(10, {
-    message: "Please enter a valid mobile number.",
-  }),
-  message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
-  }),
-});
+import { ContactFormSchema, contactFormSchema } from "@/lib/schema";
 
 interface ContactFormProps {
   className?: string;
 }
 export default function ContactForm({ className }: ContactFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<ContactFormSchema>({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
       name: "",
       emailId: "",
@@ -50,7 +34,7 @@ export default function ContactForm({ className }: ContactFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: ContactFormSchema) {
     console.log(values);
     // Handle form submission here
   }
