@@ -1,10 +1,12 @@
 "use server";
 
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+
 import { signIn } from "@/lib/auth";
 import { authSchema } from "@/lib/schema";
 import db from "@/lib/db/db";
 import { executeAction } from "@/lib/execute-action";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { hashPassword } from "@/lib/password";
 
 const signUp = async (formData: FormData) => {
   return executeAction({
@@ -21,10 +23,13 @@ const signUp = async (formData: FormData) => {
         throw new Error("User with this email already exists.");
       }
 
+      // Hash the password before saving
+      const hashedPassword = await hashPassword(validatedData.password);
+
       await db.user.create({
         data: {
           email: validatedData.email.trim().toLocaleLowerCase(),
-          password: validatedData.password,
+          password: hashedPassword,
         },
       });
     },

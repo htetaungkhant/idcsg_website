@@ -7,6 +7,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 
 import db from "@/lib/db/db";
 import { authSchema } from "@/lib/schema";
+import { verifyPassword } from "@/lib/password";
 
 const adapter = PrismaAdapter(db);
 
@@ -22,14 +23,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
         const validatedCredentials = authSchema.parse(credentials);
 
-        const user = await db.user.findFirst({
+        const user = await db.user.findUnique({
           where: {
-            email: validatedCredentials.email,
-            password: validatedCredentials.password,
+            email: validatedCredentials.email.trim().toLocaleLowerCase(),
           },
         });
 
-        if (!user) {
+        if (!user || !user.password) {
+          throw new Error("Invalid credentials.");
+        }
+
+        // Verify the password against the hashed password
+        const passwordMatch = await verifyPassword(
+          validatedCredentials.password,
+          user.password
+        );
+
+        if (!passwordMatch) {
           throw new Error("Invalid credentials.");
         }
 
