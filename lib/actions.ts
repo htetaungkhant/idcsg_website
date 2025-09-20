@@ -12,9 +12,18 @@ const signUp = async (formData: FormData) => {
       const email = formData.get("email");
       const password = formData.get("password");
       const validatedData = authSchema.parse({ email, password });
+
+      const existingUser = await db.user.findUnique({
+        where: { email: validatedData.email.trim().toLocaleLowerCase() },
+      });
+
+      if (existingUser) {
+        throw new Error("User with this email already exists.");
+      }
+
       await db.user.create({
         data: {
-          email: validatedData.email.toLocaleLowerCase(),
+          email: validatedData.email.trim().toLocaleLowerCase(),
           password: validatedData.password,
         },
       });
