@@ -38,6 +38,7 @@ export default function ContactForm({ className }: ContactFormProps) {
     console.log(values);
     // Handle form submission here
   }
+
   return (
     <Form {...form}>
       <form
