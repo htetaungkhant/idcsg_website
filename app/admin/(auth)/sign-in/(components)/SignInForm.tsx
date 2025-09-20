@@ -35,14 +35,14 @@ export default function SignInForm() {
 
       const result = await authenticate(formData);
 
-      if (!result?.success) {
+      if (result?.success) {
+        router.push("/admin/home-page-management");
+      } else {
         form.setError("root", {
           type: "manual",
           message: result?.message || "Authentication failed",
         });
       }
-
-      router.push("/admin/home-page-management");
     } catch (error) {
       console.error("Sign in error:", error);
       form.setError("root", {
