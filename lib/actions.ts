@@ -37,7 +37,10 @@ const signUp = async (formData: FormData) => {
   });
 };
 
-const authenticate = async (formData: FormData) => {
+const authenticate = async (
+  formData: FormData,
+  options?: { redirect?: boolean; redirectTo?: string }
+) => {
   try {
     // const credentials = {
     //   email: formData.get("email") as string,
@@ -47,7 +50,10 @@ const authenticate = async (formData: FormData) => {
     // Validate the credentials
     // const validatedCredentials = authSchema.parse(credentials);
 
-    await signIn("credentials", formData);
+    await signIn("credentials", {
+      ...options,
+      ...Object.fromEntries(formData.entries()),
+    });
 
     return { success: true, message: "Sign in successful" };
   } catch (error) {

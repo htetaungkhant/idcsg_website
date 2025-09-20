@@ -33,7 +33,7 @@ export default function SignInForm() {
       formData.append("email", data.email);
       formData.append("password", data.password);
 
-      const result = await authenticate(formData);
+      const result = await authenticate(formData, { redirect: false });
 
       if (result?.success) {
         router.push("/admin/home-page-management");
