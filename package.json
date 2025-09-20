@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "prisma": {
-    "schema": "lib/db/schema.prisma"
+    "schema": "lib/db/schema.prisma",
+    "seed": "ts-node --esm lib/db/seed.ts"
   },
   "scripts": {
     "dev": "next dev --turbopack",
@@ -11,6 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "npx prisma migrate dev",
+    "db:seed": "npx prisma db seed",
     "db:reset": "prisma migrate reset && prisma migrate dev",
     "db:studio": "prisma studio"
   },
@@ -21,7 +23,9 @@
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
+    "@types/bcryptjs": "^2.4.6",
     "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.536.0",
