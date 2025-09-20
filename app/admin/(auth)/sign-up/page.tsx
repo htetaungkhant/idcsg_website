@@ -60,7 +60,7 @@ export default async function Page() {
 
       <div className="text-center">
         <Button asChild variant="link">
-          <Link href="/sign-in">Already have an account? Sign in</Link>
+          <Link href="/admin/sign-in">Already have an account? Sign in</Link>
         </Button>
       </div>
     </div>
