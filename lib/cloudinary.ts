@@ -8,6 +8,15 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// Check for required environment variables
+if (
+  !process.env.CLOUDINARY_CLOUD_NAME ||
+  !process.env.CLOUDINARY_API_KEY ||
+  !process.env.CLOUDINARY_API_SECRET
+) {
+  throw new Error("Missing required Cloudinary environment variables");
+}
+
 export interface CloudinaryUploadResult {
   public_id: string;
   secure_url: string;
