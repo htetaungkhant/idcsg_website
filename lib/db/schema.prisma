@@ -95,3 +95,18 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
+
+model HomepageSettings {
+  id                String   @id @default(cuid())
+  backgroundMediaUrl String?  // Cloudinary URL for background image/video
+  backgroundMediaType String? // 'image' or 'video'
+  backgroundColor   String?  // Hex color code
+  backgroundOpacity Int      @default(100) // 0-100
+  isActive          Boolean  @default(true) // Only one setting can be active at a time
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Ensure only one active setting exists
+  @@unique([isActive])
+}
