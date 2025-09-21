@@ -22,6 +22,7 @@ import { authSchema, type AuthSchema } from "@/lib/schema";
 export default function SignInForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<AuthSchema>({
     resolver: zodResolver(authSchema),
@@ -33,19 +34,27 @@ export default function SignInForm() {
 
   const onSubmit = async (data: AuthSchema) => {
     try {
+      setIsSubmitting(true);
+
       const formData = new FormData();
       formData.append("email", data.email);
       formData.append("password", data.password);
 
-      const result = await authenticate(formData, { redirect: false });
+      const result = await authenticate(formData, {
+        redirect: false,
+      });
 
       if (result?.success) {
-        router.push("/admin/home-page-management");
+        router.replace("/admin/home-page-management");
+        setTimeout(() => {
+          setIsSubmitting(false);
+        }, 1500);
       } else {
         form.setError("root", {
           type: "manual",
           message: result?.message || "Authentication failed",
         });
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error("Sign in error:", error);
@@ -53,6 +62,7 @@ export default function SignInForm() {
         type: "manual",
         message: "An unexpected error occurred. Please try again.",
       });
+      setIsSubmitting(false);
     }
   };
 
@@ -78,6 +88,7 @@ export default function SignInForm() {
                         autoComplete="email"
                         className="pl-10 h-12 border-2 border-input bg-background/60 backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 hover:border-primary/60"
                         {...field}
+                        disabled={isSubmitting}
                       />
                     </div>
                   </FormControl>
@@ -102,6 +113,7 @@ export default function SignInForm() {
                         autoComplete="current-password"
                         className="pl-10 pr-10 h-12 border-2 border-input bg-background/60 backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 hover:border-primary/60"
                         {...field}
+                        disabled={isSubmitting}
                       />
                       <button
                         type="button"
@@ -133,9 +145,9 @@ export default function SignInForm() {
           <Button
             className="w-full h-12 text-sm font-medium bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
             type="submit"
-            disabled={form.formState.isSubmitting}
+            disabled={isSubmitting}
           >
-            {form.formState.isSubmitting ? (
+            {isSubmitting ? (
               <div className="flex items-center justify-center space-x-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>Signing In...</span>
