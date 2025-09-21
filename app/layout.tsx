@@ -11,6 +11,8 @@ import {
 import "react-international-phone/style.css";
 import "./globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const oswald = Oswald({
   variable: "--font-oswald",
   subsets: ["latin"],
@@ -67,6 +69,7 @@ export default function RootLayout({
         className={`${oswald.variable} ${oldStandardTT.variable} ${poppins.variable} ${ubuntu.variable} ${ubuntuCondensed.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <main className="font-(family-name:--font-oswald)">{children}</main>
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
