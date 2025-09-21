@@ -71,6 +71,20 @@ const paymentFormSchema = z.object({
 
 type PaymentFormSchema = z.infer<typeof paymentFormSchema>;
 
+const backgroundSettingsSchema = z
+  .object({
+    backgroundMedia: z.instanceof(File).optional(),
+    backgroundColor: z.string().optional(),
+    backgroundOpacity: z.number().min(0).max(100),
+  })
+  .refine((data) => data.backgroundMedia || data.backgroundColor, {
+    message: "Either background media or background color must be provided",
+    path: ["backgroundMedia"], // This will show the error on the media field
+  });
+
+type BackgroundSettingsSchema = z.infer<typeof backgroundSettingsSchema>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
+export { backgroundSettingsSchema, type BackgroundSettingsSchema };
