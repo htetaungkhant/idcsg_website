@@ -3,13 +3,14 @@ import { encode as defaultEncode } from "next-auth/jwt";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaClient } from "@prisma/client";
 // import GitHub from "next-auth/providers/github";
 
 import db from "@/lib/db/db";
 import { authSchema } from "@/lib/schema";
 import { verifyPassword } from "@/lib/password";
 
-const adapter = PrismaAdapter(db);
+const adapter = PrismaAdapter(db as unknown as PrismaClient);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter,
