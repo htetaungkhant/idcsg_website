@@ -6,7 +6,12 @@ import SignInForm from "./(components)/SignInForm";
 
 export default async function Page() {
   const session = await auth();
-  if (session) redirect("/admin/home-page-management");
+  if (
+    session &&
+    (session.user as unknown as Record<string, unknown>)?.role === "ADMIN"
+  ) {
+    redirect("/admin/home-page-management");
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -28,7 +33,8 @@ export default async function Page() {
             Welcome to IDCSG Admin
           </h2>
           <p className="text-lg text-muted-foreground max-w-md">
-            Access your administrative dashboard to manage your dental practice efficiently and effectively.
+            Access your administrative dashboard to manage your dental practice
+            efficiently and effectively.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-4 text-sm text-muted-foreground">
             <div className="flex items-center space-x-2">
@@ -69,7 +75,9 @@ export default async function Page() {
           {/* Sign In Card */}
           <div className="bg-card/60 backdrop-blur-xl border border-border/50 rounded-2xl p-8 shadow-2xl">
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">Sign In to Admin</h1>
+              <h1 className="text-2xl font-bold text-foreground mb-2">
+                Sign In to Admin
+              </h1>
               <p className="text-sm text-muted-foreground">
                 Enter your credentials to access the dashboard
               </p>

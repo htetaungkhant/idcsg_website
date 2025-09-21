@@ -53,6 +53,7 @@ const authenticate = async (
     await signIn("credentials", {
       ...options,
       ...Object.fromEntries(formData.entries()),
+      role: "ADMIN",
     });
 
     return { success: true, message: "Sign in successful" };

@@ -17,6 +17,7 @@ const authSchema = z.object({
     .min(6, {
       message: "Password must be at least 6 characters long.",
     }),
+  role: z.enum(["USER", "ADMIN"]).default("USER").optional(),
 });
 
 type AuthSchema = z.infer<typeof authSchema>;

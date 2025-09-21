@@ -26,6 +26,7 @@ async function main() {
           email: adminEmail,
           password: hashedPassword,
           name: "Administrator",
+          role: "ADMIN",
         },
       });
       console.log("Initial admin user created successfully");
@@ -46,7 +47,7 @@ async function main() {
     } else {
       // Previous credentials exist - find and update admin using previous credentials
       const existingAdmin = await db.user.findUnique({
-        where: { email: previousCredentials.email },
+        where: { email: previousCredentials.email, role: "ADMIN" },
       });
 
       if (!existingAdmin) {
@@ -59,11 +60,12 @@ async function main() {
 
       // Update existing admin user with new credentials
       await db.user.update({
-        where: { email: previousCredentials.email },
+        where: { email: previousCredentials.email, role: "ADMIN" },
         data: {
           email: adminEmail,
           password: hashedPassword,
           name: "Administrator",
+          role: "ADMIN",
         },
       });
 

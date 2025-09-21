@@ -20,6 +20,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: {},
         password: {},
+        role: {},
       },
       authorize: async (credentials) => {
         const validatedCredentials = authSchema.parse(credentials);
@@ -42,6 +43,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!passwordMatch) {
           throw new Error("Invalid credentials.");
+        } else if (
+          validatedCredentials?.role === "ADMIN" &&
+          user.role !== "ADMIN"
+        ) {
+          throw new Error("Not authorized");
         }
 
         return user;

@@ -8,11 +8,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model PreviousAdminCredentials {
+  id       String @id @default(cuid())
+  email    String
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id            String          @id @default(cuid())
   name          String?
   email         String?         @unique
   password      String?
+  role          UserRole        @default(USER)
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -79,13 +94,4 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
-}
-
-model PreviousAdminCredentials {
-  id       String @id @default(cuid())
-  email    String
-  password String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
