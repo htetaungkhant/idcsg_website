@@ -28,10 +28,22 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const [isInformationOpen, setIsInformationOpen] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -148,14 +160,38 @@ export function AdminSidebar() {
               {/* Logout Button */}
               <SidebarMenuItem>
                 <div className="mt-4 border-t border-gray-200 pt-4">
-                  <Button
-                    variant="ghost"
-                    onClick={handleSignOut}
-                    className="w-full justify-start gap-2 text-red-600 hover:bg-red-50 hover:text-red-700"
+                  <AlertDialog
+                    open={showLogoutDialog}
+                    onOpenChange={setShowLogoutDialog}
                   >
-                    <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
-                  </Button>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start gap-2 text-red-600 hover:bg-red-50 hover:text-red-700"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Logout</span>
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to logout? You will be
+                          redirected to the login page.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleSignOut}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Logout
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </SidebarMenuItem>
             </SidebarMenu>
