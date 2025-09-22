@@ -4,7 +4,7 @@ import { Plus, UserPlus } from "lucide-react";
 
 export default function AddMemberCard() {
   return (
-    <Link href="/admin/team-management/member">
+    <Link href="/admin/team-management/create">
       <div className="h-full flex flex-col justify-center bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/50 transition-colors duration-200 cursor-pointer">
         {/* Card Content */}
         <div className="aspect-square w-full rounded-t-lg flex items-center justify-center">
