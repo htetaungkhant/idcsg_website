@@ -11,6 +11,12 @@ import {
   ChevronDown,
   ChevronRight,
   Users,
+  ShieldPlus,
+  CircleGauge,
+  Signature,
+  Siren,
+  HeartHandshake,
+  HatGlasses,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -86,6 +92,42 @@ export function AdminSidebar() {
           icon: UserCheck,
           href: "/admin/information/first-visit",
           isActive: pathname === "/admin/information/first-visit",
+        },
+        {
+          title: "Safe",
+          icon: ShieldPlus,
+          href: "/admin/information/safe",
+          isActive: pathname === "/admin/information/safe",
+        },
+        {
+          title: "Precise",
+          icon: CircleGauge,
+          href: "/admin/information/precise",
+          isActive: pathname === "/admin/information/precise",
+        },
+        {
+          title: "Personal",
+          icon: Signature,
+          href: "/admin/information/personal",
+          isActive: pathname === "/admin/information/personal",
+        },
+        {
+          title: "Office Policy",
+          icon: Siren,
+          href: "/admin/information/office-policy",
+          isActive: pathname === "/admin/information/office-policy",
+        },
+        {
+          title: "Terms of Service",
+          icon: HeartHandshake,
+          href: "/admin/information/terms-of-service",
+          isActive: pathname === "/admin/information/terms-of-service",
+        },
+        {
+          title: "Privacy Policy",
+          icon: HatGlasses,
+          href: "/admin/information/privacy-policy",
+          isActive: pathname === "/admin/information/privacy-policy",
         },
       ],
     },
