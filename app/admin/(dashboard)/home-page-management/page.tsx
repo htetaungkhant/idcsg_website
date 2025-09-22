@@ -2,7 +2,7 @@ import React from "react";
 
 import { BackgroundSettingsForm } from "./(components)/BackgroundSettingsForm";
 
-export default async function page() {
+export default async function HomePageManagementPage() {
   return (
     <div className="space-y-6">
       <div className="border-b border-gray-200 pb-4">
