@@ -39,6 +39,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Image from "next/image";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -87,9 +88,13 @@ export function AdminSidebar() {
     <Sidebar className="border-r border-gray-200">
       <SidebarHeader className="border-b border-gray-200 pb-4">
         <div className="flex items-center gap-3 px-3 py-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white">
-            <Home className="h-5 w-5" />
-          </div>
+          <Image
+            src={"/logo.jpg"}
+            alt="IDCSG Logo"
+            width={40}
+            height={40}
+            className="rounded-md h-10 w-10 object-cover"
+          />
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-gray-900">
               IDCSG Admin
