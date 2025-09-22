@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { memberService } from "@/lib/services/member-service";
+import { TeamType } from "@/app/generated/prisma";
 
 // GET /api/team-members/[id] - Get member by ID
 export async function GET(
@@ -42,11 +43,8 @@ export async function GET(
   }
 }
 
-// PUT /api/team-members/[id]/order - Update member sort order
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+// PUT /api/team-members - Update member
+export async function PUT(request: NextRequest) {
   try {
     // Check authentication
     const session = await auth();
@@ -57,8 +55,19 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = await params;
-    const { sortOrder } = await request.json();
+    // Parse FormData
+    const formData = await request.formData();
+
+    const id = formData.get("id") as string;
+    const memberImage = formData.get("memberImage") as File | null;
+    const removeImage = formData.get("removeImage") === "true";
+    const memberName = formData.get("memberName") as string | null;
+    const memberDesignation = formData.get("memberDesignation") as
+      | string
+      | null;
+    const team = formData.get("team") as TeamType | null;
+    const description = formData.get("description") as string | null;
+    const isActive = formData.get("isActive") === "true";
 
     if (!id) {
       return NextResponse.json(
@@ -67,23 +76,50 @@ export async function PUT(
       );
     }
 
-    if (typeof sortOrder !== "number") {
+    // Validate file type if provided
+    if (memberImage && !memberImage.type.startsWith("image/")) {
       return NextResponse.json(
-        { error: "Sort order must be a number" },
+        { error: "Only image files are allowed" },
         { status: 400 }
       );
     }
 
-    const member = await memberService.updateMemberOrder(id, sortOrder);
+    // Validate file size if provided (5MB limit)
+    if (memberImage && memberImage.size > 5 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Image size should be less than 5MB" },
+        { status: 400 }
+      );
+    }
+
+    // Validate team enum if provided
+    if (team && !Object.values(TeamType).includes(team)) {
+      return NextResponse.json(
+        { error: "Invalid team selected" },
+        { status: 400 }
+      );
+    }
+
+    // Update member
+    const member = await memberService.updateMember({
+      id,
+      imageFile: memberImage || undefined,
+      removeImage,
+      name: memberName || undefined,
+      designation: memberDesignation || undefined,
+      team: team || undefined,
+      description: description || undefined,
+      isActive,
+    });
 
     return NextResponse.json({
       data: member,
-      message: "Member order updated successfully",
+      message: "Team member updated successfully",
     });
   } catch (error) {
-    console.error("Error updating member order:", error);
+    console.error("Error updating member:", error);
     const errorMessage =
-      error instanceof Error ? error.message : "Failed to update member order";
+      error instanceof Error ? error.message : "Failed to update team member";
     return NextResponse.json(
       { error: errorMessage },
       {

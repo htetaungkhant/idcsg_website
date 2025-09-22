@@ -131,94 +131,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/team-members - Update member
-export async function PUT(request: NextRequest) {
-  try {
-    // Check authentication
-    const session = await auth();
-    if (
-      !session ||
-      (session.user as unknown as Record<string, unknown>)?.role !== "ADMIN"
-    ) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Parse FormData
-    const formData = await request.formData();
-
-    const id = formData.get("id") as string;
-    const memberImage = formData.get("memberImage") as File | null;
-    const memberName = formData.get("memberName") as string | null;
-    const memberDesignation = formData.get("memberDesignation") as
-      | string
-      | null;
-    const team = formData.get("team") as TeamType | null;
-    const description = formData.get("description") as string | null;
-    const isActive = formData.get("isActive") === "true";
-
-    if (!id) {
-      return NextResponse.json(
-        { error: "Member ID is required" },
-        { status: 400 }
-      );
-    }
-
-    // Validate file type if provided
-    if (memberImage && !memberImage.type.startsWith("image/")) {
-      return NextResponse.json(
-        { error: "Only image files are allowed" },
-        { status: 400 }
-      );
-    }
-
-    // Validate file size if provided (5MB limit)
-    if (memberImage && memberImage.size > 5 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "Image size should be less than 5MB" },
-        { status: 400 }
-      );
-    }
-
-    // Validate team enum if provided
-    if (team && !Object.values(TeamType).includes(team)) {
-      return NextResponse.json(
-        { error: "Invalid team selected" },
-        { status: 400 }
-      );
-    }
-
-    // Update member
-    const member = await memberService.updateMember({
-      id,
-      imageFile: memberImage || undefined,
-      name: memberName || undefined,
-      designation: memberDesignation || undefined,
-      team: team || undefined,
-      description: description || undefined,
-      isActive,
-    });
-
-    return NextResponse.json({
-      data: member,
-      message: "Team member updated successfully",
-    });
-  } catch (error) {
-    console.error("Error updating member:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "Failed to update team member";
-    return NextResponse.json(
-      { error: errorMessage },
-      {
-        status:
-          error instanceof Error && error.message === "Member not found"
-            ? 404
-            : 500,
-      }
-    );
-  }
-}
-
 // DELETE /api/team-members?id=xxx - Delete member
+/**
 export async function DELETE(request: NextRequest) {
   try {
     // Check authentication
@@ -263,3 +177,4 @@ export async function DELETE(request: NextRequest) {
     );
   }
 }
+*/

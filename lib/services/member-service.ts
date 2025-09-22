@@ -13,6 +13,7 @@ export interface CreateMemberData {
 export interface UpdateMemberData {
   id: string;
   imageFile?: File;
+  removeImage?: boolean;
   name?: string;
   designation?: string;
   team?: TeamType;
@@ -131,8 +132,27 @@ export class MemberService {
 
       let imageUrl = existingMember.imageUrl;
 
+      // Handle image removal
+      if (data.removeImage) {
+        imageUrl = null;
+
+        // Delete old image from Cloudinary
+        if (existingMember.imageUrl) {
+          try {
+            const publicId = this.extractPublicIdFromUrl(
+              existingMember.imageUrl
+            );
+            if (publicId) {
+              await deleteFromCloudinary(publicId, "image");
+            }
+          } catch (deleteError) {
+            console.warn("Failed to delete old image:", deleteError);
+            // Don't throw error - we can continue with the update
+          }
+        }
+      }
       // If new image is provided, upload it and delete the old one
-      if (data.imageFile) {
+      else if (data.imageFile) {
         const arrayBuffer = await data.imageFile.arrayBuffer();
         const fileBuffer = Buffer.from(arrayBuffer);
 

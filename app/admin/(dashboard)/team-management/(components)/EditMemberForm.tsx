@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Upload, User, X, Camera } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, X, Camera, Save } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
@@ -19,9 +20,16 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { memberFormSchema, type MemberFormSchema } from "@/lib/schema";
+import type { TeamMember } from "./TeamMemberCard";
 
-export function MemberForm() {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+interface EditMemberFormProps {
+  member: TeamMember;
+}
+
+export function EditMemberForm({ member }: EditMemberFormProps) {
+  const router = useRouter();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(member.imageUrl);
   const [isDragActive, setIsDragActive] = useState(false);
 
   const {
@@ -30,20 +38,20 @@ export function MemberForm() {
     formState: { errors, isSubmitting },
     setValue,
     reset,
-    watch,
   } = useForm<MemberFormSchema>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
-      memberImage: undefined,
-      memberName: "",
-      memberDesignation: "",
-      team: undefined,
-      description: "",
+      memberName: member.name,
+      memberDesignation: member.designation || "",
+      team: member.team,
+      description: member.description,
     },
   });
 
-  // Watch the team field value
-  const teamValue = watch("team");
+  // Set the team value for the Select component
+  useEffect(() => {
+    setValue("team", member.team);
+  }, [member.team, setValue]);
 
   const handleImageChange = (file: File | null) => {
     if (file) {
@@ -59,6 +67,7 @@ export function MemberForm() {
         return;
       }
 
+      setSelectedImage(file);
       setValue("memberImage", file);
 
       // Create preview URL
@@ -95,6 +104,7 @@ export function MemberForm() {
   };
 
   const removeImage = () => {
+    setSelectedImage(null);
     setPreviewUrl(null);
 
     // Clear the file input
@@ -103,7 +113,6 @@ export function MemberForm() {
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
-      // Trigger form validation by dispatching a change event
       fileInput.dispatchEvent(new Event("change", { bubbles: true }));
     }
   };
@@ -113,52 +122,77 @@ export function MemberForm() {
       // Create FormData for file upload
       const formData = new FormData();
 
+      // Add member ID for update
+      formData.append("id", member.id);
+
       // Add required fields
       formData.append("memberName", data.memberName);
       formData.append("team", data.team);
       formData.append("description", data.description);
+      formData.append(
+        "isActive",
+        typeof member.isActive === "boolean"
+          ? member.isActive.toString()
+          : "false"
+      );
+
+      // Handle image logic
+      if (selectedImage) {
+        // User uploaded a new image
+        formData.append("memberImage", selectedImage);
+      } else if (previewUrl === null && member.imageUrl) {
+        // User removed the existing image
+        formData.append("removeImage", "true");
+      }
+      // If previewUrl === member.imageUrl, keep existing image (no changes)
 
       // Add optional fields only if they have values
-      if (data.memberImage) {
-        formData.append("memberImage", data.memberImage);
-      }
-
       if (data.memberDesignation && data.memberDesignation.trim() !== "") {
         formData.append("memberDesignation", data.memberDesignation);
       }
 
-      // Make API call to create member
-      const response = await fetch("/api/team-members", {
-        method: "POST",
+      // Make API call to update member - use the correct route
+      const response = await fetch(`/api/team-members/${member.id}`, {
+        method: "PUT",
         body: formData,
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to create team member");
+        throw new Error(result.error || "Failed to update team member");
       }
 
-      toast.success("Team member added successfully!");
+      toast.success("Team member updated successfully!");
 
-      // Reset form after successful submission
-      reset();
-      setPreviewUrl(null);
-
-      // Clear the file input
-      const fileInput = document.getElementById(
-        "member-image"
-      ) as HTMLInputElement;
-      if (fileInput) {
-        fileInput.value = "";
-      }
+      // Navigate back to team management page
+      router.push("/admin/team-management");
     } catch (error) {
-      console.error("Error adding member:", error);
+      console.error("Error updating member:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
-          : "Failed to add member. Please try again.";
+          : "Failed to update member. Please try again.";
       toast.error(errorMessage);
+    }
+  };
+
+  const resetForm = () => {
+    reset({
+      memberName: member.name,
+      memberDesignation: member.designation || "",
+      team: member.team,
+      description: member.description,
+    });
+    setSelectedImage(null);
+    setPreviewUrl(member.imageUrl);
+
+    // Clear the file input
+    const fileInput = document.getElementById(
+      "member-image"
+    ) as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
     }
   };
 
@@ -168,10 +202,10 @@ export function MemberForm() {
         <div className="border-b border-gray-200 px-6 py-4">
           <h1 className="flex items-center gap-2 text-2xl font-semibold text-gray-900">
             <User className="h-6 w-6 text-blue-600" />
-            Add New Team Member
+            Edit Team Member
           </h1>
           <p className="text-gray-600 mt-1">
-            Fill in the details below to add a new member to your team.
+            Update the details for {member.name}
           </p>
         </div>
         <div className="p-6">
@@ -194,7 +228,7 @@ export function MemberForm() {
                 <div className="relative w-32 h-32 mx-auto">
                   <Image
                     src={previewUrl}
-                    alt="Member preview"
+                    alt={`${member.name} preview`}
                     fill
                     className="rounded-full object-cover border-4 border-white shadow-lg"
                   />
@@ -292,7 +326,7 @@ export function MemberForm() {
             <div className="space-y-2">
               <Label className="text-base font-semibold">Team *</Label>
               <Select
-                value={teamValue || ""}
+                defaultValue={member.team}
                 onValueChange={(value) =>
                   setValue(
                     "team",
@@ -358,17 +392,7 @@ export function MemberForm() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => {
-                  reset();
-                  setPreviewUrl(null);
-                  // Clear the file input
-                  const fileInput = document.getElementById(
-                    "member-image"
-                  ) as HTMLInputElement;
-                  if (fileInput) {
-                    fileInput.value = "";
-                  }
-                }}
+                onClick={resetForm}
                 className="px-8"
               >
                 Reset
@@ -381,12 +405,12 @@ export function MemberForm() {
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Adding Member...
+                    Updating Member...
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Upload className="h-4 w-4" />
-                    Add Member
+                    <Save className="h-4 w-4" />
+                    Update Member
                   </div>
                 )}
               </Button>
@@ -398,4 +422,4 @@ export function MemberForm() {
   );
 }
 
-export default MemberForm;
+export default EditMemberForm;

@@ -41,12 +41,6 @@ export default function TeamManagementContent({
     };
   }, [members]);
 
-  // Handle member actions
-  const handleEditMember = (memberId: string) => {
-    // TODO: Navigate to edit page
-    toast.info(`Edit member: ${memberId}`);
-  };
-
   const handleDeleteMember = async (memberId: string) => {
     const member = members.find((m) => m.id === memberId);
     if (!member) return;
@@ -126,7 +120,6 @@ export default function TeamManagementContent({
           <TeamMemberCard
             key={member.id}
             member={member}
-            onEdit={handleEditMember}
             onDelete={handleDeleteMember}
           />
         ))}

@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { User, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export interface TeamMember {
   id: string;
@@ -75,22 +76,29 @@ export default function TeamMemberCard({
 
         {/* Action Buttons Overlay */}
         <div className="absolute top-2 right-2 flex gap-1">
-          {onEdit && (
+          {onEdit ? (
             <Button
               variant="outline"
               size="sm"
               onClick={() => onEdit(member.id)}
-              className="h-8 w-8 p-0 bg-white/90 hover:bg-white"
+              className="h-8 w-8 p-0 bg-white/90 cursor-pointer hover:bg-white"
             >
               <Edit className="h-3 w-3" />
             </Button>
+          ) : (
+            <Link
+              href={`/admin/team-management/${member.id}`}
+              className="h-8 w-8 p-0 bg-white/90 rounded-sm flex items-center justify-center hover:bg-white border shadow-xs hover:text-accent-foreground"
+            >
+              <Edit className="h-4 w-4" />
+            </Link>
           )}
           {onDelete && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => onDelete(member.id)}
-              className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-red-600 border-red-200 hover:border-red-300"
+              className="h-8 w-8 p-0 bg-white/90 cursor-pointer hover:bg-white text-red-600 border-red-200 hover:border-red-300"
             >
               <Trash2 className="h-3 w-3" />
             </Button>
