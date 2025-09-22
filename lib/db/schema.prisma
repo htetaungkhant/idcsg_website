@@ -13,6 +13,12 @@ enum UserRole {
   ADMIN
 }
 
+enum TeamType {
+  DOCTORS
+  CONSULTANT_SPECIALISTS
+  ALLIED_HEALTH_SUPPORT_STAFF
+}
+
 model PreviousAdminCredentials {
   id       String @id @default(cuid())
   email    String
@@ -109,4 +115,18 @@ model HomepageSettings {
   
   // Ensure only one active setting exists
   @@unique([isActive])
+}
+
+model Member {
+  id            String   @id @default(cuid())
+  imageUrl      String?  // Cloudinary URL for member photo (optional)
+  name          String
+  designation   String?  // Optional designation
+  team          TeamType
+  description   String   @db.Text
+  isActive      Boolean  @default(true)
+  sortOrder     Int      @default(0) // For ordering members within teams
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

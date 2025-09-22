@@ -84,7 +84,33 @@ const backgroundSettingsSchema = z
 
 type BackgroundSettingsSchema = z.infer<typeof backgroundSettingsSchema>;
 
+const memberFormSchema = z.object({
+  memberImage: z.instanceof(File).optional(),
+  memberName: z.string().min(2, {
+    message: "Member name must be at least 2 characters.",
+  }),
+  memberDesignation: z
+    .string()
+    .min(2, {
+      message: "Designation must be at least 2 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+  team: z.enum(
+    ["DOCTORS", "CONSULTANT_SPECIALISTS", "ALLIED_HEALTH_SUPPORT_STAFF"],
+    {
+      message: "Please select a team.",
+    }
+  ),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+});
+
+type MemberFormSchema = z.infer<typeof memberFormSchema>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
 export { backgroundSettingsSchema, type BackgroundSettingsSchema };
+export { memberFormSchema, type MemberFormSchema };
