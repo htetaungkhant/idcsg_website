@@ -10,6 +10,7 @@ import {
   UserCheck,
   ChevronDown,
   ChevronRight,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -60,6 +61,12 @@ export function AdminSidebar() {
       icon: Home,
       href: "/admin/home-page-management",
       isActive: pathname === "/admin/home-page-management",
+    },
+    {
+      title: "Team Management",
+      icon: Users,
+      href: "/admin/team-management",
+      isActive: pathname.startsWith("/admin/team-management"),
     },
     {
       title: "Information Management",
