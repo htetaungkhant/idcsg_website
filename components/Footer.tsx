@@ -100,7 +100,7 @@ export default function Footer({ className }: FooterProps) {
       </div>
       <div className="w-11/12 pt-3 border-t border-[#DCDCDC] flex items-center justify-center font-(family-name:--font-old-standard-tt)">
         <Link
-          href="/privacy-policy"
+          href="/information/patient-info/privacy-policy"
           className="text-center block max-xl:text-sm max-lg:text-xs hover:underline"
         >
           Privacy Policy
@@ -108,7 +108,7 @@ export default function Footer({ className }: FooterProps) {
         {/* splitter */}
         <div className="w-px h-6 bg-[#DCDCDC] mx-4" />
         <Link
-          href="/terms-of-service"
+          href="/information/patient-info/terms-of-service"
           className="text-center block max-xl:text-sm max-lg:text-xs hover:underline"
         >
           Terms of Service
