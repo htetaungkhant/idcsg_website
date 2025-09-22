@@ -17,6 +17,9 @@ import {
   Siren,
   HeartHandshake,
   HatGlasses,
+  Box,
+  Candy,
+  Cpu,
 } from "lucide-react";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -75,6 +78,18 @@ export function AdminSidebar() {
       isActive: pathname.startsWith("/admin/team-management"),
     },
     {
+      title: "Category Management",
+      icon: Box,
+      href: "/admin/category-management",
+      isActive: pathname.startsWith("/admin/category-management"),
+    },
+    {
+      title: "Service Management",
+      icon: Candy,
+      href: "/admin/service-management",
+      isActive: pathname.startsWith("/admin/service-management"),
+    },
+    {
       title: "Information Management",
       icon: Info,
       href: "#",
@@ -130,6 +145,12 @@ export function AdminSidebar() {
           isActive: pathname === "/admin/information/privacy-policy",
         },
       ],
+    },
+    {
+      title: "Technology Management",
+      icon: Cpu,
+      href: "/admin/technology-management",
+      isActive: pathname.startsWith("/admin/technology-management"),
     },
   ];
 
