@@ -38,6 +38,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
     formState: { errors, isSubmitting },
     setValue,
     reset,
+    watch,
   } = useForm<MemberFormSchema>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
@@ -47,6 +48,9 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
       description: member.description,
     },
   });
+
+  // Watch the team field value
+  const teamValue = watch("team");
 
   // Set the team value for the Select component
   useEffect(() => {
@@ -109,7 +113,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
 
     // Clear the file input
     const fileInput = document.getElementById(
-      "member-image"
+      "existing-member-image"
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
@@ -179,6 +183,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
 
   const resetForm = () => {
     reset({
+      memberImage: undefined,
       memberName: member.name,
       memberDesignation: member.designation || "",
       team: member.team,
@@ -189,7 +194,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
 
     // Clear the file input
     const fileInput = document.getElementById(
-      "member-image"
+      "existing-member-image"
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
@@ -216,7 +221,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
 
               {/* Hidden file input */}
               <input
-                id="member-image"
+                id="existing-member-image"
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
@@ -254,7 +259,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() =>
-                    document.getElementById("member-image")?.click()
+                    document.getElementById("existing-member-image")?.click()
                   }
                 >
                   <div className="space-y-3">
@@ -327,6 +332,7 @@ export function EditMemberForm({ member }: EditMemberFormProps) {
               <Label className="text-base font-semibold">Team *</Label>
               <Select
                 defaultValue={member.team}
+                value={teamValue || ""}
                 onValueChange={(value) =>
                   setValue(
                     "team",

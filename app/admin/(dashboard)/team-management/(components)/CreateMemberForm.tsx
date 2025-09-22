@@ -99,7 +99,7 @@ export function MemberForm() {
 
     // Clear the file input
     const fileInput = document.getElementById(
-      "member-image"
+      "new-member-image"
     ) as HTMLInputElement;
     if (fileInput) {
       fileInput.value = "";
@@ -147,7 +147,7 @@ export function MemberForm() {
 
       // Clear the file input
       const fileInput = document.getElementById(
-        "member-image"
+        "new-member-image"
       ) as HTMLInputElement;
       if (fileInput) {
         fileInput.value = "";
@@ -182,7 +182,7 @@ export function MemberForm() {
 
               {/* Hidden file input */}
               <input
-                id="member-image"
+                id="new-member-image"
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
@@ -220,7 +220,7 @@ export function MemberForm() {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() =>
-                    document.getElementById("member-image")?.click()
+                    document.getElementById("new-member-image")?.click()
                   }
                 >
                   <div className="space-y-3">
@@ -363,7 +363,7 @@ export function MemberForm() {
                   setPreviewUrl(null);
                   // Clear the file input
                   const fileInput = document.getElementById(
-                    "member-image"
+                    "new-member-image"
                   ) as HTMLInputElement;
                   if (fileInput) {
                     fileInput.value = "";
