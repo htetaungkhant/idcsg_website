@@ -48,7 +48,7 @@ export default function SignInForm() {
         router.replace("/admin/home-page-management");
         setTimeout(() => {
           setIsSubmitting(false);
-        }, 1500);
+        }, 3000);
       } else {
         form.setError("root", {
           type: "manual",
