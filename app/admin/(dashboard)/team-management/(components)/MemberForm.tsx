@@ -30,9 +30,20 @@ export function MemberForm() {
     formState: { errors, isSubmitting },
     setValue,
     reset,
+    watch,
   } = useForm<MemberFormSchema>({
     resolver: zodResolver(memberFormSchema),
+    defaultValues: {
+      memberImage: undefined,
+      memberName: "",
+      memberDesignation: "",
+      team: undefined,
+      description: "",
+    },
   });
+
+  // Watch the team field value
+  const teamValue = watch("team");
 
   const handleImageChange = (file: File | null) => {
     if (file) {
@@ -281,6 +292,7 @@ export function MemberForm() {
             <div className="space-y-2">
               <Label className="text-base font-semibold">Team *</Label>
               <Select
+                value={teamValue || ""}
                 onValueChange={(value) =>
                   setValue(
                     "team",
