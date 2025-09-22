@@ -198,26 +198,25 @@ app/                                    # Next.js 15 App Router
 ├── page.tsx                           # Home page
 ├── (main-pages)/                      # Route group for main website pages
 │   ├── layout.tsx                     # Main pages layout
-│   ├── (information-pages)/           # Information pages route group
-│   │   └── information/
-│   │       ├── about/
-│   │       │   ├── personal/
-│   │       │   ├── precise/
-│   │       │   └── safe/
-│   │       ├── financing-insurance/
-│   │       │   └── page.tsx
-│   │       ├── patient-info/
-│   │       │   ├── first-visit/
-│   │       │   ├── office-policies/
-│   │       │   ├── patient-forms/
-│   │       │   ├── patient-instructions/
-│   │       │   ├── privacy-policy/
-│   │       │   └── terms-of-service/
-│   │       ├── technology/
-│   │       │   ├── cone-beam-imaging/
-│   │       │   ├── dental-technology/
-│   │       │   └── laser-dentistry/
-│   │       └── warranty/
+│   ├── information/                   # Information pages
+│   │   ├── about/
+│   │   │   ├── personal/
+│   │   │   ├── precise/
+│   │   │   └── safe/
+│   │   ├── financing-insurance/
+│   │   │   └── page.tsx
+│   │   ├── patient-info/
+│   │   │   ├── first-visit/
+│   │   │   ├── office-policies/
+│   │   │   ├── patient-forms/
+│   │   │   ├── patient-instructions/
+│   │   │   ├── privacy-policy/
+│   │   │   └── terms-of-service/
+│   │   ├── technology/
+│   │   │   ├── cone-beam-imaging/
+│   │   │   ├── dental-technology/
+│   │   │   └── laser-dentistry/
+│   │   └── warranty/
 │   ├── blog/
 │   │   └── page.tsx
 │   ├── contact/
