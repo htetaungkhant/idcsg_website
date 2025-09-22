@@ -130,3 +130,21 @@ model Member {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Category {
+  id        String    @id @default(cuid())
+  title     String
+  services  Service[] // One category can have multiple services
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id         String   @id @default(cuid())
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
