@@ -583,6 +583,91 @@ const personalFormSchema = z.object({
 
 type PersonalFormSchema = z.infer<typeof personalFormSchema>;
 
+// First Visit form schema for comprehensive First Visit management
+const firstVisitFormSchema = z.object({
+  // General sections array (one-to-many relationship)
+  sections: z
+    .array(
+      z.object({
+        id: z.string().optional(), // For existing sections during updates
+        imageUrl: z.string().optional(), // Existing image URL
+        imageFile: z.instanceof(File).optional(), // New image file to upload
+        title: z
+          .string()
+          .max(100, {
+            message: "Section title must be less than 100 characters.",
+          })
+          .optional()
+          .or(z.literal("")),
+        descriptionTitle: z
+          .string()
+          .max(100, {
+            message: "Description title must be less than 100 characters.",
+          })
+          .optional()
+          .or(z.literal("")),
+        description: z
+          .string()
+          .min(1, {
+            message: "Description is required for each section.",
+          })
+          .max(2000, {
+            message: "Section description must be less than 2000 characters.",
+          }),
+        sortOrder: z.number().min(0, {
+          message: "Sort order must be a non-negative number.",
+        }),
+      })
+    )
+    .min(1, {
+      message: "At least one section is required.",
+    })
+    .max(10, {
+      message: "Maximum 10 sections allowed.",
+    }),
+
+  // Video section (one-to-one, optional)
+  videoSection: z
+    .object({
+      id: z.string().optional(), // For existing video section during updates
+      videoUrl: z
+        .string()
+        .url({
+          message: "Please enter a valid video URL.",
+        })
+        .min(1, {
+          message: "Video URL is required when video section is provided.",
+        }),
+    })
+    .optional(),
+
+  // Information section (one-to-one, optional)
+  informationSection: z
+    .object({
+      id: z.string().optional(), // For existing information section during updates
+      imageUrl: z.string().optional(), // Existing image URL
+      imageFile: z.instanceof(File).optional(), // New image file to upload
+      descriptionTitle: z
+        .string()
+        .max(100, {
+          message: "Description title must be less than 100 characters.",
+        })
+        .optional()
+        .or(z.literal("")),
+      description: z
+        .string()
+        .min(1, {
+          message: "Description is required for information section.",
+        })
+        .max(2000, {
+          message: "Information description must be less than 2000 characters.",
+        }),
+    })
+    .optional(),
+});
+
+type FirstVisitFormSchema = z.infer<typeof firstVisitFormSchema>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
@@ -597,3 +682,4 @@ export { officePolicyFormSchema, type OfficePolicyFormSchema };
 export { safeFormSchema, type SafeFormSchema };
 export { preciseFormSchema, type PreciseFormSchema };
 export { personalFormSchema, type PersonalFormSchema };
+export { firstVisitFormSchema, type FirstVisitFormSchema };
