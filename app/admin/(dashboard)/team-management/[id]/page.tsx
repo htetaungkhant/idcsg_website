@@ -1,8 +1,8 @@
 import React from "react";
 import { notFound } from "next/navigation";
 import { memberService } from "@/lib/services/member-service";
+import BackNavigation from "@/app/admin/(dashboard)/(components)/BackNavigation";
 import EditMemberForm from "@/app/admin/(dashboard)/team-management/(components)/EditMemberForm";
-import BackNavigation from "@/app/admin/(dashboard)/team-management/(components)/BackNavigation";
 
 interface EditMemberPageProps {
   params: Promise<{
@@ -23,7 +23,7 @@ export default async function EditMemberPage({ params }: EditMemberPageProps) {
     return (
       <div className="space-y-6">
         {/* Back Navigation */}
-        <BackNavigation />
+        <BackNavigation href="/admin/team-management" />
 
         {/* Edit Member Form */}
         <EditMemberForm member={member} />
@@ -35,7 +35,7 @@ export default async function EditMemberPage({ params }: EditMemberPageProps) {
     // Return error state
     return (
       <div className="space-y-6">
-        <BackNavigation />
+        <BackNavigation href="/admin/team-management" />
 
         <div className="text-center py-12">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">

@@ -1,12 +1,12 @@
 import React from "react";
-import MemberForm from "../(components)/CreateMemberForm";
-import BackNavigation from "../(components)/BackNavigation";
+import BackNavigation from "@/app/admin/(dashboard)/(components)/BackNavigation";
+import MemberForm from "@/app/admin/(dashboard)/team-management/(components)/CreateMemberForm";
 
 export default function CreateMemberPage() {
   return (
     <div className="space-y-6">
       {/* Back Navigation */}
-      <BackNavigation />
+      <BackNavigation href="/admin/team-management" />
 
       {/* Member Form */}
       <MemberForm />

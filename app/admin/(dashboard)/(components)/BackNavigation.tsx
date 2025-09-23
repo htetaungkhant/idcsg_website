@@ -8,7 +8,7 @@ interface BackNavigationProps {
 }
 
 export default function BackNavigation({
-  href = "/admin/team-management",
+  href = "/admin/home-page-management",
   label = "Back",
 }: BackNavigationProps) {
   return (
