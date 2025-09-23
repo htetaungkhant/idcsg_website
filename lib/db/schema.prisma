@@ -31,6 +31,12 @@ enum PreciseCardStyle {
   CARDSTYLE3
 }
 
+enum PersonalCardStyle {
+  CARDSTYLE1
+  CARDSTYLE2
+  CARDSTYLE3
+}
+
 model PreviousAdminCredentials {
   id       String @id @default(cuid())
   email    String
@@ -416,6 +422,34 @@ model PreciseSection {
   description       String?          @db.Text // Section description (optional)
   cardStyle         PreciseCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
   sortOrder         Int              @default(0) // For ordering sections within a Precise
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Personal Management System
+model Personal {
+  id          String            @id @default(cuid())
+  
+  // Multiple sections (one-to-many relationship)
+  sections    PersonalSection[] // Personal can have multiple sections
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Personal Section: Image, Title, Description Title, Description, and Card Style
+model PersonalSection {
+  id                String            @id @default(cuid())
+  personalId        String            // Foreign key to Personal (one-to-many relationship)
+  personal          Personal          @relation(fields: [personalId], references: [id], onDelete: Cascade)
+  
+  imageUrl          String?           // Cloudinary URL for section image (optional)
+  title             String?           // Section title (optional)
+  descriptionTitle  String?           // Description title/heading (optional)
+  description       String?           @db.Text // Section description (optional)
+  cardStyle         PersonalCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
+  sortOrder         Int               @default(0) // For ordering sections within a Personal
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

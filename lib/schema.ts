@@ -512,6 +512,77 @@ const preciseFormSchema = z.object({
 
 type PreciseFormSchema = z.infer<typeof preciseFormSchema>;
 
+// Personal form schema for comprehensive Personal management
+const personalFormSchema = z.object({
+  // Dynamic sections array
+  sections: z
+    .array(
+      z
+        .object({
+          id: z.string().optional(), // For existing sections during updates
+          imageUrl: z.string().optional(), // Existing image URL
+          imageFile: z.instanceof(File).optional(), // New image file to upload
+          title: z
+            .string()
+            .max(100, {
+              message: "Section title must be less than 100 characters.",
+            })
+            .optional()
+            .or(z.literal("")),
+          descriptionTitle: z
+            .string()
+            .max(100, {
+              message: "Description title must be less than 100 characters.",
+            })
+            .optional()
+            .or(z.literal("")),
+          description: z
+            .string()
+            .max(2000, {
+              message: "Section description must be less than 2000 characters.",
+            })
+            .optional()
+            .or(z.literal("")),
+          cardStyle: z.enum(["CARDSTYLE1", "CARDSTYLE2", "CARDSTYLE3"], {
+            message: "Please select a card style.",
+          }),
+          sortOrder: z.number().min(0, {
+            message: "Sort order must be a non-negative number.",
+          }),
+        })
+        .refine(
+          (section) => {
+            // Check if at least one field is filled
+            const hasImage = !!(section.imageFile || section.imageUrl);
+            const hasTitle = !!(section.title && section.title.trim());
+            const hasDescriptionTitle = !!(
+              section.descriptionTitle && section.descriptionTitle.trim()
+            );
+            const hasDescription = !!(
+              section.description && section.description.trim()
+            );
+
+            return (
+              hasImage || hasTitle || hasDescriptionTitle || hasDescription
+            );
+          },
+          {
+            message:
+              "At least one field (image, title, description title, or description) must be filled.",
+            path: ["title"], // Show error on title field
+          }
+        )
+    )
+    .min(1, {
+      message: "At least one section is required.",
+    })
+    .max(10, {
+      message: "Maximum 10 sections allowed.",
+    }),
+});
+
+type PersonalFormSchema = z.infer<typeof personalFormSchema>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
@@ -525,3 +596,4 @@ export { privacyPolicyFormSchema, type PrivacyPolicyFormSchema };
 export { officePolicyFormSchema, type OfficePolicyFormSchema };
 export { safeFormSchema, type SafeFormSchema };
 export { preciseFormSchema, type PreciseFormSchema };
+export { personalFormSchema, type PersonalFormSchema };
