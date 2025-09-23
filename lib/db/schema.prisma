@@ -141,9 +141,117 @@ model Category {
 }
 
 model Service {
-  id         String   @id @default(cuid())
-  categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  // Main service information
+  name         String
+  overview     String   @db.Text
+  
+  // Service sections (one-to-one relationships)
+  section1     ServiceSection1?
+  section2     ServiceSection2?
+  section3     ServiceSection3?
+  section4     ServiceSection4?
+  section5     ServiceSection5?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Section 1: Image, Title, and Description
+model ServiceSection1 {
+  id          String  @id @default(cuid())
+  serviceId   String  @unique // One-to-one relationship with Service
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?  // Cloudinary URL for section image
+  title       String?
+  description String?   @db.Text
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Section 2: Video Link Only
+model ServiceSection2 {
+  id        String  @id @default(cuid())
+  serviceId String  @unique // One-to-one relationship with Service
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  videoUrl  String   // Video URL (YouTube, Vimeo, or direct link)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Section 3: Image, Title, and Description
+model ServiceSection3 {
+  id          String  @id @default(cuid())
+  serviceId   String  @unique // One-to-one relationship with Service
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?  // Cloudinary URL for section image
+  title       String?
+  description String?   @db.Text
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Section 4: Title and List of Cards
+model ServiceSection4 {
+  id        String                @id @default(cuid())
+  serviceId String                @unique // One-to-one relationship with Service
+  service   Service               @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  title     String?
+  cards     ServiceSection4Card[] // List of cards for this section
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Cards for Section 4 (Image, Title, Description)
+model ServiceSection4Card {
+  id          String          @id @default(cuid())
+  section4Id  String
+  section4    ServiceSection4 @relation(fields: [section4Id], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?  // Cloudinary URL for card image
+  title       String?
+  description String   @db.Text
+  sortOrder   Int      @default(0) // For ordering cards within section4
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Section 5: Image, Title, and List of Price Ranges
+model ServiceSection5 {
+  id          String                   @id @default(cuid())
+  serviceId   String                   @unique // One-to-one relationship with Service
+  service     Service                  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?                  // Cloudinary URL for section image
+  title       String?
+  priceRanges ServiceSection5PriceRange[] // List of price ranges for this section
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Price Ranges for Section 5 (Title, Start Price, End Price)
+model ServiceSection5PriceRange {
+  id         String          @id @default(cuid())
+  section5Id String
+  section5   ServiceSection5 @relation(fields: [section5Id], references: [id], onDelete: Cascade)
+  
+  title      String
+  startPrice Decimal         @db.Decimal(10, 2) // Starting price with 2 decimal places
+  endPrice   Decimal         @db.Decimal(10, 2) // Ending price with 2 decimal places
+  sortOrder  Int             @default(0) // For ordering price ranges within section5
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
