@@ -8,9 +8,9 @@ This document provides comprehensive guidelines for developing and maintaining t
 ### Tech Stack
 - **Framework**: Next.js 15.4.5 with App Router and Turbopack
 - **Runtime**: React 19.1.0
-- **Database**: Prisma ORM with PostgreSQL (production) and Prisma Accelerate
+- **Database**: Prisma ORM 6.16.2 with PostgreSQL and Prisma Accelerate extension
 - **Authentication**: NextAuth.js v5 (beta.29) with Prisma adapter
-- **Styling**: TailwindCSS v4 with Shadcn/UI and tw-animate-css
+- **Styling**: TailwindCSS v4 with Shadcn/UI and tw-animate-css v1.3.6
 - **TypeScript**: Full TypeScript implementation with strict mode (TypeScript 5)
 - **Form Management**: React Hook Form v7.62.0 with Zod validation v4.1.5
 - **Icons**: Lucide React v0.536.0 & React Icons v5.5.0
@@ -21,6 +21,56 @@ This document provides comprehensive guidelines for developing and maintaining t
 - **Theming**: Next-themes v0.4.6 for dark/light mode
 - **Phone Input**: React International Phone v4.6.0 for international phone numbers
 - **Utilities**: Class Variance Authority v0.7.1, clsx v2.1.1, tailwind-merge v3.3.1, uuid v13.0.0
+- **UI Components**: Radix UI primitives for accessible component foundations
+
+## Advanced Features and Patterns
+
+### Service Management System
+The project includes a comprehensive service management system with advanced features:
+
+#### Multi-Section Service Architecture
+Services are structured with multiple content sections:
+- **Section 1**: Image, title, and description
+- **Section 2**: Video URL embedding  
+- **Section 3**: Additional image, title, and description
+- **Section 4**: Dynamic information cards with images
+- **Section 5**: Pricing information with image and price ranges
+
+#### Intelligent Image Management
+- **Cloudinary Integration**: Automatic image optimization and CDN delivery
+- **Folder-based Organization**: Images organized by service ID and section
+- **Smart Updates**: Preserves existing images when not replaced
+- **Bulk Operations**: Efficient folder deletion for service cleanup
+- **Transaction Safety**: Image uploads handled outside database transactions
+
+#### Advanced Form Handling
+- **Dynamic Field Arrays**: Add/remove cards and price ranges dynamically
+- **Partial Updates**: Smart handling of existing vs. new content
+- **Validation**: Comprehensive Zod schemas with optional field support
+- **File Uploads**: Multipart form handling with proper validation
+- **State Management**: Proper form state synchronization with server data
+
+#### Database Optimizations
+- **Prisma Accelerate**: Enhanced query performance and caching
+- **Decimal Serialization**: Proper handling of financial data types
+- **Cascading Deletes**: Proper cleanup of related data
+- **Transaction Management**: Safe multi-table operations
+- **Index Optimization**: Proper database indexing for performance
+
+### Security Implementations
+
+#### Authentication & Authorization
+- **NextAuth.js v5**: Latest authentication patterns with Prisma adapter
+- **Role-based Access**: Admin-only routes and API endpoints
+- **Session Management**: Secure session handling and validation
+- **Protected Routes**: Middleware-based route protection
+
+#### Data Security
+- **Input Validation**: Zod schema validation at API boundaries
+- **File Upload Security**: Type and size validation for uploads
+- **SQL Injection Prevention**: Prisma ORM with parameterized queries
+- **XSS Prevention**: Proper content sanitization
+- **Environment Security**: Secure environment variable handling
 
 ## Code Quality Standards
 
@@ -251,29 +301,62 @@ app/                                    # Next.js 15 App Router
 │   │   └── sign-up/
 │   │       └── page.tsx
 │   └── (dashboard)/                  # Admin dashboard
-│       ├── layout.tsx
+│       ├── layout.tsx                # Dashboard layout
 │       ├── (components)/             # Shared dashboard components
-│       ├── category-management/      # Category management pages
-│       ├── home-page-management/
+│       ├── category-management/      # Category management CRUD
 │       │   └── page.tsx
-│       ├── information/              # Information management
-│       ├── service-management/       # Service management pages
-│       ├── team-management/          # Team management pages
+│       ├── home-page-management/     # Homepage settings management
+│       │   └── page.tsx
+│       ├── information/              # Information pages management
+│       │   ├── about/
+│       │   ├── financing-insurance/
+│       │   ├── patient-info/
+│       │   ├── technology/
+│       │   └── warranty/
+│       ├── service-management/       # Service management CRUD
+│       │   ├── (components)/         # Service-specific components
+│       │   │   ├── CreateServiceForm.tsx
+│       │   │   ├── DeleteServiceDialog.tsx
+│       │   │   ├── EditServiceDialog.tsx
+│       │   │   ├── EditServiceForm.tsx
+│       │   │   └── ServiceManagementContent.tsx
+│       │   ├── [id]/                 # Dynamic service edit page
+│       │   │   └── page.tsx
+│       │   ├── create/               # Service creation page
+│       │   │   └── page.tsx
+│       │   └── page.tsx              # Service management dashboard
+│       ├── team-management/          # Team management CRUD
+│       │   ├── (components)/         # Team-specific components
+│       │   ├── [id]/                 # Dynamic team member edit
+│       │   ├── create/               # Team member creation
+│       │   └── page.tsx
 │       └── technology-management/    # Technology management pages
 └── api/                              # API routes
     ├── auth/
     │   └── [...nextauth]/
-    │       └── route.ts
-    ├── homepage-settings/
-    │   ├── route.ts
+    │       └── route.ts              # NextAuth.js v5 configuration
+    ├── categories/                   # Category management API
+    │   ├── route.ts                  # GET, POST categories
+    │   └── [id]/
+    │       └── route.ts              # GET, PUT, DELETE category by ID
+    ├── homepage-settings/            # Homepage settings API
+    │   ├── route.ts                  # Homepage settings CRUD
     │   └── media/                    # Media upload endpoints
-    └── team-members/
-        └── route.ts
+    │       └── route.ts
+    ├── services/                     # Service management API
+    │   ├── route.ts                  # GET, POST services
+    │   └── [id]/
+    │       └── route.ts              # GET, PUT, DELETE service by ID
+    └── team-members/                 # Team member management API
+        ├── route.ts                  # GET, POST team members
+        └── [id]/
+            └── route.ts              # GET, PUT, DELETE team member by ID
 
 components/                           # Reusable UI components
 ├── ui/                              # Shadcn/UI components
 │   ├── alert-dialog.tsx
 │   ├── alert.tsx
+│   ├── badge.tsx
 │   ├── button.tsx
 │   ├── card.tsx
 │   ├── dialog.tsx
@@ -287,6 +370,7 @@ components/                           # Reusable UI components
 │   ├── sidebar.tsx
 │   ├── skeleton.tsx
 │   ├── sonner.tsx
+│   ├── switch.tsx
 │   ├── tabs.tsx
 │   ├── textarea.tsx
 │   └── tooltip.tsx
@@ -306,11 +390,11 @@ hooks/                              # Custom React hooks
 lib/                               # Utility libraries and configurations
 ├── actions.ts                     # Server actions
 ├── api-client.ts                  # HTTP client configuration
-├── auth.ts                        # NextAuth configuration
+├── auth.ts                        # NextAuth.js v5 configuration
 ├── cloudinary.ts                  # Cloudinary integration
 ├── execute-action.ts              # Action execution utilities
 ├── password.ts                    # Password utilities
-├── schema.ts                      # Validation schemas
+├── schema.ts                      # Zod validation schemas
 ├── utils.ts                       # Common utilities
 ├── db/                           # Database related files
 │   ├── db.ts                     # Database connection
@@ -319,9 +403,11 @@ lib/                               # Utility libraries and configurations
 │   └── migrations/               # Database migrations
 │       └── migration_lock.toml
 └── services/                     # Business logic services
-    ├── example.ts
-    ├── homepage-settings-service.ts
-    └── member-service.ts
+    ├── category-service.ts       # Category CRUD operations
+    ├── example.ts                # Example service patterns
+    ├── homepage-settings-service.ts # Homepage settings management
+    ├── member-service.ts         # Team member management
+    └── service-service.ts        # Service management with Cloudinary integration
 
 types/                            # TypeScript type definitions
 └── global.ts                     # Global type definitions
@@ -431,6 +517,64 @@ import { LocalComponent } from './LocalComponent';
 
 ## Database Management
 
+### Database Management
+
+#### Service Management Tables
+The database includes comprehensive service management with the following structure:
+
+```sql
+-- Core service entity
+Service {
+  id          String   @id @default(cuid())
+  categoryId  String   # Foreign key to Category
+  name        String   # Service name
+  overview    String   # Service description
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+-- Category organization
+Category {
+  id       String    @id @default(cuid())
+  title    String    @unique
+  services Service[] # One-to-many relationship
+}
+
+-- Service content sections (1-5)
+ServiceSection1 {
+  id          String  @id @default(cuid())
+  serviceId   String  @unique # One-to-one with Service
+  imageUrl    String? # Cloudinary URL
+  title       String?
+  description String?
+}
+
+ServiceSection4 {
+  id        String                @id @default(cuid())
+  serviceId String                @unique
+  title     String?
+  cards     ServiceSection4Card[] # One-to-many cards
+}
+
+ServiceSection4Card {
+  id          String @id @default(cuid())
+  section4Id  String # Foreign key to ServiceSection4
+  imageUrl    String?
+  title       String?
+  description String
+  sortOrder   Int    # For ordering cards
+}
+
+ServiceSection5PriceRange {
+  id         String   @id @default(cuid())
+  section5Id String   # Foreign key to ServiceSection5
+  title      String
+  startPrice Decimal? # Financial data with proper precision
+  endPrice   Decimal?
+  sortOrder  Int
+}
+```
+
 ### Prisma Configuration
 - **Schema Location**: `lib/db/schema.prisma`
 - **Database**: PostgreSQL with Prisma Accelerate extension for enhanced performance
@@ -463,13 +607,23 @@ npm run db:studio
 - Use Prisma Accelerate for enhanced query performance and caching
 - Seed the database with `npm run db:seed` for consistent test data
 - Configure proper environment variables for DATABASE_URL
+- **Handle Decimal Types**: Use proper serialization for client components
+- **Manage File References**: Store Cloudinary URLs and handle cleanup
+- **Implement Soft Deletes**: Where appropriate for data retention
+- **Use Transactions**: For multi-table operations requiring consistency
+- **Optimize Queries**: Use proper includes and selects to minimize data transfer
 
 ### File Upload and Media Management
-- **Cloudinary Integration**: Use Cloudinary for image and video uploads
-- **Configuration**: Set up Cloudinary credentials in environment variables
-- **File Processing**: Use Multer for handling multipart form data
-- **Image Optimization**: Leverage Cloudinary's transformation capabilities
-- **Security**: Validate file types and sizes before upload
+- **Cloudinary Integration**: Use Cloudinary for image and video uploads with automatic optimization
+- **Configuration**: Set up Cloudinary credentials in environment variables (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET)
+- **File Processing**: Use Multer for handling multipart form data in API routes
+- **Image Optimization**: Leverage Cloudinary's transformation capabilities for responsive images
+- **Security**: Validate file types, sizes, and sanitize filenames before upload
+- **Folder Organization**: Organize uploads by entity type and ID (e.g., `services/{serviceId}/section1/`)
+- **Cleanup Strategies**: Implement proper cleanup of old files when updating or deleting
+- **Transaction Safety**: Handle file uploads outside database transactions to prevent inconsistencies
+- **Error Handling**: Proper cleanup of uploaded files when database operations fail
+- **URL Management**: Store and manage Cloudinary URLs in database with proper validation
 
 ## Development Workflow
 
@@ -575,40 +729,354 @@ export default function HeroSection() {
 }
 ```
 
+### Advanced Form Handling Patterns
+
+#### Complex Form Management with Dynamic Fields
+```typescript
+import { useForm, useFieldArray } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+// Advanced schema with optional fields and arrays
+const serviceFormSchema = z.object({
+  categoryId: z.string().min(1, 'Category selection is required'),
+  name: z.string().min(2, 'Service name must be at least 2 characters'),
+  overview: z.string().min(10, 'Service overview must be at least 10 characters'),
+  
+  // Dynamic sections with optional fields
+  section4Cards: z.array(
+    z.object({
+      id: z.string().optional(), // For existing cards during updates
+      image: z.instanceof(File).optional(),
+      title: z.string().max(100).optional(),
+      description: z.string().min(1).max(500),
+    })
+  ).optional(),
+  
+  // Price ranges with proper decimal handling
+  section5PriceRanges: z.array(
+    z.object({
+      title: z.string().min(1, 'Price range title is required'),
+      startPrice: z.number().optional(),
+      endPrice: z.number().optional(),
+    })
+  ).optional(),
+});
+
+type ServiceFormData = z.infer<typeof serviceFormSchema>;
+
+export default function ServiceForm() {
+  const form = useForm<ServiceFormData>({
+    resolver: zodResolver(serviceFormSchema),
+    defaultValues: {
+      categoryId: '',
+      name: '',
+      overview: '',
+      section4Cards: [],
+      section5PriceRanges: [],
+    },
+  });
+
+  // Dynamic field arrays for complex forms
+  const {
+    fields: cardFields,
+    append: appendCard,
+    remove: removeCard,
+    replace: replaceCards,
+  } = useFieldArray({
+    control: form.control,
+    name: 'section4Cards',
+  });
+
+  // Handle form submission with file uploads
+  const onSubmit = async (data: ServiceFormData) => {
+    const formData = new FormData();
+    
+    // Basic data
+    formData.append('categoryId', data.categoryId);
+    formData.append('name', data.name);
+    formData.append('overview', data.overview);
+    
+    // Handle dynamic arrays with files
+    if (data.section4Cards?.length) {
+      formData.append('section4CardsCount', data.section4Cards.length.toString());
+      data.section4Cards.forEach((card, index) => {
+        if (card.id) formData.append(`section4Cards[${index}].id`, card.id);
+        if (card.title) formData.append(`section4Cards[${index}].title`, card.title);
+        formData.append(`section4Cards[${index}].description`, card.description);
+        if (card.image) formData.append(`section4Cards[${index}].image`, card.image);
+      });
+    }
+    
+    // Submit with proper error handling
+    try {
+      const response = await fetch('/api/services', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) throw new Error('Failed to submit form');
+      
+      const result = await response.json();
+      if (result.success) {
+        toast.success('Service created successfully!');
+        router.push('/admin/service-management');
+      }
+    } catch (error) {
+      toast.error('Failed to create service');
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* Form fields */}
+      </form>
+    </Form>
+  );
+}
+```
+
+#### Handling Existing Data in Edit Forms
+```typescript
+// Proper initialization with existing data
+useEffect(() => {
+  const loadServiceData = async () => {
+    const response = await fetch(`/api/services/${serviceId}`);
+    const { data: serviceData } = await response.json();
+    
+    // Initialize form with existing data
+    form.reset({
+      categoryId: serviceData.categoryId || '',
+      name: serviceData.name || '',
+      overview: serviceData.overview || '',
+      section4Cards: serviceData.section4?.cards?.map(card => ({
+        id: card.id, // Include existing IDs for proper updates
+        title: card.title || '',
+        description: card.description || '',
+      })) || [],
+    });
+    
+    // Update field arrays separately for proper synchronization
+    if (serviceData.section4?.cards) {
+      replaceCards(serviceData.section4.cards.map(card => ({
+        id: card.id,
+        title: card.title || '',
+        description: card.description || '',
+      })));
+    }
+  };
+  
+  loadServiceData();
+}, [serviceId, form, replaceCards]);
+```
+
 ## Form Handling Best Practices
 
 ### React Hook Form + Zod Integration
 ```typescript
-import { useForm } from 'react-hook-form';
+// Advanced form with dynamic arrays and image handling
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-const contactFormSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
+// Complex schema with optional fields and file handling
+const serviceFormSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
+  priceRanges: z.array(
+    z.object({
+      title: z.string().min(1, 'Title is required'),
+      startPrice: z.number().positive().optional().or(z.literal('')),
+      endPrice: z.number().positive().optional().or(z.literal('')),
+    })
+  ).optional(),
+  section4Cards: z.array(
+    z.object({
+      id: z.string().optional(),
+      title: z.string().min(1, 'Title is required'),
+      description: z.string().min(1, 'Description is required'),
+      imageUrl: z.string().optional(),
+      imageFile: z.instanceof(File).optional(),
+    })
+  ).min(1, 'At least one card is required'),
 });
 
-type ContactFormData = z.infer<typeof contactFormSchema>;
+type ServiceFormData = z.infer<typeof serviceFormSchema>;
 
-export default function ContactForm() {
-  const form = useForm<ContactFormData>({
-    resolver: zodResolver(contactFormSchema),
+export default function ServiceForm({ initialData }: { initialData?: ServiceFormData }) {
+  const [previews, setPreviews] = useState<{ [key: string]: string }>({});
+
+  const form = useForm<ServiceFormData>({
+    resolver: zodResolver(serviceFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      message: '',
+      name: initialData?.name || '',
+      description: initialData?.description || '',
+      priceRanges: initialData?.priceRanges || [],
+      section4Cards: initialData?.section4Cards || [{ title: '', description: '' }],
     },
   });
 
-  const onSubmit = async (data: ContactFormData) => {
-    // Handle form submission
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'section4Cards',
+  });
+
+  // ID-based preview management for consistent image handling
+  const handleImageChange = (index: number, file: File | null) => {
+    if (file) {
+      const cardId = fields[index].id || `temp-${index}`;
+      const objectUrl = URL.createObjectURL(file);
+      setPreviews(prev => ({ ...prev, [cardId]: objectUrl }));
+      form.setValue(`section4Cards.${index}.imageFile`, file);
+    } else {
+      const cardId = fields[index].id || `temp-${index}`;
+      setPreviews(prev => {
+        const newPreviews = { ...prev };
+        delete newPreviews[cardId];
+        return newPreviews;
+      });
+      form.setValue(`section4Cards.${index}.imageFile`, undefined);
+    }
+  };
+
+  // Smart card removal with preview cleanup
+  const removeCard = (index: number) => {
+    const cardId = fields[index].id || `temp-${index}`;
+    
+    setPreviews(prev => {
+      const newPreviews = { ...prev };
+      delete newPreviews[cardId];
+      return newPreviews;
+    });
+    
+    remove(index);
+  };
+
+  // Preview URL resolution with proper fallbacks
+  const getPreviewUrl = (index: number) => {
+    const card = fields[index];
+    const cardId = card.id || `temp-${index}`;
+    
+    return previews[cardId] || card.imageUrl || null;
+  };
+
+  const onSubmit = async (data: ServiceFormData) => {
+    const formData = new FormData();
+    
+    // Append basic fields
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    
+    // Handle dynamic arrays
+    data.section4Cards.forEach((card, index) => {
+      formData.append(`section4Cards[${index}][title]`, card.title);
+      formData.append(`section4Cards[${index}][description]`, card.description);
+      if (card.id) formData.append(`section4Cards[${index}][id]`, card.id);
+      if (card.imageFile) formData.append(`section4Cards[${index}][imageFile]`, card.imageFile);
+    });
+
+    const result = await fetch('/api/services', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (result.ok) {
+      toast.success('Service saved successfully');
+      form.reset();
+    } else {
+      toast.error('Failed to save service');
+    }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* Form fields */}
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Service Name</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="Enter service name" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Dynamic card array */}
+        <div className="space-y-4">
+          <Label>Section 4 Cards</Label>
+          {fields.map((field, index) => (
+            <Card key={field.id} className="p-4">
+              <FormField
+                control={form.control}
+                name={`section4Cards.${index}.title`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Card Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Enter card title" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name={`section4Cards.${index}.imageFile`}
+                render={({ field: { value, onChange, ...field } }) => (
+                  <FormItem>
+                    <FormLabel>Card Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageChange(index, e.target.files?.[0] || null)}
+                      />
+                    </FormControl>
+                    {getPreviewUrl(index) && (
+                      <div className="mt-2">
+                        <img
+                          src={getPreviewUrl(index)!}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded"
+                        />
+                      </div>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={() => removeCard(index)}
+                disabled={fields.length === 1}
+              >
+                Remove Card
+              </Button>
+            </Card>
+          ))}
+          
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => append({ title: '', description: '' })}
+          >
+            Add Card
+          </Button>
+        </div>
+
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          {form.formState.isSubmitting ? 'Saving...' : 'Save Service'}
+        </Button>
       </form>
     </Form>
   );
@@ -680,16 +1148,96 @@ export function formatDate(date: Date): string {
 
 ### Error Handling
 ```typescript
-// Consistent error handling pattern
-try {
-  const result = await apiCall();
-  return { success: true, data: result };
-} catch (error) {
-  console.error('Error description:', error);
-  return { 
-    success: false, 
-    error: error instanceof Error ? error.message : 'Unknown error' 
-  };
+// Consistent error handling pattern for API routes
+export async function POST(request: NextRequest) {
+  try {
+    // Check authentication first
+    const session = await auth();
+    if (!session || session.user?.role !== 'ADMIN') {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Parse and validate input
+    const formData = await request.formData();
+    const name = formData.get('name') as string;
+    
+    if (!name) {
+      return NextResponse.json(
+        { success: false, error: 'Name is required' },
+        { status: 400 }
+      );
+    }
+
+    // Business logic with transaction handling
+    const result = await db.$transaction(async (prisma) => {
+      // Complex operations here
+      return await prisma.service.create({ data: { name } });
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error('API Error:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Service layer error handling
+export class ServiceService {
+  static async updateService(id: string, data: ServiceData) {
+    const uploadedImages: { [key: string]: string } = {};
+    
+    try {
+      // Upload images first (outside transaction)
+      if (data.imageFile) {
+        const uploadResult = await uploadToCloudinary(data.imageFile);
+        uploadedImages.mainImage = uploadResult.secure_url;
+      }
+
+      // Database operations in transaction
+      return await db.$transaction(async (prisma) => {
+        const updated = await prisma.service.update({
+          where: { id },
+          data: { imageUrl: uploadedImages.mainImage },
+        });
+        
+        return this.serializeForClient(updated);
+      });
+    } catch (error) {
+      // Cleanup uploaded images on error
+      for (const imageUrl of Object.values(uploadedImages)) {
+        try {
+          await deleteFromCloudinaryByUrl(imageUrl);
+        } catch (cleanupError) {
+          console.error('Failed to cleanup image:', imageUrl, cleanupError);
+        }
+      }
+      throw error;
+    }
+  }
+  
+  // Proper serialization for client components
+  private static serializeForClient(service: any) {
+    return {
+      ...service,
+      priceRanges: service.priceRanges?.map(range => ({
+        ...range,
+        startPrice: range.startPrice ? Number(range.startPrice) : null,
+        endPrice: range.endPrice ? Number(range.endPrice) : null,
+      })) || [],
+    };
+  }
 }
 ```
 
@@ -714,3 +1262,46 @@ try {
 - Monitor bundle size and Core Web Vitals regularly
 
 Remember: Code is read more often than it's written. Write code that your future self and your team members will thank you for.
+
+## Troubleshooting Common Issues
+
+### Database & Prisma Issues
+```bash
+# Schema drift detected
+npx prisma migrate dev --name fix-schema-drift
+
+# Reset database (development only)
+npx prisma migrate reset --force
+
+# Check migration status
+npx prisma migrate status
+
+# Generate client after schema changes
+npx prisma generate
+```
+
+### Form Handling Issues
+- **Field restoration not working**: Check defaultValues include all nested objects
+- **Image previews disappearing**: Use ID-based preview keys instead of array indices
+- **Validation errors**: Ensure Zod schema matches form structure exactly
+- **Dynamic arrays breaking**: Always provide stable key prop using field.id
+
+### Performance Issues
+- **Transaction timeouts**: Move file uploads outside database transactions
+- **Slow image loading**: Use Cloudinary transformations for optimization
+- **Large bundle size**: Check for unused imports and enable tree shaking
+- **Slow form rendering**: Use React.memo for complex form components
+
+### Production Deployment
+```bash
+# Build the application
+npm run build
+
+# Check for build errors
+npm run lint
+
+# Test production build locally
+npm run start
+```
+
+This documentation reflects the current sophisticated architecture of the IDCSG website project with advanced service management capabilities, comprehensive form handling, and production-ready patterns.
