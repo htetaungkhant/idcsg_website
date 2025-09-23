@@ -256,3 +256,66 @@ model ServiceSection5PriceRange {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Dental Technology Management System
+model DentalTechnology {
+  id          String   @id @default(cuid())
+  
+  // Main mandatory fields
+  imageUrl    String   // Cloudinary URL for main technology image (required)
+  title       String   // Technology title (required)
+  overview    String   @db.Text // Technology overview/summary (required)
+  
+  // Optional fields
+  description String?  @db.Text // Detailed description (optional)
+  
+  // Optional sections (one-to-one relationships)
+  section1    DentalTechnologySection1?
+  card1       DentalTechnologyCard1?
+  card2       DentalTechnologyCard2?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Section 1: Image, Title, and Description
+model DentalTechnologySection1 {
+  id                 String           @id @default(cuid())
+  dentalTechnologyId String           @unique // One-to-one relationship with DentalTechnology
+  dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?  // Cloudinary URL for section image (optional)
+  title       String?  // Section title (optional)
+  description String?  @db.Text // Section description (optional)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Card 1: Image, Title, and Description
+model DentalTechnologyCard1 {
+  id                 String           @id @default(cuid())
+  dentalTechnologyId String           @unique // One-to-one relationship with DentalTechnology
+  dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?  // Cloudinary URL for card image (optional)
+  title       String?  // Card title (optional)
+  description String?  @db.Text // Card description (optional)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Card 2: Image, Title, and Description
+model DentalTechnologyCard2 {
+  id                 String           @id @default(cuid())
+  dentalTechnologyId String           @unique // One-to-one relationship with DentalTechnology
+  dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
+  
+  imageUrl    String?  // Cloudinary URL for card image (optional)
+  title       String?  // Card title (optional)
+  description String?  @db.Text // Card description (optional)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

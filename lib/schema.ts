@@ -239,9 +239,110 @@ const serviceFormSchema = z.object({
 
 type ServiceFormSchema = z.infer<typeof serviceFormSchema>;
 
+// Dental Technology form schema for comprehensive technology management
+const dentalTechnologyFormSchema = z.object({
+  // Required fields
+  mainImage: z.instanceof(File, {
+    message: "Main technology image is required.",
+  }),
+  title: z
+    .string()
+    .min(2, {
+      message: "Technology title must be at least 2 characters.",
+    })
+    .max(100, {
+      message: "Technology title must be less than 100 characters.",
+    }),
+  overview: z
+    .string()
+    .min(10, {
+      message: "Technology overview must be at least 10 characters.",
+    })
+    .max(1000, {
+      message: "Technology overview must be less than 1000 characters.",
+    }),
+
+  // Optional main description
+  description: z
+    .string()
+    .max(2000, {
+      message: "Description must be less than 2000 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+
+  // Section 1 (Image, Title, Description) - All optional
+  section1Image: z.instanceof(File).optional(),
+  section1Title: z
+    .string()
+    .max(100, {
+      message: "Section 1 title must be less than 100 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+  section1Description: z
+    .string()
+    .max(1000, {
+      message: "Section 1 description must be less than 1000 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+
+  // Card 1 (Image, Title, Description) - All optional
+  card1Image: z.instanceof(File).optional(),
+  card1Title: z
+    .string()
+    .max(100, {
+      message: "Card 1 title must be less than 100 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+  card1Description: z
+    .string()
+    .max(1000, {
+      message: "Card 1 description must be less than 1000 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+
+  // Card 2 (Image, Title, Description) - All optional
+  card2Image: z.instanceof(File).optional(),
+  card2Title: z
+    .string()
+    .max(100, {
+      message: "Card 2 title must be less than 100 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+  card2Description: z
+    .string()
+    .max(1000, {
+      message: "Card 2 description must be less than 1000 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
+});
+
+type DentalTechnologyFormSchema = z.infer<typeof dentalTechnologyFormSchema>;
+
+// Edit schema - making mainImage optional for updates
+const editDentalTechnologyFormSchema = dentalTechnologyFormSchema.extend({
+  mainImage: z
+    .instanceof(File, {
+      message: "Main technology image is required.",
+    })
+    .optional(),
+});
+
+type EditDentalTechnologyFormSchema = z.infer<
+  typeof editDentalTechnologyFormSchema
+>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
 export { backgroundSettingsSchema, type BackgroundSettingsSchema };
 export { memberFormSchema, type MemberFormSchema };
 export { serviceFormSchema, type ServiceFormSchema };
+export { dentalTechnologyFormSchema, type DentalTechnologyFormSchema };
+export { editDentalTechnologyFormSchema, type EditDentalTechnologyFormSchema };
