@@ -139,6 +139,7 @@ export interface CreateServiceFormData {
   // Section 4
   section4Title?: string;
   section4Cards?: {
+    id?: string; // For existing cards during updates
     image?: File;
     title?: string;
     description: string;
@@ -609,21 +610,58 @@ export class ServiceService {
             });
           }
 
-          // Delete existing cards and their images
-          for (const card of section4.cards) {
+          // Handle cards intelligently - preserve existing ones, update/add new ones
+          const existingCards = section4.cards;
+          const incomingCards = data.section4Cards || [];
+
+          // Get IDs of cards that should be kept
+          const cardsToKeep = incomingCards
+            .filter((card) => card.id) // Only existing cards have IDs
+            .map((card) => card.id!);
+
+          // Delete cards that are no longer in the list
+          const cardsToDelete = existingCards.filter(
+            (card) => !cardsToKeep.includes(card.id)
+          );
+          for (const card of cardsToDelete) {
             if (card.imageUrl) {
               await deleteFromCloudinaryByUrl(card.imageUrl);
             }
+            await prisma.serviceSection4Card.delete({
+              where: { id: card.id },
+            });
           }
-          await prisma.serviceSection4Card.deleteMany({
-            where: { section4Id: section4.id },
-          });
 
-          // Create new cards with uploaded images
-          if (data.section4Cards?.length) {
-            for (let i = 0; i < data.section4Cards.length; i++) {
-              const card = data.section4Cards[i];
+          // Process each incoming card
+          for (let i = 0; i < incomingCards.length; i++) {
+            const card = incomingCards[i];
 
+            if (card.id) {
+              // Existing card - update it
+              const existingCard = existingCards.find(
+                (ec) => ec.id === card.id
+              );
+              let imageUrl = existingCard?.imageUrl;
+
+              // If new image uploaded, delete old one and use new URL
+              if (uploadedImages[`section4Card${i}`]) {
+                if (imageUrl) {
+                  await deleteFromCloudinaryByUrl(imageUrl);
+                }
+                imageUrl = uploadedImages[`section4Card${i}`];
+              }
+
+              await prisma.serviceSection4Card.update({
+                where: { id: card.id },
+                data: {
+                  imageUrl: imageUrl,
+                  title: card.title || null,
+                  description: card.description,
+                  sortOrder: i,
+                },
+              });
+            } else {
+              // New card - create it
               await prisma.serviceSection4Card.create({
                 data: {
                   section4Id: section4.id,

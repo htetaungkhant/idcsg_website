@@ -110,126 +110,132 @@ const memberFormSchema = z.object({
 type MemberFormSchema = z.infer<typeof memberFormSchema>;
 
 // Service form schema for comprehensive service management
-const serviceFormSchema = z
-  .object({
-    // Basic service information
-    categoryId: z.string().min(1, {
-      message: "Category selection is required.",
+const serviceFormSchema = z.object({
+  // Basic service information
+  categoryId: z.string().min(1, {
+    message: "Category selection is required.",
+  }),
+  name: z
+    .string()
+    .min(2, {
+      message: "Service name must be at least 2 characters.",
+    })
+    .max(100, {
+      message: "Service name must be less than 100 characters.",
     }),
-    name: z
-      .string()
-      .min(2, {
-        message: "Service name must be at least 2 characters.",
-      })
-      .max(100, {
-        message: "Service name must be less than 100 characters.",
-      }),
-    overview: z
-      .string()
-      .min(10, {
-        message: "Service overview must be at least 10 characters.",
-      })
-      .max(1000, {
-        message: "Service overview must be less than 1000 characters.",
-      }),
+  overview: z
+    .string()
+    .min(10, {
+      message: "Service overview must be at least 10 characters.",
+    })
+    .max(1000, {
+      message: "Service overview must be less than 1000 characters.",
+    }),
 
-    // Section 1 (Image, Title, Description)
-    section1Image: z.instanceof(File).optional(),
-    section1Title: z
-      .string()
-      .max(100, {
-        message: "Section 1 title must be less than 100 characters.",
-      })
-      .optional(),
-    section1Description: z
-      .string()
-      .max(1000, {
-        message: "Section 1 description must be less than 1000 characters.",
-      })
-      .optional(),
+  // Section 1 (Image, Title, Description)
+  section1Image: z.instanceof(File).optional(),
+  section1Title: z
+    .string()
+    .max(100, {
+      message: "Section 1 title must be less than 100 characters.",
+    })
+    .optional(),
+  section1Description: z
+    .string()
+    .max(1000, {
+      message: "Section 1 description must be less than 1000 characters.",
+    })
+    .optional(),
 
-    // Section 2 (Video URL)
-    section2VideoUrl: z
-      .string()
-      .url({
-        message: "Please enter a valid video URL.",
-      })
-      .optional()
-      .or(z.literal("")),
+  // Section 2 (Video URL)
+  section2VideoUrl: z
+    .string()
+    .url({
+      message: "Please enter a valid video URL.",
+    })
+    .optional()
+    .or(z.literal("")),
 
-    // Section 3 (Image, Title, Description)
-    section3Image: z.instanceof(File).optional(),
-    section3Title: z
-      .string()
-      .max(100, {
-        message: "Section 3 title must be less than 100 characters.",
-      })
-      .optional(),
-    section3Description: z
-      .string()
-      .max(1000, {
-        message: "Section 3 description must be less than 1000 characters.",
-      })
-      .optional(),
+  // Section 3 (Image, Title, Description)
+  section3Image: z.instanceof(File).optional(),
+  section3Title: z
+    .string()
+    .max(100, {
+      message: "Section 3 title must be less than 100 characters.",
+    })
+    .optional(),
+  section3Description: z
+    .string()
+    .max(1000, {
+      message: "Section 3 description must be less than 1000 characters.",
+    })
+    .optional(),
 
-    // Section 4 (Title and Cards)
-    section4Title: z
-      .string()
-      .max(100, {
-        message: "Section 4 title must be less than 100 characters.",
+  // Section 4 (Title and Cards)
+  section4Title: z
+    .string()
+    .max(100, {
+      message: "Section 4 title must be less than 100 characters.",
+    })
+    .optional(),
+  section4Cards: z
+    .array(
+      z.object({
+        id: z.string().optional(), // For existing cards during updates
+        image: z.instanceof(File).optional(),
+        title: z
+          .string()
+          .max(100, {
+            message: "Card title must be less than 100 characters.",
+          })
+          .optional(),
+        description: z
+          .string()
+          .min(1, {
+            message: "Card description is required.",
+          })
+          .max(500, {
+            message: "Card description must be less than 500 characters.",
+          }),
       })
-      .optional(),
-    section4Cards: z
-      .array(
-        z.object({
-          image: z.instanceof(File).optional(),
-          title: z
-            .string()
-            .max(100, {
-              message: "Card title must be less than 100 characters.",
-            })
-            .optional(),
-          description: z
-            .string()
-            .min(1, {
-              message: "Card description is required.",
-            })
-            .max(500, {
-              message: "Card description must be less than 500 characters.",
-            }),
-        })
-      )
-      .optional(),
+    )
+    .optional(),
 
-    // Section 5 (Image, Title, Price Ranges)
-    section5Image: z.instanceof(File).optional(),
-    section5Title: z
-      .string()
-      .max(100, {
-        message: "Section 5 title must be less than 100 characters.",
-      })
-      .optional(),
-    section5PriceRanges: z
-      .array(
-        z.object({
-          title: z
-            .string()
-            .min(1, {
-              message: "Price range title is required.",
-            })
-            .max(100, {
-              message: "Price range title must be less than 100 characters.",
-            }),
-          startPrice: z.number().min(0, {
+  // Section 5 (Image, Title, Price Ranges)
+  section5Image: z.instanceof(File).optional(),
+  section5Title: z
+    .string()
+    .max(100, {
+      message: "Section 5 title must be less than 100 characters.",
+    })
+    .optional(),
+  section5PriceRanges: z
+    .array(
+      z.object({
+        title: z
+          .string()
+          .min(1, {
+            message: "Price range title is required.",
+          })
+          .max(100, {
+            message: "Price range title must be less than 100 characters.",
+          }),
+        startPrice: z
+          .number()
+          .min(0, {
             message: "Start price must be a positive number.",
-          }).optional(),
-          endPrice: z.number().min(0, {
+          })
+          .optional(),
+        endPrice: z
+          .number()
+          .min(0, {
             message: "End price must be a positive number.",
-          }).optional(),
-        })
-      )
-      .optional(),
-  });
+          })
+          .optional(),
+      })
+    )
+    .optional(),
+});
 
 type ServiceFormSchema = z.infer<typeof serviceFormSchema>;
 
