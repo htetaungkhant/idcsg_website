@@ -163,7 +163,7 @@ export function MemberForm() {
   };
 
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-6xl">
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
         <div className="border-b border-gray-200 px-6 py-4">
           <h1 className="flex items-center gap-2 text-2xl font-semibold text-gray-900">
