@@ -19,6 +19,12 @@ enum TeamType {
   ALLIED_HEALTH_SUPPORT_STAFF
 }
 
+enum SafeCardStyle {
+  CARDSTYLE1
+  CARDSTYLE2
+  CARDSTYLE3
+}
+
 model PreviousAdminCredentials {
   id       String @id @default(cuid())
   email    String
@@ -348,6 +354,34 @@ model OfficePolicy {
   
   hostingDate String   // Date as text (user will manually enter)
   description String   @db.Text // Office policy content
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Safe Management System
+model Safe {
+  id          String        @id @default(cuid())
+  
+  // Multiple sections (one-to-many relationship)
+  sections    SafeSection[] // Safe can have multiple sections
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Safe Section: Image, Title, Description Title, Description, and Card Style
+model SafeSection {
+  id                String        @id @default(cuid())
+  safeId            String        // Foreign key to Safe (one-to-many relationship)
+  safe              Safe          @relation(fields: [safeId], references: [id], onDelete: Cascade)
+  
+  imageUrl          String?       // Cloudinary URL for section image (optional)
+  title             String?       // Section title (optional)
+  descriptionTitle  String?       // Description title/heading (optional)
+  description       String?       @db.Text // Section description (optional)
+  cardStyle         SafeCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
+  sortOrder         Int           @default(0) // For ordering sections within a Safe
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
