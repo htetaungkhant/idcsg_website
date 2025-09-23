@@ -454,3 +454,62 @@ model PersonalSection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// First Visit Management System
+model FirstVisit {
+  id          String                 @id @default(cuid())
+  
+  // Multiple general sections (one-to-many relationship)
+  sections    FirstVisitSection[]    // FirstVisit can have multiple general sections
+  
+  // Optional video section (one-to-one relationship)
+  videoSection FirstVisitVideoSection?
+  
+  // Optional information section (one-to-one relationship)
+  informationSection FirstVisitInformationSection?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// First Visit General Section: Image, Title, Description Title, and Description
+model FirstVisitSection {
+  id                String     @id @default(cuid())
+  firstVisitId      String     // Foreign key to FirstVisit (one-to-many relationship)
+  firstVisit        FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
+  
+  imageUrl          String?    // Cloudinary URL for section image (optional)
+  title             String?    // Section title (optional)
+  descriptionTitle  String?    // Description title/heading (optional)
+  description       String     @db.Text // Section description (required)
+  sortOrder         Int        @default(0) // For ordering sections within a FirstVisit
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// First Visit Video Section: Contains only video link
+model FirstVisitVideoSection {
+  id           String     @id @default(cuid())
+  firstVisitId String     @unique // One-to-one relationship with FirstVisit
+  firstVisit   FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
+  
+  videoUrl     String     // Video URL (YouTube, Vimeo, or direct link)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// First Visit Information Section: Image, Description Title, and Description
+model FirstVisitInformationSection {
+  id                String     @id @default(cuid())
+  firstVisitId      String     @unique // One-to-one relationship with FirstVisit
+  firstVisit        FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
+  
+  imageUrl          String?    // Cloudinary URL for section image (optional)
+  descriptionTitle  String?    // Description title/heading (optional)
+  description       String     @db.Text // Section description (required)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
