@@ -338,6 +338,17 @@ type EditDentalTechnologyFormSchema = z.infer<
   typeof editDentalTechnologyFormSchema
 >;
 
+const termsOfServiceFormSchema = z.object({
+  hostingDate: z.string().min(1, {
+    message: "Hosting date is required.",
+  }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+});
+
+type TermsOfServiceFormSchema = z.infer<typeof termsOfServiceFormSchema>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
@@ -346,3 +357,4 @@ export { memberFormSchema, type MemberFormSchema };
 export { serviceFormSchema, type ServiceFormSchema };
 export { dentalTechnologyFormSchema, type DentalTechnologyFormSchema };
 export { editDentalTechnologyFormSchema, type EditDentalTechnologyFormSchema };
+export { termsOfServiceFormSchema, type TermsOfServiceFormSchema };
