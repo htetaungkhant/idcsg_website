@@ -249,8 +249,8 @@ model ServiceSection5PriceRange {
   section5   ServiceSection5 @relation(fields: [section5Id], references: [id], onDelete: Cascade)
   
   title      String
-  startPrice Decimal         @db.Decimal(10, 2) // Starting price with 2 decimal places
-  endPrice   Decimal         @db.Decimal(10, 2) // Ending price with 2 decimal places
+  startPrice Decimal?         @db.Decimal(10, 2) // Starting price with 2 decimal places
+  endPrice   Decimal?         @db.Decimal(10, 2) // Ending price with 2 decimal places
   sortOrder  Int             @default(0) // For ordering price ranges within section5
   
   createdAt DateTime @default(now())
