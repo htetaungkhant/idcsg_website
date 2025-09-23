@@ -1,19 +1,8 @@
 import React from "react";
-import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { PreciseService } from "@/lib/services/precise-service";
 import PreciseForm from "./(components)/PreciseForm";
 
 export default async function PrecisePage() {
-  // Check authentication and authorization
-  const session = await auth();
-  if (
-    !session ||
-    (session.user as unknown as Record<string, unknown>)?.role !== "ADMIN"
-  ) {
-    redirect("/admin/sign-in");
-  }
-
   // Fetch existing Precise data
   let preciseData = null;
   try {

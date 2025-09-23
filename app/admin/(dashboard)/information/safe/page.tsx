@@ -1,19 +1,8 @@
 import React from "react";
-import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { SafeService } from "@/lib/services/safe-service";
 import SafeForm from "./(components)/SafeForm";
 
 export default async function SafePage() {
-  // Check authentication and authorization
-  const session = await auth();
-  if (
-    !session ||
-    (session.user as unknown as Record<string, unknown>)?.role !== "ADMIN"
-  ) {
-    redirect("/admin/sign-in");
-  }
-
   // Fetch existing Safe data
   let safeData = null;
   try {
