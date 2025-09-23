@@ -25,6 +25,12 @@ enum SafeCardStyle {
   CARDSTYLE3
 }
 
+enum PreciseCardStyle {
+  CARDSTYLE1
+  CARDSTYLE2
+  CARDSTYLE3
+}
+
 model PreviousAdminCredentials {
   id       String @id @default(cuid())
   email    String
@@ -382,6 +388,34 @@ model SafeSection {
   description       String?       @db.Text // Section description (optional)
   cardStyle         SafeCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
   sortOrder         Int           @default(0) // For ordering sections within a Safe
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Precise Management System
+model Precise {
+  id          String           @id @default(cuid())
+  
+  // Multiple sections (one-to-many relationship)
+  sections    PreciseSection[] // Precise can have multiple sections
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Precise Section: Image, Title, Description Title, Description, and Card Style
+model PreciseSection {
+  id                String           @id @default(cuid())
+  preciseId         String           // Foreign key to Precise (one-to-many relationship)
+  precise           Precise          @relation(fields: [preciseId], references: [id], onDelete: Cascade)
+  
+  imageUrl          String?          // Cloudinary URL for section image (optional)
+  title             String?          // Section title (optional)
+  descriptionTitle  String?          // Description title/heading (optional)
+  description       String?          @db.Text // Section description (optional)
+  cardStyle         PreciseCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
+  sortOrder         Int              @default(0) // For ordering sections within a Precise
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
