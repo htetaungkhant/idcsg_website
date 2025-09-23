@@ -102,6 +102,109 @@ export async function deleteFromCloudinary(
 }
 
 /**
+ * Extract public_id from a Cloudinary URL
+ */
+export function extractPublicIdFromUrl(cloudinaryUrl: string): string {
+  try {
+    // Extract the path part after the upload version
+    // Format: https://res.cloudinary.com/cloudname/image/upload/v1234567890/folder/file.jpg
+    const regex = /\/upload\/(?:v\d+\/)?(.+?)(?:\.\w+)?$/;
+    const match = cloudinaryUrl.match(regex);
+
+    if (match && match[1]) {
+      // Remove the file extension if it exists
+      return match[1].replace(/\.[^/.]+$/, "");
+    }
+
+    throw new Error(`Invalid Cloudinary URL format: ${cloudinaryUrl}`);
+  } catch (error) {
+    console.error(
+      "Failed to extract public_id from URL:",
+      cloudinaryUrl,
+      error
+    );
+    throw error;
+  }
+}
+
+/**
+ * Delete a file from Cloudinary using either public_id or full URL
+ */
+export async function deleteFromCloudinaryByUrl(
+  urlOrPublicId: string,
+  resourceType: "image" | "video" = "image"
+): Promise<{ result: string }> {
+  try {
+    let publicId: string;
+
+    // Check if it's a full URL or already a public_id
+    if (urlOrPublicId.startsWith("http")) {
+      publicId = extractPublicIdFromUrl(urlOrPublicId);
+    } else {
+      publicId = urlOrPublicId;
+    }
+
+    return await deleteFromCloudinary(publicId, resourceType);
+  } catch (error) {
+    console.error("Error deleting from Cloudinary by URL:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete an entire folder from Cloudinary
+ */
+export async function deleteFolderFromCloudinary(
+  folderPath: string,
+  resourceType: "image" | "video" = "image"
+): Promise<{ deleted: string[] }> {
+  try {
+    console.log(
+      `Attempting to delete folder from Cloudinary: ${folderPath} (type: ${resourceType})`
+    );
+
+    // First, delete all resources in the folder
+    const result = await cloudinary.api.delete_resources_by_prefix(folderPath, {
+      resource_type: resourceType,
+    });
+
+    console.log(`Cloudinary folder deletion result:`, result);
+
+    let deletedFiles: string[] = [];
+    if (result.deleted && Object.keys(result.deleted).length > 0) {
+      deletedFiles = Object.keys(result.deleted);
+      console.log(
+        `Successfully deleted ${deletedFiles.length} files from folder ${folderPath}`
+      );
+    } else {
+      console.warn(
+        `No files found in folder ${folderPath} or folder already empty`
+      );
+    }
+
+    // Then, delete the empty folder structure
+    try {
+      console.log(`Attempting to delete empty folder: ${folderPath}`);
+      const folderResult = await cloudinary.api.delete_folder(folderPath);
+      console.log(`Folder deletion result:`, folderResult);
+      console.log(`Successfully deleted folder: ${folderPath}`);
+    } catch (folderError: unknown) {
+      // Folder deletion might fail if there are subfolders or if it doesn't exist
+      const errorMessage =
+        folderError instanceof Error
+          ? folderError.message
+          : String(folderError);
+      console.warn(`Failed to delete folder ${folderPath}:`, errorMessage);
+    }
+
+    return { deleted: deletedFiles };
+  } catch (error) {
+    console.error("Error deleting folder from Cloudinary:", error);
+    throw error;
+  }
+}
+
+/**
  * Get optimized Cloudinary URL
  */
 export function getOptimizedImageUrl(
