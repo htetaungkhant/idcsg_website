@@ -341,3 +341,14 @@ model PrivacyPolicy {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Office Policy Management System
+model OfficePolicy {
+  id          String   @id @default(cuid())
+  
+  hostingDate String   // Date as text (user will manually enter)
+  description String   @db.Text // Office policy content
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

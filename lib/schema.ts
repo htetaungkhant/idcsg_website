@@ -360,6 +360,17 @@ const privacyPolicyFormSchema = z.object({
 
 type PrivacyPolicyFormSchema = z.infer<typeof privacyPolicyFormSchema>;
 
+const officePolicyFormSchema = z.object({
+  hostingDate: z.string().min(1, {
+    message: "Hosting date is required.",
+  }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+});
+
+type OfficePolicyFormSchema = z.infer<typeof officePolicyFormSchema>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
@@ -370,3 +381,4 @@ export { dentalTechnologyFormSchema, type DentalTechnologyFormSchema };
 export { editDentalTechnologyFormSchema, type EditDentalTechnologyFormSchema };
 export { termsOfServiceFormSchema, type TermsOfServiceFormSchema };
 export { privacyPolicyFormSchema, type PrivacyPolicyFormSchema };
+export { officePolicyFormSchema, type OfficePolicyFormSchema };
