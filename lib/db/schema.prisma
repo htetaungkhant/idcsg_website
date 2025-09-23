@@ -330,3 +330,14 @@ model TermsOfService {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Privacy Policy Management System  
+model PrivacyPolicy {
+  id          String   @id @default(cuid())
+  
+  hostingDate String   // Date as text (user will manually enter)
+  description String   @db.Text // Privacy policy content
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
