@@ -668,6 +668,74 @@ const firstVisitFormSchema = z.object({
 
 type FirstVisitFormSchema = z.infer<typeof firstVisitFormSchema>;
 
+// Patient Instructions form schema for comprehensive Patient Instructions management
+const patientInstructionsFormSchema = z.object({
+  // Banner image (optional)
+  bannerImage: z.string().optional(), // Existing banner image URL
+  bannerImageFile: z.instanceof(File).optional(), // New banner image file to upload
+
+  // Cards array (at least one required)
+  cards: z
+    .array(
+      z
+        .object({
+          id: z.string().optional(), // For existing cards during updates
+
+          // Background image (required)
+          backgroundImage: z.string().optional(), // Existing background image URL
+          backgroundImageFile: z.instanceof(File).optional(), // New background image file to upload
+
+          // Content title (required)
+          contentTitle: z
+            .string()
+            .min(1, {
+              message: "Content title is required for each card.",
+            })
+            .max(100, {
+              message: "Content title must be less than 100 characters.",
+            }),
+
+          // Content image (optional)
+          contentImage: z.string().optional(), // Existing content image URL
+          contentImageFile: z.instanceof(File).optional(), // New content image file to upload
+
+          // Content description (required)
+          contentDescription: z
+            .string()
+            .min(1, {
+              message: "Content description is required for each card.",
+            })
+            .max(2000, {
+              message: "Content description must be less than 2000 characters.",
+            }),
+
+          // Downloadable file (optional)
+          downloadableFile: z.string().optional(), // Existing downloadable file URL
+          downloadableFileFile: z.instanceof(File).optional(), // New downloadable file to upload
+        })
+        .refine(
+          (card) => {
+            // Background image is required (either existing URL or new file)
+            return !!(card.backgroundImage || card.backgroundImageFile);
+          },
+          {
+            message: "Background image is required for each card.",
+            path: ["backgroundImageFile"], // Show error on background image field
+          }
+        )
+    )
+    .min(1, {
+      message: "At least one card is required.",
+    })
+    .max(20, {
+      message: "Maximum 20 cards allowed.",
+    }),
+});
+
+type PatientInstructionsFormSchema = z.infer<
+  typeof patientInstructionsFormSchema
+>;
+
 export { authSchema, type AuthSchema };
 export { contactFormSchema, type ContactFormSchema };
 export { paymentFormSchema, type PaymentFormSchema };
@@ -683,3 +751,4 @@ export { safeFormSchema, type SafeFormSchema };
 export { preciseFormSchema, type PreciseFormSchema };
 export { personalFormSchema, type PersonalFormSchema };
 export { firstVisitFormSchema, type FirstVisitFormSchema };
+export { patientInstructionsFormSchema, type PatientInstructionsFormSchema };

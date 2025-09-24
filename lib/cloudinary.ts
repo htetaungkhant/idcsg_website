@@ -67,11 +67,64 @@ export async function uploadToCloudinary(
 }
 
 /**
+ * Upload a file buffer to Cloudinary
+ */
+export async function uploadToCloudinaryAsOriginal(
+  fileBuffer: Buffer,
+  options: {
+    folder?: string;
+    resource_type?: "image" | "video" | "auto" | "raw";
+    public_id?: string;
+    preserve_format?: boolean;
+  } = {}
+): Promise<CloudinaryUploadResult> {
+  return new Promise((resolve, reject) => {
+    const resourceType = options.resource_type || "auto";
+
+    const uploadOptions: {
+      folder: string;
+      resource_type: "image" | "video" | "auto" | "raw";
+      public_id?: string;
+      quality?: string;
+      fetch_format?: string;
+    } = {
+      folder: options.folder || "homepage-backgrounds",
+      resource_type: resourceType,
+      public_id: options.public_id,
+    };
+
+    // For raw files, don't add any format optimization settings
+    if (resourceType === "raw") {
+      // Raw files should maintain their original format without any transformations
+    } else if (resourceType === "image" || !options.preserve_format) {
+      // Only add optimization settings for images and videos
+      uploadOptions.quality = "auto:best";
+      uploadOptions.fetch_format = "auto";
+    }
+
+    const uploadStream = cloudinary.uploader.upload_stream(
+      uploadOptions,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else if (result) {
+          resolve(result as CloudinaryUploadResult);
+        } else {
+          reject(new Error("Upload failed - no result returned"));
+        }
+      }
+    );
+
+    uploadStream.end(fileBuffer);
+  });
+}
+
+/**
  * Delete a file from Cloudinary
  */
 export async function deleteFromCloudinary(
   publicId: string,
-  resourceType: "image" | "video" = "image"
+  resourceType: "image" | "video" | "raw" = "image"
 ): Promise<{ result: string }> {
   try {
     console.log(
@@ -132,7 +185,7 @@ export function extractPublicIdFromUrl(cloudinaryUrl: string): string {
  */
 export async function deleteFromCloudinaryByUrl(
   urlOrPublicId: string,
-  resourceType: "image" | "video" = "image"
+  resourceType: "image" | "video" | "raw" = "image"
 ): Promise<{ result: string }> {
   try {
     let publicId: string;
@@ -140,6 +193,16 @@ export async function deleteFromCloudinaryByUrl(
     // Check if it's a full URL or already a public_id
     if (urlOrPublicId.startsWith("http")) {
       publicId = extractPublicIdFromUrl(urlOrPublicId);
+
+      // Try to determine resource type from URL if not specified
+      if (resourceType === "image" && urlOrPublicId.includes("/raw/upload/")) {
+        resourceType = "raw";
+      } else if (
+        resourceType === "image" &&
+        urlOrPublicId.includes("/video/upload/")
+      ) {
+        resourceType = "video";
+      }
     } else {
       publicId = urlOrPublicId;
     }
@@ -156,7 +219,7 @@ export async function deleteFromCloudinaryByUrl(
  */
 export async function deleteFolderFromCloudinary(
   folderPath: string,
-  resourceType: "image" | "video" = "image"
+  resourceType: "image" | "video" | "raw" = "image"
 ): Promise<{ deleted: string[] }> {
   try {
     console.log(
