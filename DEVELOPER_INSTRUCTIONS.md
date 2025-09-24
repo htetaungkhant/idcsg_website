@@ -9,10 +9,10 @@ This document provides comprehensive guidelines for developing and maintaining t
 - **Framework**: Next.js 15.4.5 with App Router and Turbopack
 - **Runtime**: React 19.1.0
 - **Database**: Prisma ORM 6.16.2 with PostgreSQL and Prisma Accelerate extension
-- **Authentication**: NextAuth.js v5 (beta.29) with Prisma adapter
+- **Authentication**: NextAuth.js v5 (beta.29) with Prisma adapter (@auth/prisma-adapter 2.10.0)
 - **Styling**: TailwindCSS v4 with Shadcn/UI and tw-animate-css v1.3.6
 - **TypeScript**: Full TypeScript implementation with strict mode (TypeScript 5)
-- **Form Management**: React Hook Form v7.62.0 with Zod validation v4.1.5
+- **Form Management**: React Hook Form v7.62.0 with Zod validation v4.1.5 and @hookform/resolvers v5.2.1
 - **Icons**: Lucide React v0.536.0 & React Icons v5.5.0
 - **Notifications**: Sonner v2.0.7
 - **HTTP Client**: Axios v1.12.2 for API requests
@@ -22,8 +22,48 @@ This document provides comprehensive guidelines for developing and maintaining t
 - **Phone Input**: React International Phone v4.6.0 for international phone numbers
 - **Utilities**: Class Variance Authority v0.7.1, clsx v2.1.1, tailwind-merge v3.3.1, uuid v13.0.0
 - **UI Components**: Radix UI primitives for accessible component foundations
+  - @radix-ui/react-alert-dialog v1.1.15
+  - @radix-ui/react-dialog v1.1.15
+  - @radix-ui/react-label v2.1.7
+  - @radix-ui/react-select v2.2.6
+  - @radix-ui/react-separator v1.1.7
+  - @radix-ui/react-slot v1.2.3
+  - @radix-ui/react-switch v1.2.6
+  - @radix-ui/react-tabs v1.1.13
+  - @radix-ui/react-tooltip v1.2.8
 
 ## Advanced Features and Patterns
+
+### Comprehensive Content Management System
+The project includes a sophisticated content management system for various types of content across the website:
+
+#### Information Page Management
+The system manages multiple types of information pages through dedicated services and admin interfaces:
+
+- **First Visit Information**: Dynamic content sections with images, titles, descriptions, and video embeddings
+- **Office Policy**: Structured policy content with sections and video support
+- **Patient Instructions**: Step-by-step instructional content with multimedia support
+- **Personal Information**: About page content with team member profiles and descriptions
+- **Precise Information**: Technical information sections with detailed descriptions
+- **Privacy Policy**: Legal content with structured sections and update tracking
+- **Safety Information**: Safety protocols and guidelines with visual aids
+- **Technology Information**: Technology descriptions with images and detailed explanations
+- **Terms of Service**: Legal terms with structured content and version control
+
+#### Content Structure Patterns
+Each content type follows consistent patterns:
+- **Multi-Section Architecture**: Content divided into logical sections for better organization
+- **Multimedia Integration**: Support for images, videos, and rich text content
+- **Cloudinary Integration**: Automatic image optimization and CDN delivery
+- **Version Control**: Track content updates and maintain history
+- **SEO Optimization**: Structured content for better search engine visibility
+
+#### Admin Dashboard Features
+- **WYSIWYG Content Editing**: Rich text editing capabilities
+- **Media Management**: Upload, organize, and optimize images and videos
+- **Content Preview**: Preview changes before publishing
+- **Bulk Operations**: Efficient management of multiple content sections
+- **Publishing Controls**: Schedule content publication and manage visibility
 
 ### Service Management System
 The project includes a comprehensive service management system with advanced features:
@@ -229,7 +269,21 @@ All developers must follow SOLID principles to ensure maintainable, scalable, an
   }
   ```
 
-## File Structure and Organization
+### Middleware Configuration
+The project uses Next.js middleware for authentication and route protection:
+
+```typescript
+// middleware.ts
+export { auth as middleware } from "@/lib/auth";
+```
+
+The middleware automatically protects admin routes and handles authentication state across the application. It integrates seamlessly with NextAuth.js v5 to provide:
+- **Route Protection**: Automatic redirect for unauthenticated users trying to access admin pages
+- **Session Validation**: Continuous session validation across requests
+- **Role-based Access Control**: Admin-only route protection based on user roles
+- **API Route Protection**: Secure API endpoints with proper authentication checks
+
+### File Structure and Organization
 
 ### Current Project Structure
 ```
@@ -254,45 +308,30 @@ app/                                    # Next.js 15 App Router
 │   └── prisma/                        # Generated Prisma client
 ├── (main-pages)/                      # Route group for main website pages
 │   ├── layout.tsx                     # Main pages layout
-│   ├── information/                   # Information pages
-│   │   ├── about/
-│   │   │   ├── personal/
-│   │   │   ├── precise/
-│   │   │   └── safe/
-│   │   ├── financing-insurance/
-│   │   │   └── page.tsx
-│   │   ├── patient-info/
-│   │   │   ├── first-visit/
-│   │   │   ├── office-policies/
-│   │   │   ├── patient-forms/
-│   │   │   ├── patient-instructions/
-│   │   │   ├── privacy-policy/
-│   │   │   └── terms-of-service/
-│   │   ├── technology/
-│   │   │   ├── cone-beam-imaging/
-│   │   │   ├── dental-technology/
-│   │   │   └── laser-dentistry/
-│   │   └── warranty/
 │   ├── blog/
 │   │   └── page.tsx
 │   ├── contact/
 │   │   ├── page.tsx
-│   │   └── (components)/
-│   │       └── ContactForm.tsx
+│   │   └── (components)/              # Contact-specific components
+│   ├── information/                   # Information pages
+│   │   ├── about/                     # About section pages
+│   │   ├── financing-insurance/
+│   │   │   └── page.tsx
+│   │   ├── patient-info/              # Patient information pages
+│   │   ├── technology/                # Technology information pages
+│   │   └── warranty/                  # Warranty information pages
 │   ├── pay/
 │   │   ├── page.tsx
-│   │   └── (components)/
-│   │       └── PaymentForm.tsx
+│   │   └── (components)/              # Payment-specific components
 │   ├── services/
-│   │   └── [serviceName]/
+│   │   └── [serviceName]/             # Dynamic service pages
 │   │       ├── page.tsx
 │   │       └── serviceDetails/
 │   ├── shop/
 │   │   └── page.tsx
 │   └── teams/
 │       ├── page.tsx
-│       └── (components)/
-│           └── TeamList.tsx
+│       └── (components)/              # Team-specific components
 ├── admin/                             # Admin dashboard
 │   ├── (auth)/                       # Authentication pages
 │   │   ├── layout.tsx                # Auth layout
@@ -308,11 +347,22 @@ app/                                    # Next.js 15 App Router
 │       ├── home-page-management/     # Homepage settings management
 │       │   └── page.tsx
 │       ├── information/              # Information pages management
-│       │   ├── about/
-│       │   ├── financing-insurance/
-│       │   ├── patient-info/
-│       │   ├── technology/
-│       │   └── warranty/
+│       │   ├── first-visit/          # First visit information management
+│       │   │   └── page.tsx
+│       │   ├── office-policy/        # Office policy management
+│       │   │   └── page.tsx
+│       │   ├── patient-instructions/ # Patient instructions management
+│       │   │   └── page.tsx
+│       │   ├── personal/             # Personal information management
+│       │   │   └── page.tsx
+│       │   ├── precise/              # Precise information management
+│       │   │   └── page.tsx
+│       │   ├── privacy-policy/       # Privacy policy management
+│       │   │   └── page.tsx
+│       │   ├── safe/                 # Safety information management
+│       │   │   └── page.tsx
+│       │   └── terms-of-service/     # Terms of service management
+│       │       └── page.tsx
 │       ├── service-management/       # Service management CRUD
 │       │   ├── (components)/         # Service-specific components
 │       │   │   ├── CreateServiceForm.tsx
@@ -339,18 +389,34 @@ app/                                    # Next.js 15 App Router
     │   ├── route.ts                  # GET, POST categories
     │   └── [id]/
     │       └── route.ts              # GET, PUT, DELETE category by ID
+    ├── first-visit/                  # First visit API
+    │   └── route.ts                  # First visit content management
     ├── homepage-settings/            # Homepage settings API
     │   ├── route.ts                  # Homepage settings CRUD
     │   └── media/                    # Media upload endpoints
     │       └── route.ts
+    ├── office-policy/                # Office policy API
+    │   └── route.ts                  # Office policy content management
+    ├── personal/                     # Personal information API
+    │   └── route.ts                  # Personal content management
+    ├── precise/                      # Precise information API
+    │   └── route.ts                  # Precise content management
+    ├── privacy-policy/               # Privacy policy API
+    │   └── route.ts                  # Privacy policy content management
+    ├── safe/                         # Safety information API
+    │   └── route.ts                  # Safety content management
     ├── services/                     # Service management API
     │   ├── route.ts                  # GET, POST services
     │   └── [id]/
     │       └── route.ts              # GET, PUT, DELETE service by ID
-    └── team-members/                 # Team member management API
-        ├── route.ts                  # GET, POST team members
-        └── [id]/
-            └── route.ts              # GET, PUT, DELETE team member by ID
+    ├── team-members/                 # Team member management API
+    │   ├── route.ts                  # GET, POST team members
+    │   └── [id]/
+    │       └── route.ts              # GET, PUT, DELETE team member by ID
+    ├── technologies/                 # Technologies API
+    │   └── route.ts                  # Technology content management
+    └── terms-of-service/             # Terms of service API
+        └── route.ts                  # Terms of service content management
 
 components/                           # Reusable UI components
 ├── ui/                              # Shadcn/UI components
@@ -405,9 +471,17 @@ lib/                               # Utility libraries and configurations
 └── services/                     # Business logic services
     ├── category-service.ts       # Category CRUD operations
     ├── example.ts                # Example service patterns
+    ├── first-visit-service.ts    # First visit content management
     ├── homepage-settings-service.ts # Homepage settings management
     ├── member-service.ts         # Team member management
-    └── service-service.ts        # Service management with Cloudinary integration
+    ├── office-policy-service.ts  # Office policy content management
+    ├── personal-service.ts       # Personal content management
+    ├── precise-service.ts        # Precise content management
+    ├── privacy-policy-service.ts # Privacy policy content management
+    ├── safe-service.ts           # Safety content management
+    ├── service-service.ts        # Service management with Cloudinary integration
+    ├── technology-service.ts     # Technology content management
+    └── terms-of-service-service.ts # Terms of service content management
 
 types/                            # TypeScript type definitions
 └── global.ts                     # Global type definitions
@@ -418,7 +492,9 @@ public/                          # Static assets
 │   ├── doctor.png
 │   ├── main_bg.mp4
 │   └── service_details_page.png
-└── Social media icons (facebook.svg, instagram.svg, etc.)
+├── partner*.jpg/.png           # Partner images (partner1-6)
+├── *year_warranty.png          # Warranty images (5year, 10year)
+└── Social media icons (facebook.svg, instagram.svg, youtube.svg, google.svg, map.svg)
 ```
 
 ### Component Organization
@@ -594,6 +670,9 @@ npm run db:reset
 
 # Open Prisma Studio for database management
 npm run db:studio
+
+# Generate Prisma client
+npx prisma generate --no-engine
 ```
 
 ### Database Best Practices
@@ -641,7 +720,7 @@ npm run start
 # Lint the codebase
 npm run lint
 
-# Install dependencies and generate Prisma client
+# Install dependencies and generate Prisma client (automatically runs postinstall)
 npm install
 
 # Database operations
