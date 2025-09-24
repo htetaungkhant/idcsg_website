@@ -513,3 +513,31 @@ model FirstVisitInformationSection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Patient Instructions Management System
+model PatientInstructions {
+  id            String                    @id @default(cuid())
+  
+  bannerImage   String?                   // Cloudinary URL for banner image (optional)
+  cards         PatientInstructionCard[]  // One-to-many relationship with cards
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Patient Instruction Card: Background Image, Content Title, Content Image, Content Description, and Downloadable File
+model PatientInstructionCard {
+  id                     String               @id @default(cuid())
+  patientInstructionsId  String               // Foreign key to PatientInstructions (one-to-many relationship)
+  patientInstructions    PatientInstructions  @relation(fields: [patientInstructionsId], references: [id], onDelete: Cascade)
+  
+  backgroundImage        String               // Cloudinary URL for background image (required)
+  contentTitle           String               // Card content title (required)
+  contentImage           String?              // Cloudinary URL for content image (optional)
+  contentDescription     String               @db.Text // Card content description (required)
+  downloadableFile       String?              // Cloudinary URL for downloadable file (optional)
+  sortOrder              Int                  @default(0) // For ordering cards within PatientInstructions
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
