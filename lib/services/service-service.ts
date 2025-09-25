@@ -78,6 +78,7 @@ function serializeServiceForClient(service: unknown): ServiceWithSections {
 // Create service data interfaces
 export interface CreateServiceData {
   categoryId: string;
+  imageUrl: string; // Main service image (mandatory)
   name: string;
   overview: string;
   section1?: {
@@ -120,6 +121,7 @@ export interface UpdateServiceData extends Partial<CreateServiceData> {
 
 export interface CreateServiceFormData {
   categoryId: string;
+  image: File; // Main service image (mandatory)
   name: string;
   overview: string;
 
@@ -228,10 +230,21 @@ export class ServiceService {
     data: CreateServiceFormData,
     imageFiles?: { [key: string]: File }
   ): Promise<ServiceWithSections> {
-    // First create the service to get the actual ID, then upload images
+    // Upload main service image first (mandatory)
+    let mainImageUrl: string = "";
+    if (data.image && imageFiles?.image) {
+      const uploadResult = await uploadToCloudinary(
+        Buffer.from(await imageFiles.image.arrayBuffer()),
+        { folder: `services/main-images` }
+      );
+      mainImageUrl = uploadResult.secure_url;
+    }
+
+    // Create the service with main image URL
     const service = await db.service.create({
       data: {
         categoryId: data.categoryId,
+        imageUrl: mainImageUrl,
         name: data.name,
         overview: data.overview,
       },
@@ -415,6 +428,15 @@ export class ServiceService {
     const uploadedImages: { [key: string]: string } = {};
 
     try {
+      // Upload main service image if provided
+      if (data.image && imageFiles?.image) {
+        const uploadResult = await uploadToCloudinary(
+          Buffer.from(await imageFiles.image.arrayBuffer()),
+          { folder: `services/main-images` }
+        );
+        uploadedImages.image = uploadResult.secure_url;
+      }
+
       // Upload Section 1 image if provided
       if (data.section1Image && imageFiles?.section1Image) {
         const uploadResult = await uploadToCloudinary(
@@ -458,13 +480,30 @@ export class ServiceService {
 
       return await db.$transaction(async (prisma) => {
         // Update the main service
+        const updateData: {
+          categoryId: string;
+          name: string;
+          overview: string;
+          imageUrl?: string;
+        } = {
+          categoryId: data.categoryId,
+          name: data.name,
+          overview: data.overview,
+        };
+
+        // Add main image URL if uploaded
+        if (uploadedImages.image) {
+          // Delete old main image if it exists
+          const existingService = await this.getServiceById(id);
+          if (existingService?.imageUrl) {
+            await deleteFromCloudinaryByUrl(existingService.imageUrl);
+          }
+          updateData.imageUrl = uploadedImages.image;
+        }
+
         await prisma.service.update({
           where: { id },
-          data: {
-            categoryId: data.categoryId,
-            name: data.name,
-            overview: data.overview,
-          },
+          data: updateData,
         });
 
         // Get existing service to handle image cleanup
@@ -806,6 +845,7 @@ export class ServiceService {
 
       // Try to get folder ID from any available image URL
       const sampleImageUrl =
+        service.imageUrl ||
         service.section1?.imageUrl ||
         service.section3?.imageUrl ||
         service.section4?.cards?.[0]?.imageUrl ||

@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { ServiceService } from "@/lib/services/service-service";
+import {
+  ServiceService,
+  CreateServiceFormData,
+} from "@/lib/services/service-service";
 
 /**
  * GET /api/services/[id] - Get a specific service
@@ -94,6 +97,7 @@ export async function PUT(
     const categoryId = formData.get("categoryId") as string;
     const name = formData.get("name") as string;
     const overview = formData.get("overview") as string;
+    const image = formData.get("image") as File; // Optional for editing
 
     // Basic validation
     if (!categoryId || !name || !overview) {
@@ -109,6 +113,7 @@ export async function PUT(
     // Extract section data with proper typing
     interface ServiceFormData {
       categoryId: string;
+      image?: File; // Main service image (optional for editing)
       name: string;
       overview: string;
       section1Title?: string;
@@ -135,6 +140,7 @@ export async function PUT(
 
     const serviceData: ServiceFormData = {
       categoryId,
+      image: image || undefined, // Optional for editing
       name,
       overview,
     };
@@ -229,6 +235,11 @@ export async function PUT(
     // Collect image files
     const imageFiles: { [key: string]: File } = {};
 
+    // Main service image
+    if (serviceData.image instanceof File) {
+      imageFiles.image = serviceData.image;
+    }
+
     // Section images
     if (serviceData.section1Image instanceof File) {
       imageFiles.section1Image = serviceData.section1Image;
@@ -252,7 +263,7 @@ export async function PUT(
     // Update the service
     const service = await ServiceService.updateService(
       id,
-      serviceData,
+      serviceData as CreateServiceFormData,
       imageFiles
     );
 

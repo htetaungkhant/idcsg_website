@@ -75,13 +75,14 @@ export async function POST(request: NextRequest) {
     const categoryId = formData.get("categoryId") as string;
     const name = formData.get("name") as string;
     const overview = formData.get("overview") as string;
+    const image = formData.get("image") as File;
 
     // Basic validation
-    if (!categoryId || !name || !overview) {
+    if (!categoryId || !name || !overview || !image) {
       return NextResponse.json(
         {
           success: false,
-          error: "Category ID, name, and overview are required",
+          error: "Category ID, name, overview, and image are required",
         },
         { status: 400 }
       );
@@ -90,6 +91,7 @@ export async function POST(request: NextRequest) {
     // Extract section data with proper typing
     interface ServiceFormData {
       categoryId: string;
+      image: File; // Main service image (mandatory)
       name: string;
       overview: string;
       section1Title?: string;
@@ -116,6 +118,7 @@ export async function POST(request: NextRequest) {
 
     const serviceData: ServiceFormData = {
       categoryId,
+      image,
       name,
       overview,
     };
@@ -206,6 +209,11 @@ export async function POST(request: NextRequest) {
 
     // Collect image files
     const imageFiles: { [key: string]: File } = {};
+
+    // Main service image
+    if (serviceData.image instanceof File) {
+      imageFiles.image = serviceData.image;
+    }
 
     // Section images
     if (serviceData.section1Image instanceof File) {

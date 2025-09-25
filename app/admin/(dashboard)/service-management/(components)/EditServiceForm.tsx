@@ -28,12 +28,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { serviceFormSchema, type ServiceFormSchema } from "@/lib/schema";
+import {
+  editServiceFormSchema,
+  type EditServiceFormSchema,
+} from "@/lib/schema";
 import type { Category } from "@/app/generated/prisma";
 
 interface Service {
   id: string;
   categoryId: string;
+  imageUrl: string; // Main service image
   name: string;
   overview: string;
   section1?: {
@@ -97,10 +101,11 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
   const router = useRouter();
 
   // Form setup with default values
-  const form = useForm<ServiceFormSchema>({
-    resolver: zodResolver(serviceFormSchema),
+  const form = useForm<EditServiceFormSchema>({
+    resolver: zodResolver(editServiceFormSchema),
     defaultValues: {
       categoryId: "",
+      image: undefined,
       name: "",
       overview: "",
       section1Title: "",
@@ -163,6 +168,7 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
           // Set form values
           form.reset({
             categoryId: serviceData.categoryId || "",
+            image: undefined, // Optional for editing existing services
             name: serviceData.name || "",
             overview: serviceData.overview || "",
             section1Title: serviceData.section1?.title || "",
@@ -227,7 +233,7 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
     fetchData();
   }, [serviceId, form, replaceCards, replacePriceRanges, router]);
 
-  const onSubmit = async (data: ServiceFormSchema) => {
+  const onSubmit = async (data: EditServiceFormSchema) => {
     try {
       setIsLoading(true);
 
@@ -238,6 +244,11 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
       formData.append("categoryId", data.categoryId);
       formData.append("name", data.name);
       formData.append("overview", data.overview);
+
+      // Main service image (optional for editing)
+      if (data.image) {
+        formData.append("image", data.image);
+      }
 
       // Section 1 data
       if (data.section1Title)
@@ -430,6 +441,50 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                   )}
                 />
               </div>
+
+              {/* Current Service Image Display */}
+              {service?.imageUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium mb-2">
+                    Current Service Image:
+                  </p>
+                  <Image
+                    src={service.imageUrl}
+                    alt="Current Service"
+                    width={128}
+                    height={128}
+                    className="w-32 h-32 object-cover rounded border"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Upload a new image and save changes to replace
+                  </p>
+                </div>
+              )}
+
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field: { onChange, name, onBlur, ref } }) => (
+                  <FormItem>
+                    <FormLabel>Service Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          onChange(file);
+                        }}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}

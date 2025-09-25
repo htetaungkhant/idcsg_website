@@ -41,6 +41,7 @@ export function CreateServiceForm() {
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
       categoryId: "",
+      image: undefined,
       name: "",
       overview: "",
       section1Title: "",
@@ -108,6 +109,11 @@ export function CreateServiceForm() {
       formData.append("categoryId", data.categoryId);
       formData.append("name", data.name);
       formData.append("overview", data.overview);
+
+      // Main service image (mandatory)
+      if (data.image) {
+        formData.append("image", data.image);
+      }
 
       // Section 1 data
       if (data.section1Title)
@@ -261,6 +267,31 @@ export function CreateServiceForm() {
                         <Input
                           placeholder="Enter service name..."
                           {...field}
+                          disabled={isLoading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field: { onChange, name, onBlur, ref } }) => (
+                    <FormItem>
+                      <FormLabel>Service Image *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            onChange(file);
+                          }}
+                          name={name}
+                          onBlur={onBlur}
+                          ref={ref}
                           disabled={isLoading}
                         />
                       </FormControl>

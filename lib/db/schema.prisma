@@ -164,6 +164,7 @@ model Service {
   category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   
   // Main service information
+  imageUrl     String   // Cloudinary URL for main service image (mandatory)
   name         String
   overview     String   @db.Text
   

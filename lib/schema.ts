@@ -115,6 +115,10 @@ const serviceFormSchema = z.object({
   categoryId: z.string().min(1, {
     message: "Category selection is required.",
   }),
+  // Main service image (mandatory)
+  image: z.instanceof(File, {
+    message: "Service image is required.",
+  }),
   name: z
     .string()
     .min(2, {
@@ -238,6 +242,13 @@ const serviceFormSchema = z.object({
 });
 
 type ServiceFormSchema = z.infer<typeof serviceFormSchema>;
+
+// Edit schema - making image optional for updates
+const editServiceFormSchema = serviceFormSchema.extend({
+  image: z.instanceof(File).optional(),
+});
+
+type EditServiceFormSchema = z.infer<typeof editServiceFormSchema>;
 
 // Dental Technology form schema for comprehensive technology management
 const dentalTechnologyFormSchema = z.object({
@@ -742,6 +753,7 @@ export { paymentFormSchema, type PaymentFormSchema };
 export { backgroundSettingsSchema, type BackgroundSettingsSchema };
 export { memberFormSchema, type MemberFormSchema };
 export { serviceFormSchema, type ServiceFormSchema };
+export { editServiceFormSchema, type EditServiceFormSchema };
 export { dentalTechnologyFormSchema, type DentalTechnologyFormSchema };
 export { editDentalTechnologyFormSchema, type EditDentalTechnologyFormSchema };
 export { termsOfServiceFormSchema, type TermsOfServiceFormSchema };
