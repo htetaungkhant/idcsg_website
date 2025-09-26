@@ -841,25 +841,24 @@ export class ServiceService {
       }
 
       // Extract the actual folder ID from any existing image URL
-      let cloudinaryFolderId: string | null = null;
+      let cloudinaryServiceFolderId: string | null = null;
 
       // Try to get folder ID from any available image URL
-      const sampleImageUrl =
-        service.imageUrl ||
+      const sectionsImageUrl =
         service.section1?.imageUrl ||
         service.section3?.imageUrl ||
         service.section4?.cards?.[0]?.imageUrl ||
         service.section5?.imageUrl;
 
-      if (sampleImageUrl) {
+      if (sectionsImageUrl) {
         try {
           // Extract the folder ID from the URL
           // URL format: https://res.cloudinary.com/.../services/{folderId}/section1/filename.jpg
-          const match = sampleImageUrl.match(/services\/([^/]+)\//);
+          const match = sectionsImageUrl.match(/services\/([^/]+)\//);
           if (match && match[1]) {
-            cloudinaryFolderId = match[1];
+            cloudinaryServiceFolderId = match[1];
             console.log(
-              `Extracted Cloudinary folder ID: ${cloudinaryFolderId}`
+              `Extracted Cloudinary folder ID: ${cloudinaryServiceFolderId}`
             );
           }
         } catch (extractError) {
@@ -871,12 +870,14 @@ export class ServiceService {
       }
 
       // Delete the entire service folder from Cloudinary using the correct folder ID
-      if (cloudinaryFolderId) {
+      if (cloudinaryServiceFolderId) {
         try {
-          await deleteFolderFromCloudinary(`services/${cloudinaryFolderId}`);
+          await deleteFolderFromCloudinary(
+            `services/${cloudinaryServiceFolderId}`
+          );
         } catch (cloudinaryError) {
           console.error(
-            `Failed to delete Cloudinary folder for service ${cloudinaryFolderId}:`,
+            `Failed to delete Cloudinary folder for service ${cloudinaryServiceFolderId}:`,
             cloudinaryError
           );
           // Don't throw error here - we still want to delete from database
@@ -885,6 +886,18 @@ export class ServiceService {
         console.warn(
           `No images found for service ${id}, skipping Cloudinary cleanup`
         );
+      }
+
+      // Delete the main service image if it exists
+      if (service.imageUrl) {
+        try {
+          await deleteFromCloudinaryByUrl(service.imageUrl);
+        } catch (imageError) {
+          console.error(
+            `Failed to delete main image for service ${id}:`,
+            imageError
+          );
+        }
       }
 
       // Delete the service (cascade will handle sections)
