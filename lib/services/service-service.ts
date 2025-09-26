@@ -296,7 +296,7 @@ export class ServiceService {
       }
 
       // Now create the sections with uploaded image URLs in a transaction
-      return await db.$transaction(async (prisma) => {
+      await db.$transaction(async (prisma) => {
         // Create Section 1 if data is provided
         if (
           data.section1Title ||
@@ -397,11 +397,11 @@ export class ServiceService {
             }
           }
         }
-
-        // Return the full service with all sections
-        const createdService = await this.getServiceById(service.id);
-        return createdService as ServiceWithSections;
       });
+
+      // Return the full service with all sections
+      const createdService = await this.getServiceById(service.id);
+      return createdService as ServiceWithSections;
     } catch (error) {
       // If there's an error, clean up the service and any uploaded images
       try {
@@ -833,7 +833,7 @@ export class ServiceService {
    * Delete a service and all associated data
    */
   static async deleteService(id: string): Promise<void> {
-    await db.$transaction(async (prisma) => {
+    try {
       // Get service to ensure it exists
       const service = await this.getServiceById(id);
       if (!service) {
@@ -869,6 +869,23 @@ export class ServiceService {
         }
       }
 
+      // Delete the main service image if it exists
+      if (service.imageUrl) {
+        try {
+          await deleteFromCloudinaryByUrl(service.imageUrl);
+        } catch (imageError) {
+          console.error(
+            `Failed to delete main image for service ${id}:`,
+            imageError
+          );
+        }
+        // Don't throw error here - we still want to delete from database
+      } else {
+        console.warn(
+          `No main image found for service ${id}, skipping Cloudinary cleanup`
+        );
+      }
+
       // Delete the entire service folder from Cloudinary using the correct folder ID
       if (cloudinaryServiceFolderId) {
         try {
@@ -888,23 +905,16 @@ export class ServiceService {
         );
       }
 
-      // Delete the main service image if it exists
-      if (service.imageUrl) {
-        try {
-          await deleteFromCloudinaryByUrl(service.imageUrl);
-        } catch (imageError) {
-          console.error(
-            `Failed to delete main image for service ${id}:`,
-            imageError
-          );
-        }
-      }
-
       // Delete the service (cascade will handle sections)
-      await prisma.service.delete({
-        where: { id },
+      await db.$transaction(async (prisma) => {
+        await prisma.service.delete({
+          where: { id },
+        });
       });
-    });
+    } catch (error) {
+      console.error("Failed to delete service:", error);
+      throw error;
+    }
   }
 
   /**
