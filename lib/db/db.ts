@@ -6,11 +6,7 @@ const globalForPrisma = global as unknown as {
 };
 
 const prisma =
-  globalForPrisma.prisma ||
-  // 180000 means 3 minutes
-  new PrismaClient({ transactionOptions: { timeout: 180000 } }).$extends(
-    withAccelerate()
-  );
+  globalForPrisma.prisma || new PrismaClient().$extends(withAccelerate());
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
