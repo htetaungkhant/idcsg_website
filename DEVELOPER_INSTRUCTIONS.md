@@ -3,14 +3,16 @@
 ## Overview
 This document provides comprehensive guidelines for developing and maintaining the IDCSG website. These instructions are designed for senior Next.js developers to ensure consistency, maintainability, and optimal performance across the codebase.
 
+*Last Updated: September 26, 2025*
+
 ## Project Architecture
 
 ### Tech Stack
 - **Framework**: Next.js 15.4.5 with App Router and Turbopack
-- **Runtime**: React 19.1.0
-- **Database**: Prisma ORM 6.16.2 with PostgreSQL and Prisma Accelerate extension
+- **Runtime**: React 19.1.0 with React DOM 19.1.0
+- **Database**: Prisma ORM 6.16.2 with PostgreSQL and Prisma Accelerate extension (@prisma/extension-accelerate 2.0.2)
 - **Authentication**: NextAuth.js v5 (beta.29) with Prisma adapter (@auth/prisma-adapter 2.10.0)
-- **Styling**: TailwindCSS v4 with Shadcn/UI and tw-animate-css v1.3.6
+- **Styling**: TailwindCSS v4 with Shadcn/UI and tw-animate-css v1.3.6, @tailwindcss/postcss v4
 - **TypeScript**: Full TypeScript implementation with strict mode (TypeScript 5)
 - **Form Management**: React Hook Form v7.62.0 with Zod validation v4.1.5 and @hookform/resolvers v5.2.1
 - **Icons**: Lucide React v0.536.0 & React Icons v5.5.0
@@ -40,23 +42,26 @@ The project includes a sophisticated content management system for various types
 #### Information Page Management
 The system manages multiple types of information pages through dedicated services and admin interfaces:
 
-- **First Visit Information**: Dynamic content sections with images, titles, descriptions, and video embeddings
-- **Office Policy**: Structured policy content with sections and video support
-- **Patient Instructions**: Step-by-step instructional content with multimedia support
-- **Personal Information**: About page content with team member profiles and descriptions
-- **Precise Information**: Technical information sections with detailed descriptions
-- **Privacy Policy**: Legal content with structured sections and update tracking
-- **Safety Information**: Safety protocols and guidelines with visual aids
-- **Technology Information**: Technology descriptions with images and detailed explanations
-- **Terms of Service**: Legal terms with structured content and version control
+- **First Visit Information**: Multi-section content with general sections (image, title, description), optional video section, and optional information section with specialized layouts
+- **Office Policy**: Single content section with hosting date and description for office policies and procedures
+- **Patient Instructions**: Banner image with multiple instruction cards containing background images, titles, content images, descriptions, and downloadable files
+- **Personal Information**: Multi-section content with card styles (CARDSTYLE1, CARDSTYLE2, CARDSTYLE3) for about page content and team information
+- **Precise Information**: Multi-section content with different card styles for precise/technical information presentation
+- **Privacy Policy**: Single content section with hosting date and structured privacy policy content
+- **Safety Information**: Multi-section content with various card styles for safety protocols and guidelines
+- **Technology Information**: Comprehensive technology management with main fields (image, title, overview) plus optional sections and cards for detailed technology descriptions
+- **Terms of Service**: Single content section with hosting date and structured terms of service content
 
 #### Content Structure Patterns
 Each content type follows consistent patterns:
-- **Multi-Section Architecture**: Content divided into logical sections for better organization
-- **Multimedia Integration**: Support for images, videos, and rich text content
-- **Cloudinary Integration**: Automatic image optimization and CDN delivery
-- **Version Control**: Track content updates and maintain history
-- **SEO Optimization**: Structured content for better search engine visibility
+- **Multi-Section Architecture**: Content divided into logical sections for better organization (Safe, Precise, Personal, FirstVisit)
+- **Single Content Systems**: Simple content management with hosting dates (TermsOfService, PrivacyPolicy, OfficePolicy)
+- **Card-Based Systems**: Complex card arrangements with different styles and media support (PatientInstructions, Technology)
+- **Multimedia Integration**: Support for images, videos, downloadable files, and rich text content
+- **Cloudinary Integration**: Automatic image optimization and CDN delivery for all media content
+- **Flexible Card Styles**: Multiple presentation styles (CARDSTYLE1, CARDSTYLE2, CARDSTYLE3) for varied layouts
+- **Sort Ordering**: Proper ordering capabilities for sections and cards within each content type
+- **Optional Fields**: Strategic use of optional fields for flexible content creation
 
 #### Admin Dashboard Features
 - **WYSIWYG Content Editing**: Rich text editing capabilities
@@ -70,11 +75,70 @@ The project includes a comprehensive service management system with advanced fea
 
 #### Multi-Section Service Architecture
 Services are structured with multiple content sections:
+- **Main Service**: Image (mandatory), name, and overview with category association
 - **Section 1**: Image, title, and description
 - **Section 2**: Video URL embedding  
 - **Section 3**: Additional image, title, and description
-- **Section 4**: Dynamic information cards with images
-- **Section 5**: Pricing information with image and price ranges
+- **Section 4**: Dynamic information cards with images, titles, and descriptions
+- **Section 5**: Pricing information with image, title, and price ranges
+
+### Homepage Settings Management System
+The project includes a sophisticated homepage background management system:
+
+#### Background Media Management
+- **Media Types**: Support for both image and video backgrounds
+- **Cloudinary Integration**: Automatic media optimization and CDN delivery
+- **Flexible Backgrounds**: Support for media backgrounds or solid color backgrounds
+- **Opacity Control**: Adjustable background opacity (0-100%) for better content visibility
+- **Active State Management**: Only one homepage setting can be active at a time
+- **Media Upload Endpoints**: Dedicated API endpoints for media file handling
+
+#### Homepage Features
+- **Media Flexibility**: Choose between image, video, or color backgrounds
+- **Professional Optimization**: Cloudinary integration for optimal media delivery
+- **Visual Control**: Opacity adjustment for better text readability over backgrounds
+- **State Management**: Automatic deactivation of previous settings when new ones are activated
+- **Admin Interface**: Dedicated management interface for homepage customization
+
+### Patient Instructions Management System
+The project includes a comprehensive patient instructions system:
+
+#### Patient Instruction Architecture
+- **Banner Management**: Optional banner image for the main patient instructions page
+- **Instruction Cards**: Multiple instruction cards with rich media content
+- **Card Structure**: Each card contains:
+  - Background image (required) for visual appeal
+  - Content title (required) for the instruction heading
+  - Content image (optional) for additional visual support
+  - Content description (required) with detailed instruction text
+  - Downloadable file (optional) for additional resources like PDFs
+- **Sort Ordering**: Proper ordering system for instruction card arrangement
+
+#### Patient Instructions Features
+- **Rich Media Integration**: Support for background images, content images, and downloadable files
+- **Flexible Content**: Optional fields allow for varied content complexity
+- **Professional Presentation**: Background images create engaging visual layouts
+- **Resource Downloads**: Support for downloadable files like forms, guides, or PDFs
+- **Cloudinary Integration**: All media handled through Cloudinary for optimization
+- **Structured Content**: Clear separation between visual elements and instructional content
+
+### Team Management System
+The project includes a sophisticated team management system:
+
+#### Team Organization
+Teams are organized by type with flexible member management:
+- **Team Types**: DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF
+- **Member Profiles**: Name, optional designation, team assignment, description, and optional profile image
+- **Status Management**: Active/inactive status for member visibility control
+- **Ordering System**: Sort order for proper member arrangement within teams
+- **Media Integration**: Cloudinary integration for profile photo management
+
+#### Team Features
+- **Flexible Designations**: Optional designation field for titles and specializations
+- **Rich Descriptions**: Full text descriptions for member profiles and expertise
+- **Status Control**: Active/inactive status for managing member visibility
+- **Professional Organization**: Clear categorization by role and department
+- **Media Management**: Professional photo handling with Cloudinary optimization
 
 #### Intelligent Image Management
 - **Cloudinary Integration**: Automatic image optimization and CDN delivery
@@ -397,6 +461,8 @@ app/                                    # Next.js 15 App Router
     │       └── route.ts
     ├── office-policy/                # Office policy API
     │   └── route.ts                  # Office policy content management
+    ├── patient-instructions/         # Patient instructions API
+    │   └── route.ts                  # Patient instructions management
     ├── personal/                     # Personal information API
     │   └── route.ts                  # Personal content management
     ├── precise/                      # Precise information API
@@ -414,7 +480,9 @@ app/                                    # Next.js 15 App Router
     │   └── [id]/
     │       └── route.ts              # GET, PUT, DELETE team member by ID
     ├── technologies/                 # Technologies API
-    │   └── route.ts                  # Technology content management
+    │   ├── route.ts                  # Technology content management
+    │   └── [id]/
+    │       └── route.ts              # Technology CRUD operations
     └── terms-of-service/             # Terms of service API
         └── route.ts                  # Terms of service content management
 
@@ -475,6 +543,7 @@ lib/                               # Utility libraries and configurations
     ├── homepage-settings-service.ts # Homepage settings management
     ├── member-service.ts         # Team member management
     ├── office-policy-service.ts  # Office policy content management
+    ├── patient-instructions-service.ts # Patient instructions management
     ├── personal-service.ts       # Personal content management
     ├── precise-service.ts        # Precise content management
     ├── privacy-policy-service.ts # Privacy policy content management
@@ -603,6 +672,7 @@ The database includes comprehensive service management with the following struct
 Service {
   id          String   @id @default(cuid())
   categoryId  String   # Foreign key to Category
+  imageUrl    String   # Cloudinary URL for main service image (mandatory)
   name        String   # Service name
   overview    String   # Service description
   createdAt   DateTime @default(now())
@@ -612,7 +682,7 @@ Service {
 -- Category organization
 Category {
   id       String    @id @default(cuid())
-  title    String    @unique
+  title    String    # Unique category title
   services Service[] # One-to-many relationship
 }
 
@@ -620,9 +690,23 @@ Category {
 ServiceSection1 {
   id          String  @id @default(cuid())
   serviceId   String  @unique # One-to-one with Service
-  imageUrl    String? # Cloudinary URL
+  imageUrl    String? # Cloudinary URL (optional)
   title       String?
-  description String?
+  description String? @db.Text
+}
+
+ServiceSection2 {
+  id        String  @id @default(cuid())
+  serviceId String  @unique # One-to-one with Service
+  videoUrl  String  # Video URL (YouTube, Vimeo, or direct link)
+}
+
+ServiceSection3 {
+  id          String  @id @default(cuid())
+  serviceId   String  @unique # One-to-one with Service
+  imageUrl    String? # Cloudinary URL (optional)
+  title       String?
+  description String? @db.Text
 }
 
 ServiceSection4 {
@@ -637,25 +721,130 @@ ServiceSection4Card {
   section4Id  String # Foreign key to ServiceSection4
   imageUrl    String?
   title       String?
-  description String
-  sortOrder   Int    # For ordering cards
+  description String @db.Text
+  sortOrder   Int    @default(0) # For ordering cards
+}
+
+ServiceSection5 {
+  id          String                   @id @default(cuid())
+  serviceId   String                   @unique
+  imageUrl    String?                  # Cloudinary URL (optional)
+  title       String?
+  priceRanges ServiceSection5PriceRange[] # One-to-many price ranges
 }
 
 ServiceSection5PriceRange {
   id         String   @id @default(cuid())
   section5Id String   # Foreign key to ServiceSection5
   title      String
-  startPrice Decimal? # Financial data with proper precision
-  endPrice   Decimal?
-  sortOrder  Int
+  startPrice Decimal? @db.Decimal(10, 2) # Financial data with proper precision
+  endPrice   Decimal? @db.Decimal(10, 2)
+  sortOrder  Int      @default(0)
+}
+
+-- Team Management
+Member {
+  id          String   @id @default(cuid())
+  imageUrl    String?  # Cloudinary URL for member photo (optional)
+  name        String
+  designation String?  # Optional designation
+  team        TeamType # DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF
+  description String   @db.Text
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+}
+
+-- Homepage Settings Management
+HomepageSettings {
+  id                 String   @id @default(cuid())
+  backgroundMediaUrl String?  # Cloudinary URL for background image/video
+  backgroundMediaType String? # 'image' or 'video'
+  backgroundColor    String?  # Hex color code
+  backgroundOpacity  Int      @default(100) # 0-100
+  isActive          Boolean  @default(true) # Only one setting can be active
+}
+
+-- Dental Technology Management
+DentalTechnology {
+  id          String   @id @default(cuid())
+  imageUrl    String   # Cloudinary URL for main technology image (required)
+  title       String   # Technology title (required)
+  overview    String   @db.Text # Technology overview/summary (required)
+  description String?  @db.Text # Detailed description (optional)
+  section1    DentalTechnologySection1? # One-to-one optional sections
+  card1       DentalTechnologyCard1?
+  card2       DentalTechnologyCard2?
+}
+
+-- Information Management Systems
+TermsOfService {
+  id          String @id @default(cuid())
+  hostingDate String # Date as text (user will manually enter)
+  description String @db.Text
+}
+
+PrivacyPolicy {
+  id          String @id @default(cuid())
+  hostingDate String
+  description String @db.Text
+}
+
+OfficePolicy {
+  id          String @id @default(cuid())
+  hostingDate String
+  description String @db.Text
+}
+
+-- Multi-Section Information Systems
+Safe {
+  id       String        @id @default(cuid())
+  sections SafeSection[] # One-to-many relationship
+}
+
+SafeSection {
+  id               String        @id @default(cuid())
+  safeId           String        # Foreign key to Safe
+  imageUrl         String?       # Cloudinary URL (optional)
+  title            String?
+  descriptionTitle String?
+  description      String?       @db.Text
+  cardStyle        SafeCardStyle # CARDSTYLE1, CARDSTYLE2, CARDSTYLE3
+  sortOrder        Int           @default(0)
+}
+
+-- Similar structures for Precise, Personal, FirstVisit, and PatientInstructions
+-- All follow similar patterns with optional fields and proper relationships
+
+-- Enum Types for Type Safety
+UserRole { USER, ADMIN }
+TeamType { DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF }
+SafeCardStyle { CARDSTYLE1, CARDSTYLE2, CARDSTYLE3 }
+PreciseCardStyle { CARDSTYLE1, CARDSTYLE2, CARDSTYLE3 }
+PersonalCardStyle { CARDSTYLE1, CARDSTYLE2, CARDSTYLE3 }
+
+-- Authentication Integration
+User {
+  id            String @id @default(cuid())
+  name          String?
+  email         String? @unique
+  password      String?
+  role          UserRole @default(USER)
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  Authenticator Authenticator[] # WebAuthn support
 }
 ```
 
 ### Prisma Configuration
 - **Schema Location**: `lib/db/schema.prisma`
-- **Database**: PostgreSQL with Prisma Accelerate extension for enhanced performance
+- **Database**: PostgreSQL with Prisma Accelerate extension (@prisma/extension-accelerate 2.0.2) for enhanced performance
 - **Client Output**: Generated in `app/generated/prisma` directory
-- **Seed File**: `lib/db/seed.ts` for database seeding
+- **Seed File**: `lib/db/seed.ts` for database seeding with `npx tsx lib/db/seed.ts` configuration
+- **Authentication Models**: Complete NextAuth.js v5 integration with User, Account, Session, VerificationToken, and Authenticator models
+- **Team Management**: Member model with TeamType enum (DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF)
+- **Content Management**: Comprehensive models for all information systems with proper relationships
 
 ### Database Scripts
 ```bash
