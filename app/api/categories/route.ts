@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { auth } from "@/lib/auth";
 import {
   getCategories,
   createCategory,
@@ -46,6 +47,22 @@ export async function GET() {
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication and admin role
+    const session = await auth();
+    if (
+      !session ||
+      (session.user as unknown as Record<string, unknown>)?.role !== "ADMIN"
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized - Admin access required",
+        },
+        { status: 401 }
+      );
+    }
+
+    // Parse request body
     const body = await request.json();
 
     // Validate request body
