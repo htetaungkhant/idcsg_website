@@ -33,6 +33,7 @@ import {
   type EditServiceFormSchema,
 } from "@/lib/schema";
 import type { Category } from "@/app/generated/prisma";
+import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 
 interface Service {
   id: string;
@@ -93,12 +94,15 @@ interface EditServiceFormProps {
 }
 
 export function EditServiceForm({ serviceId }: EditServiceFormProps) {
+  const router = useRouter();
+
+  const { uploadImage } = useCloudinaryUpload();
+
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingService, setLoadingService] = useState(true);
   const [service, setService] = useState<Service | null>(null);
-  const router = useRouter();
 
   // Form setup with default values
   const form = useForm<EditServiceFormSchema>({
@@ -237,97 +241,86 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
     try {
       setIsLoading(true);
 
-      // Create FormData for file uploads
-      const formData = new FormData();
+      const body: Record<string, unknown> = {
+        categoryId: data.categoryId,
+        name: data.name,
+        overview: data.overview,
+      };
 
-      // Basic service data
-      formData.append("categoryId", data.categoryId);
-      formData.append("name", data.name);
-      formData.append("overview", data.overview);
-
-      // Main service image (optional for editing)
       if (data.image) {
-        formData.append("image", data.image);
+        const mainImage = await uploadImage(data.image!, {
+          folder: "services/main-images",
+        });
+        body.imageUrl = mainImage.secure_url;
       }
 
-      // Section 1 data
-      if (data.section1Title)
-        formData.append("section1Title", data.section1Title);
+      // For Section 1
+      if (data.section1Title) body.section1Title = data.section1Title;
       if (data.section1Description)
-        formData.append("section1Description", data.section1Description);
-      if (data.section1Image)
-        formData.append("section1Image", data.section1Image);
-
-      // Section 2 data
-      if (data.section2VideoUrl)
-        formData.append("section2VideoUrl", data.section2VideoUrl);
-
-      // Section 3 data
-      if (data.section3Title)
-        formData.append("section3Title", data.section3Title);
-      if (data.section3Description)
-        formData.append("section3Description", data.section3Description);
-      if (data.section3Image)
-        formData.append("section3Image", data.section3Image);
-
-      // Section 4 data
-      if (data.section4Title)
-        formData.append("section4Title", data.section4Title);
-
-      if (data.section4Cards && data.section4Cards.length > 0) {
-        formData.append(
-          "section4CardsCount",
-          data.section4Cards.length.toString()
-        );
-
-        data.section4Cards.forEach((card, index) => {
-          // Send existing card ID if it exists
-          if (card.id) {
-            formData.append(`section4Cards[${index}].id`, card.id);
-          }
-          if (card.title)
-            formData.append(`section4Cards[${index}].title`, card.title);
-          formData.append(
-            `section4Cards[${index}].description`,
-            card.description
-          );
-          if (card.image)
-            formData.append(`section4Cards[${index}].image`, card.image);
+        body.section1Description = data.section1Description;
+      if (data.section1Image) {
+        const section1Image = await uploadImage(data.section1Image, {
+          folder: `services/${serviceId}/section1`,
         });
+        body.section1ImageUrl = section1Image.secure_url;
       }
 
-      // Section 5 data
-      if (data.section5Title)
-        formData.append("section5Title", data.section5Title);
-      if (data.section5Image)
-        formData.append("section5Image", data.section5Image);
+      // For Section 2
+      if (data.section2VideoUrl) body.section2VideoUrl = data.section2VideoUrl;
 
-      if (data.section5PriceRanges && data.section5PriceRanges.length > 0) {
-        formData.append(
-          "section5PriceRangesCount",
-          data.section5PriceRanges.length.toString()
-        );
-
-        data.section5PriceRanges.forEach((range, index) => {
-          formData.append(`section5PriceRanges[${index}].title`, range.title);
-          if (range.startPrice !== undefined) {
-            formData.append(
-              `section5PriceRanges[${index}].startPrice`,
-              range.startPrice.toString()
-            );
-          }
-          if (range.endPrice !== undefined) {
-            formData.append(
-              `section5PriceRanges[${index}].endPrice`,
-              range.endPrice.toString()
-            );
-          }
+      // For Section 3
+      if (data.section3Title) body.section3Title = data.section3Title;
+      if (data.section3Description)
+        body.section3Description = data.section3Description;
+      if (data.section3Image) {
+        const section3Image = await uploadImage(data.section3Image, {
+          folder: `services/${serviceId}/section3`,
         });
+        body.section3ImageUrl = section3Image.secure_url;
+      }
+
+      // For Section 4
+      if (data.section4Title) body.section4Title = data.section4Title;
+      if (data.section4Cards && data.section4Cards.length > 0) {
+        const section4Cards = await Promise.all(
+          data.section4Cards.map(async (card, index) => {
+            // if (card.id) {
+            //   body[`section4Cards[${index}].id`] = card.id;
+            // }
+            // if (card.title) {
+            //   body[`section4Cards[${index}].title`] = card.title;
+            // }
+            // body[`section4Cards[${index}].description`] = card.description;
+            if (card.image) {
+              const cardImage = await uploadImage(card.image, {
+                folder: `services/${serviceId}/section4/card${index}`,
+              });
+              return {
+                ...card,
+                imageUrl: cardImage.secure_url,
+              };
+            }
+            return card;
+          })
+        );
+        body.section4Cards = section4Cards;
+      }
+
+      // For Section 5
+      if (data.section5Title) body.section5Title = data.section5Title;
+      if (data.section5Image) {
+        const section5Image = await uploadImage(data.section5Image, {
+          folder: `services/${serviceId}/section5`,
+        });
+        body.section5ImageUrl = section5Image.secure_url;
+      }
+      if (data.section5PriceRanges && data.section5PriceRanges.length > 0) {
+        body.section5PriceRanges = data.section5PriceRanges;
       }
 
       const response = await fetch(`/api/services/${serviceId}`, {
         method: "PUT",
-        body: formData,
+        body: JSON.stringify(body),
       });
 
       const result = await response.json();

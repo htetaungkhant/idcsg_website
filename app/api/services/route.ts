@@ -73,10 +73,10 @@ export async function POST(request: NextRequest) {
 
     // Basic validation
     if (
-      !serviceData.categoryId ||
-      !serviceData.name ||
-      !serviceData.overview ||
-      !serviceData.imageUrl
+      !serviceData?.categoryId ||
+      !serviceData?.name ||
+      !serviceData?.overview ||
+      !serviceData?.imageUrl
     ) {
       return NextResponse.json(
         {

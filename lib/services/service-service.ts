@@ -1,6 +1,5 @@
 import db from "@/lib/db/db";
 import {
-  uploadToCloudinary,
   deleteFromCloudinaryByUrl,
   deleteFolderFromCloudinary,
 } from "@/lib/cloudinary";
@@ -75,58 +74,15 @@ function serializeServiceForClient(service: unknown): ServiceWithSections {
   } as ServiceWithSections;
 }
 
-// Create service data interfaces
-export interface CreateServiceData {
+export interface ServiceFormData {
+  id?: string; // For updates
   categoryId: string;
-  imageUrl: string; // Main service image (mandatory)
-  name: string;
-  overview: string;
-  section1?: {
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-  };
-  section2?: {
-    videoUrl: string;
-  };
-  section3?: {
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-  };
-  section4?: {
-    title?: string;
-    cards: {
-      imageUrl?: string;
-      title?: string;
-      description: string;
-      sortOrder: number;
-    }[];
-  };
-  section5?: {
-    imageUrl?: string;
-    title?: string;
-    priceRanges: {
-      title: string;
-      startPrice?: number;
-      endPrice?: number;
-      sortOrder: number;
-    }[];
-  };
-}
-
-export interface UpdateServiceData extends Partial<CreateServiceData> {
-  id?: string; // For update operations
-}
-
-export interface CreateServiceFormData {
-  categoryId: string;
-  image: File; // Main service image (mandatory)
+  imageUrl: string;
   name: string;
   overview: string;
 
   // Section 1
-  section1Image?: File;
+  section1ImageUrl?: string;
   section1Title?: string;
   section1Description?: string;
 
@@ -134,7 +90,7 @@ export interface CreateServiceFormData {
   section2VideoUrl?: string;
 
   // Section 3
-  section3Image?: File;
+  section3ImageUrl?: string;
   section3Title?: string;
   section3Description?: string;
 
@@ -142,13 +98,13 @@ export interface CreateServiceFormData {
   section4Title?: string;
   section4Cards?: {
     id?: string; // For existing cards during updates
-    image?: File;
+    imageUrl?: string;
     title?: string;
     description: string;
   }[];
 
   // Section 5
-  section5Image?: File;
+  section5ImageUrl?: string;
   section5Title?: string;
   section5PriceRanges?: {
     title: string;
@@ -227,86 +183,34 @@ export class ServiceService {
    * Create a new service with all sections
    */
   static async createService(
-    data: CreateServiceFormData,
-    imageFiles?: { [key: string]: File }
+    data: ServiceFormData
   ): Promise<ServiceWithSections> {
-    // Upload main service image first (mandatory)
-    let mainImageUrl: string = "";
-    if (data.image && imageFiles?.image) {
-      const uploadResult = await uploadToCloudinary(
-        Buffer.from(await imageFiles.image.arrayBuffer()),
-        { folder: `services/main-images` }
-      );
-      mainImageUrl = uploadResult.secure_url;
-    }
-
     // Create the service with main image URL
-    const service = await db.service.create({
-      data: {
-        categoryId: data.categoryId,
-        imageUrl: mainImageUrl,
-        name: data.name,
-        overview: data.overview,
-      },
-    });
-
-    // Now upload all images using the actual service ID
-    const uploadedImages: { [key: string]: string } = {};
+    const id =
+      data.id ||
+      (
+        await db.service.create({
+          data: {
+            categoryId: data.categoryId,
+            imageUrl: data.imageUrl,
+            name: data.name,
+            overview: data.overview,
+          },
+        })
+      ).id;
 
     try {
-      // Upload Section 1 image
-      if (data.section1Image && imageFiles?.section1Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.section1Image.arrayBuffer()),
-          { folder: `services/${service.id}/section1` }
-        );
-        uploadedImages.section1Image = uploadResult.secure_url;
-      }
-
-      // Upload Section 3 image
-      if (data.section3Image && imageFiles?.section3Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.section3Image.arrayBuffer()),
-          { folder: `services/${service.id}/section3` }
-        );
-        uploadedImages.section3Image = uploadResult.secure_url;
-      }
-
-      // Upload Section 4 card images
-      if (data.section4Cards?.length) {
-        for (let i = 0; i < data.section4Cards.length; i++) {
-          const card = data.section4Cards[i];
-          if (card.image && imageFiles?.[`section4Card${i}`]) {
-            const uploadResult = await uploadToCloudinary(
-              Buffer.from(await imageFiles[`section4Card${i}`].arrayBuffer()),
-              { folder: `services/${service.id}/section4/card${i}` }
-            );
-            uploadedImages[`section4Card${i}`] = uploadResult.secure_url;
-          }
-        }
-      }
-
-      // Upload Section 5 image
-      if (data.section5Image && imageFiles?.section5Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.section5Image.arrayBuffer()),
-          { folder: `services/${service.id}/section5` }
-        );
-        uploadedImages.section5Image = uploadResult.secure_url;
-      }
-
-      // Now create the sections with uploaded image URLs in a transaction
       await db.$transaction(async (prisma) => {
         // Create Section 1 if data is provided
         if (
           data.section1Title ||
           data.section1Description ||
-          uploadedImages.section1Image
+          data.section1ImageUrl
         ) {
           await prisma.serviceSection1.create({
             data: {
-              serviceId: service.id,
-              imageUrl: uploadedImages.section1Image || null,
+              serviceId: id,
+              imageUrl: data.section1ImageUrl || null,
               title: data.section1Title || null,
               description: data.section1Description || null,
             },
@@ -317,7 +221,7 @@ export class ServiceService {
         if (data.section2VideoUrl) {
           await prisma.serviceSection2.create({
             data: {
-              serviceId: service.id,
+              serviceId: id,
               videoUrl: data.section2VideoUrl,
             },
           });
@@ -327,12 +231,12 @@ export class ServiceService {
         if (
           data.section3Title ||
           data.section3Description ||
-          uploadedImages.section3Image
+          data.section3ImageUrl
         ) {
           await prisma.serviceSection3.create({
             data: {
-              serviceId: service.id,
-              imageUrl: uploadedImages.section3Image || null,
+              serviceId: id,
+              imageUrl: data.section3ImageUrl || null,
               title: data.section3Title || null,
               description: data.section3Description || null,
             },
@@ -343,7 +247,7 @@ export class ServiceService {
         if (data.section4Title || data.section4Cards?.length) {
           const section4 = await prisma.serviceSection4.create({
             data: {
-              serviceId: service.id,
+              serviceId: id,
               title: data.section4Title || null,
             },
           });
@@ -356,7 +260,7 @@ export class ServiceService {
               await prisma.serviceSection4Card.create({
                 data: {
                   section4Id: section4.id,
-                  imageUrl: uploadedImages[`section4Card${i}`] || null,
+                  imageUrl: card.imageUrl || null,
                   title: card.title || null,
                   description: card.description,
                   sortOrder: i,
@@ -370,12 +274,12 @@ export class ServiceService {
         if (
           data.section5Title ||
           data.section5PriceRanges?.length ||
-          uploadedImages.section5Image
+          data.section5ImageUrl
         ) {
           const section5 = await prisma.serviceSection5.create({
             data: {
-              serviceId: service.id,
-              imageUrl: uploadedImages.section5Image || null,
+              serviceId: id,
+              imageUrl: data.section5ImageUrl || null,
               title: data.section5Title || null,
             },
           });
@@ -400,15 +304,15 @@ export class ServiceService {
       });
 
       // Return the full service with all sections
-      const createdService = await this.getServiceById(service.id);
+      const createdService = await this.getServiceById(id);
       return createdService as ServiceWithSections;
     } catch (error) {
       // If there's an error, clean up the service and any uploaded images
       try {
         // Delete the service from database
-        await db.service.delete({ where: { id: service.id } });
+        await db.service.delete({ where: { id: id } });
         // Delete the entire folder from Cloudinary
-        await deleteFolderFromCloudinary(`services/${service.id}`);
+        await deleteFolderFromCloudinary(`services/${id}`);
       } catch (cleanupError) {
         console.error("Failed to cleanup service and images:", cleanupError);
       }
@@ -421,410 +325,367 @@ export class ServiceService {
    */
   static async updateService(
     id: string,
-    data: CreateServiceFormData,
-    imageFiles?: { [key: string]: File }
+    data: ServiceFormData
   ): Promise<ServiceWithSections> {
-    // First, upload new images outside of the transaction
-    const uploadedImages: { [key: string]: string } = {};
-
     try {
-      // Upload main service image if provided
-      if (data.image && imageFiles?.image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.image.arrayBuffer()),
-          { folder: `services/main-images` }
-        );
-        uploadedImages.image = uploadResult.secure_url;
-      }
+      // Update the main service
+      const updateData: {
+        categoryId: string;
+        name: string;
+        overview: string;
+        imageUrl?: string;
+      } = {
+        categoryId: data.categoryId,
+        name: data.name,
+        overview: data.overview,
+      };
 
-      // Upload Section 1 image if provided
-      if (data.section1Image && imageFiles?.section1Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.section1Image.arrayBuffer()),
-          { folder: `services/${id}/section1` }
-        );
-        uploadedImages.section1Image = uploadResult.secure_url;
-      }
-
-      // Upload Section 3 image if provided
-      if (data.section3Image && imageFiles?.section3Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.section3Image.arrayBuffer()),
-          { folder: `services/${id}/section3` }
-        );
-        uploadedImages.section3Image = uploadResult.secure_url;
-      }
-
-      // Upload Section 4 card images
-      if (data.section4Cards?.length) {
-        for (let i = 0; i < data.section4Cards.length; i++) {
-          const card = data.section4Cards[i];
-          if (card.image && imageFiles?.[`section4Card${i}`]) {
-            const uploadResult = await uploadToCloudinary(
-              Buffer.from(await imageFiles[`section4Card${i}`].arrayBuffer()),
-              { folder: `services/${id}/section4/card${i}` }
-            );
-            uploadedImages[`section4Card${i}`] = uploadResult.secure_url;
-          }
+      // Add main image URL if uploaded
+      if (data.imageUrl) {
+        // Delete old main image if it exists
+        const existingService = await this.getServiceById(id);
+        if (existingService?.imageUrl) {
+          await deleteFromCloudinaryByUrl(existingService.imageUrl);
         }
+        updateData.imageUrl = data.imageUrl;
       }
 
-      // Upload Section 5 image if provided
-      if (data.section5Image && imageFiles?.section5Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await imageFiles.section5Image.arrayBuffer()),
-          { folder: `services/${id}/section5` }
-        );
-        uploadedImages.section5Image = uploadResult.secure_url;
+      await db.service.update({
+        where: { id },
+        data: updateData,
+      });
+
+      // Get existing service to handle image cleanup
+      const existingService = await this.getServiceById(id);
+      if (!existingService) {
+        throw new Error("Service not found");
       }
 
-      return await db.$transaction(async (prisma) => {
-        // Update the main service
-        const updateData: {
-          categoryId: string;
-          name: string;
-          overview: string;
-          imageUrl?: string;
-        } = {
-          categoryId: data.categoryId,
-          name: data.name,
-          overview: data.overview,
-        };
+      // Handle Section 1
+      if (
+        data.section1Title ||
+        data.section1Description ||
+        data.section1ImageUrl
+      ) {
+        let section1ImageUrl = existingService.section1?.imageUrl;
 
-        // Add main image URL if uploaded
-        if (uploadedImages.image) {
-          // Delete old main image if it exists
-          const existingService = await this.getServiceById(id);
-          if (existingService?.imageUrl) {
-            await deleteFromCloudinaryByUrl(existingService.imageUrl);
+        // If new image uploaded, delete old one and use new URL
+        if (data.section1ImageUrl) {
+          if (section1ImageUrl) {
+            await deleteFromCloudinaryByUrl(section1ImageUrl);
           }
-          updateData.imageUrl = uploadedImages.image;
+          section1ImageUrl = data.section1ImageUrl;
         }
 
-        await prisma.service.update({
-          where: { id },
-          data: updateData,
+        await db.serviceSection1.upsert({
+          where: { serviceId: id },
+          create: {
+            serviceId: id,
+            imageUrl: section1ImageUrl,
+            title: data.section1Title || null,
+            description: data.section1Description || null,
+          },
+          update: {
+            imageUrl: section1ImageUrl,
+            title: data.section1Title || null,
+            description: data.section1Description || null,
+          },
+        });
+      } else {
+        // Delete section1 if no data is provided
+        const section1 = await db.serviceSection1.findUnique({
+          where: { serviceId: id },
         });
 
-        // Get existing service to handle image cleanup
-        const existingService = await this.getServiceById(id);
-        if (!existingService) {
-          throw new Error("Service not found");
+        if (section1) {
+          if (section1.imageUrl) {
+            await deleteFromCloudinaryByUrl(section1.imageUrl);
+          }
+          await db.serviceSection1.delete({
+            where: { serviceId: id },
+          });
+        }
+      }
+
+      // Handle Section 2
+      if (data.section2VideoUrl) {
+        await db.serviceSection2.upsert({
+          where: { serviceId: id },
+          create: {
+            serviceId: id,
+            videoUrl: data.section2VideoUrl,
+          },
+          update: {
+            videoUrl: data.section2VideoUrl,
+          },
+        });
+      } else {
+        // Delete section2 if no data is provided
+        await db.serviceSection2.deleteMany({
+          where: { serviceId: id },
+        });
+      }
+
+      // Handle Section 3
+      if (
+        data.section3Title ||
+        data.section3Description ||
+        data.section3ImageUrl
+      ) {
+        let section3ImageUrl = existingService.section3?.imageUrl;
+
+        // If new image uploaded, delete old one and use new URL
+        if (data.section3ImageUrl) {
+          if (section3ImageUrl) {
+            await deleteFromCloudinaryByUrl(section3ImageUrl);
+          }
+          section3ImageUrl = data.section3ImageUrl;
         }
 
-        // Handle Section 1
-        if (
-          data.section1Title ||
-          data.section1Description ||
-          data.section1Image
-        ) {
-          let section1ImageUrl = existingService.section1?.imageUrl;
+        await db.serviceSection3.upsert({
+          where: { serviceId: id },
+          create: {
+            serviceId: id,
+            imageUrl: section3ImageUrl,
+            title: data.section3Title || null,
+            description: data.section3Description || null,
+          },
+          update: {
+            imageUrl: section3ImageUrl,
+            title: data.section3Title || null,
+            description: data.section3Description || null,
+          },
+        });
+      } else {
+        // Delete section3 if no data is provided
+        const section3 = await db.serviceSection3.findUnique({
+          where: { serviceId: id },
+        });
 
-          // If new image uploaded, delete old one and use new URL
-          if (uploadedImages.section1Image) {
-            if (section1ImageUrl) {
-              await deleteFromCloudinaryByUrl(section1ImageUrl);
-            }
-            section1ImageUrl = uploadedImages.section1Image;
+        if (section3) {
+          if (section3.imageUrl) {
+            await deleteFromCloudinaryByUrl(section3.imageUrl);
           }
-
-          await prisma.serviceSection1.upsert({
+          await db.serviceSection3.delete({
             where: { serviceId: id },
-            create: {
+          });
+        }
+      }
+
+      // Handle Section 4
+      if (data.section4Title || data.section4Cards?.length) {
+        // Get or create section4
+        let section4 = await db.serviceSection4.findUnique({
+          where: { serviceId: id },
+          include: { cards: true },
+        });
+
+        if (!section4) {
+          section4 = await db.serviceSection4.create({
+            data: {
               serviceId: id,
-              imageUrl: section1ImageUrl,
-              title: data.section1Title || null,
-              description: data.section1Description || null,
+              title: data.section4Title || null,
             },
-            update: {
-              imageUrl: section1ImageUrl,
-              title: data.section1Title || null,
-              description: data.section1Description || null,
-            },
-          });
-        } else {
-          // Delete section1 if no data is provided
-          const section1 = await prisma.serviceSection1.findUnique({
-            where: { serviceId: id },
-          });
-
-          if (section1) {
-            if (section1.imageUrl) {
-              await deleteFromCloudinaryByUrl(section1.imageUrl);
-            }
-            await prisma.serviceSection1.delete({
-              where: { serviceId: id },
-            });
-          }
-        }
-
-        // Handle Section 2
-        if (data.section2VideoUrl) {
-          await prisma.serviceSection2.upsert({
-            where: { serviceId: id },
-            create: {
-              serviceId: id,
-              videoUrl: data.section2VideoUrl,
-            },
-            update: {
-              videoUrl: data.section2VideoUrl,
-            },
-          });
-        } else {
-          // Delete section2 if no data is provided
-          await prisma.serviceSection2.deleteMany({
-            where: { serviceId: id },
-          });
-        }
-
-        // Handle Section 3
-        if (
-          data.section3Title ||
-          data.section3Description ||
-          data.section3Image
-        ) {
-          let section3ImageUrl = existingService.section3?.imageUrl;
-
-          // If new image uploaded, delete old one and use new URL
-          if (uploadedImages.section3Image) {
-            if (section3ImageUrl) {
-              await deleteFromCloudinaryByUrl(section3ImageUrl);
-            }
-            section3ImageUrl = uploadedImages.section3Image;
-          }
-
-          await prisma.serviceSection3.upsert({
-            where: { serviceId: id },
-            create: {
-              serviceId: id,
-              imageUrl: section3ImageUrl,
-              title: data.section3Title || null,
-              description: data.section3Description || null,
-            },
-            update: {
-              imageUrl: section3ImageUrl,
-              title: data.section3Title || null,
-              description: data.section3Description || null,
-            },
-          });
-        } else {
-          // Delete section3 if no data is provided
-          const section3 = await prisma.serviceSection3.findUnique({
-            where: { serviceId: id },
-          });
-
-          if (section3) {
-            if (section3.imageUrl) {
-              await deleteFromCloudinaryByUrl(section3.imageUrl);
-            }
-            await prisma.serviceSection3.delete({
-              where: { serviceId: id },
-            });
-          }
-        }
-
-        // Handle Section 4
-        if (data.section4Title || data.section4Cards?.length) {
-          // Get or create section4
-          let section4 = await prisma.serviceSection4.findUnique({
-            where: { serviceId: id },
             include: { cards: true },
           });
+        } else {
+          // Update section4
+          await db.serviceSection4.update({
+            where: { id: section4.id },
+            data: {
+              title: data.section4Title || null,
+            },
+          });
+        }
 
-          if (!section4) {
-            section4 = await prisma.serviceSection4.create({
+        // Handle cards intelligently - preserve existing ones, update/add new ones
+        const existingCards = section4.cards;
+        const incomingCards = data.section4Cards || [];
+
+        // Get IDs of cards that should be kept
+        const cardsToKeep = incomingCards
+          .filter((card) => card.id) // Only existing cards have IDs
+          .map((card) => card.id!);
+
+        // Delete cards that are no longer in the list
+        const cardsToDelete = existingCards.filter(
+          (card) => !cardsToKeep.includes(card.id)
+        );
+        for (const card of cardsToDelete) {
+          if (card.imageUrl) {
+            await deleteFromCloudinaryByUrl(card.imageUrl);
+          }
+          await db.serviceSection4Card.delete({
+            where: { id: card.id },
+          });
+        }
+
+        // Process each incoming card
+        for (let i = 0; i < incomingCards.length; i++) {
+          const card = incomingCards[i];
+
+          if (card.id) {
+            // Existing card - update it
+            const existingCard = existingCards.find((ec) => ec.id === card.id);
+            let imageUrl = existingCard?.imageUrl;
+
+            // If new image uploaded, delete old one and use new URL
+            if (data.section4Cards?.[i].imageUrl) {
+              if (imageUrl) {
+                await deleteFromCloudinaryByUrl(imageUrl);
+              }
+              imageUrl = data.section4Cards[i].imageUrl;
+            }
+
+            await db.serviceSection4Card.update({
+              where: { id: card.id },
               data: {
-                serviceId: id,
-                title: data.section4Title || null,
+                imageUrl: imageUrl,
+                title: card.title || null,
+                description: card.description,
+                sortOrder: i,
               },
-              include: { cards: true },
             });
           } else {
-            // Update section4
-            await prisma.serviceSection4.update({
-              where: { id: section4.id },
+            // New card - create it
+            await db.serviceSection4Card.create({
               data: {
-                title: data.section4Title || null,
+                section4Id: section4.id,
+                imageUrl: data.section4Cards?.[i].imageUrl || null,
+                title: card.title || null,
+                description: card.description,
+                sortOrder: i,
               },
             });
           }
+        }
+      } else {
+        // Delete section4 if no data is provided
+        const section4 = await db.serviceSection4.findUnique({
+          where: { serviceId: id },
+          include: { cards: true },
+        });
 
-          // Handle cards intelligently - preserve existing ones, update/add new ones
-          const existingCards = section4.cards;
-          const incomingCards = data.section4Cards || [];
-
-          // Get IDs of cards that should be kept
-          const cardsToKeep = incomingCards
-            .filter((card) => card.id) // Only existing cards have IDs
-            .map((card) => card.id!);
-
-          // Delete cards that are no longer in the list
-          const cardsToDelete = existingCards.filter(
-            (card) => !cardsToKeep.includes(card.id)
-          );
-          for (const card of cardsToDelete) {
+        if (section4) {
+          // Delete card images
+          for (const card of section4.cards) {
             if (card.imageUrl) {
               await deleteFromCloudinaryByUrl(card.imageUrl);
             }
-            await prisma.serviceSection4Card.delete({
-              where: { id: card.id },
-            });
           }
 
-          // Process each incoming card
-          for (let i = 0; i < incomingCards.length; i++) {
-            const card = incomingCards[i];
-
-            if (card.id) {
-              // Existing card - update it
-              const existingCard = existingCards.find(
-                (ec) => ec.id === card.id
-              );
-              let imageUrl = existingCard?.imageUrl;
-
-              // If new image uploaded, delete old one and use new URL
-              if (uploadedImages[`section4Card${i}`]) {
-                if (imageUrl) {
-                  await deleteFromCloudinaryByUrl(imageUrl);
-                }
-                imageUrl = uploadedImages[`section4Card${i}`];
-              }
-
-              await prisma.serviceSection4Card.update({
-                where: { id: card.id },
-                data: {
-                  imageUrl: imageUrl,
-                  title: card.title || null,
-                  description: card.description,
-                  sortOrder: i,
-                },
-              });
-            } else {
-              // New card - create it
-              await prisma.serviceSection4Card.create({
-                data: {
-                  section4Id: section4.id,
-                  imageUrl: uploadedImages[`section4Card${i}`] || null,
-                  title: card.title || null,
-                  description: card.description,
-                  sortOrder: i,
-                },
-              });
-            }
-          }
-        } else {
-          // Delete section4 if no data is provided
-          const section4 = await prisma.serviceSection4.findUnique({
-            where: { serviceId: id },
-            include: { cards: true },
-          });
-
-          if (section4) {
-            // Delete card images
-            for (const card of section4.cards) {
-              if (card.imageUrl) {
-                await deleteFromCloudinaryByUrl(card.imageUrl);
-              }
-            }
-
-            await prisma.serviceSection4.delete({
-              where: { serviceId: id },
-            });
-          }
-        }
-
-        // Handle Section 5
-        if (
-          data.section5Title ||
-          data.section5PriceRanges?.length ||
-          data.section5Image
-        ) {
-          let section5ImageUrl = existingService.section5?.imageUrl;
-
-          // If new image uploaded, delete old one and use new URL
-          if (uploadedImages.section5Image) {
-            if (section5ImageUrl) {
-              await deleteFromCloudinaryByUrl(section5ImageUrl);
-            }
-            section5ImageUrl = uploadedImages.section5Image;
-          }
-
-          // Get or create section5
-          let section5 = await prisma.serviceSection5.findUnique({
-            where: { serviceId: id },
-            include: { priceRanges: true },
-          });
-
-          if (!section5) {
-            section5 = await prisma.serviceSection5.create({
-              data: {
-                serviceId: id,
-                imageUrl: section5ImageUrl,
-                title: data.section5Title || null,
-              },
-              include: { priceRanges: true },
-            });
-          } else {
-            // Update section5
-            await prisma.serviceSection5.update({
-              where: { id: section5.id },
-              data: {
-                imageUrl: section5ImageUrl,
-                title: data.section5Title || null,
-              },
-            });
-          }
-
-          // Delete existing price ranges
-          await prisma.serviceSection5PriceRange.deleteMany({
-            where: { section5Id: section5.id },
-          });
-
-          // Create new price ranges
-          if (data.section5PriceRanges?.length) {
-            for (let i = 0; i < data.section5PriceRanges.length; i++) {
-              const priceRange = data.section5PriceRanges[i];
-
-              await prisma.serviceSection5PriceRange.create({
-                data: {
-                  section5Id: section5.id,
-                  title: priceRange.title,
-                  startPrice: priceRange.startPrice || null,
-                  endPrice: priceRange.endPrice || null,
-                  sortOrder: i,
-                },
-              });
-            }
-          }
-        } else {
-          // Delete section5 if no data is provided
-          const section5 = await prisma.serviceSection5.findUnique({
+          await db.serviceSection4.delete({
             where: { serviceId: id },
           });
-
-          if (section5) {
-            if (section5.imageUrl) {
-              await deleteFromCloudinaryByUrl(section5.imageUrl);
-            }
-            await prisma.serviceSection5.delete({
-              where: { serviceId: id },
-            });
-          }
-        }
-
-        // Return the updated service with all sections
-        const updatedService = await this.getServiceById(id);
-        return updatedService as ServiceWithSections;
-      });
-    } catch (error) {
-      // If there's an error, clean up any newly uploaded images
-      for (const imageUrl of Object.values(uploadedImages)) {
-        try {
-          await deleteFromCloudinaryByUrl(imageUrl);
-        } catch (cleanupError) {
-          console.error("Failed to cleanup image:", imageUrl, cleanupError);
         }
       }
+
+      // Handle Section 5
+      if (
+        data.section5Title ||
+        data.section5PriceRanges?.length ||
+        data.section5ImageUrl
+      ) {
+        let section5ImageUrl = existingService.section5?.imageUrl;
+
+        // If new image uploaded, delete old one and use new URL
+        if (data.section5ImageUrl) {
+          if (section5ImageUrl) {
+            await deleteFromCloudinaryByUrl(section5ImageUrl);
+          }
+          section5ImageUrl = data.section5ImageUrl;
+        }
+
+        // Get or create section5
+        let section5 = await db.serviceSection5.findUnique({
+          where: { serviceId: id },
+          include: { priceRanges: true },
+        });
+
+        if (!section5) {
+          section5 = await db.serviceSection5.create({
+            data: {
+              serviceId: id,
+              imageUrl: section5ImageUrl,
+              title: data.section5Title || null,
+            },
+            include: { priceRanges: true },
+          });
+        } else {
+          // Update section5
+          await db.serviceSection5.update({
+            where: { id: section5.id },
+            data: {
+              imageUrl: section5ImageUrl,
+              title: data.section5Title || null,
+            },
+          });
+        }
+
+        // Delete existing price ranges
+        await db.serviceSection5PriceRange.deleteMany({
+          where: { section5Id: section5.id },
+        });
+
+        // Create new price ranges
+        if (data.section5PriceRanges?.length) {
+          for (let i = 0; i < data.section5PriceRanges.length; i++) {
+            const priceRange = data.section5PriceRanges[i];
+
+            await db.serviceSection5PriceRange.create({
+              data: {
+                section5Id: section5.id,
+                title: priceRange.title,
+                startPrice: priceRange.startPrice || null,
+                endPrice: priceRange.endPrice || null,
+                sortOrder: i,
+              },
+            });
+          }
+        }
+      } else {
+        // Delete section5 if no data is provided
+        const section5 = await db.serviceSection5.findUnique({
+          where: { serviceId: id },
+        });
+
+        if (section5) {
+          if (section5.imageUrl) {
+            await deleteFromCloudinaryByUrl(section5.imageUrl);
+          }
+          await db.serviceSection5.delete({
+            where: { serviceId: id },
+          });
+        }
+      }
+
+      // Return the updated service with all sections
+      const updatedService = await this.getServiceById(id);
+      return updatedService as ServiceWithSections;
+    } catch (error) {
+      // If there's an error, clean up any newly uploaded images
+      try {
+        await deleteFromCloudinaryByUrl(data.imageUrl);
+        if (data.section1ImageUrl) {
+          await deleteFromCloudinaryByUrl(data.section1ImageUrl);
+        }
+        if (data.section3ImageUrl) {
+          await deleteFromCloudinaryByUrl(data.section3ImageUrl);
+        }
+        if (data.section5ImageUrl) {
+          await deleteFromCloudinaryByUrl(data.section5ImageUrl);
+        }
+        if (data.section4Cards?.length) {
+          for (const card of data.section4Cards) {
+            if (card.imageUrl) {
+              await deleteFromCloudinaryByUrl(card.imageUrl);
+            }
+          }
+        }
+      } catch (cleanupError) {
+        console.error("Failed to cleanup images:", cleanupError);
+      }
+
       throw error;
     }
   }
