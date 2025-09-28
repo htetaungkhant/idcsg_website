@@ -29,12 +29,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { serviceFormSchema, type ServiceFormSchema } from "@/lib/schema";
 import type { Category } from "@/app/generated/prisma";
+import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 
 export function CreateServiceForm() {
+  const router = useRouter();
+
+  const { uploadImage } = useCloudinaryUpload();
+
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const router = useRouter();
 
   // Form setup with default values
   const form = useForm<ServiceFormSchema>({
@@ -101,100 +105,107 @@ export function CreateServiceForm() {
   const onSubmit = async (data: ServiceFormSchema) => {
     try {
       setIsLoading(true);
-
-      // Create FormData for file uploads
-      const formData = new FormData();
-
-      // Basic service data
-      formData.append("categoryId", data.categoryId);
-      formData.append("name", data.name);
-      formData.append("overview", data.overview);
-
-      // Main service image (mandatory)
-      if (data.image) {
-        formData.append("image", data.image);
-      }
-
-      // Section 1 data
-      if (data.section1Title)
-        formData.append("section1Title", data.section1Title);
-      if (data.section1Description)
-        formData.append("section1Description", data.section1Description);
-      if (data.section1Image)
-        formData.append("section1Image", data.section1Image);
-
-      // Section 2 data
-      if (data.section2VideoUrl)
-        formData.append("section2VideoUrl", data.section2VideoUrl);
-
-      // Section 3 data
-      if (data.section3Title)
-        formData.append("section3Title", data.section3Title);
-      if (data.section3Description)
-        formData.append("section3Description", data.section3Description);
-      if (data.section3Image)
-        formData.append("section3Image", data.section3Image);
-
-      // Section 4 data
-      if (data.section4Title)
-        formData.append("section4Title", data.section4Title);
-
-      if (data.section4Cards && data.section4Cards.length > 0) {
-        formData.append(
-          "section4CardsCount",
-          data.section4Cards.length.toString()
-        );
-
-        data.section4Cards.forEach((card, index) => {
-          if (card.title)
-            formData.append(`section4Cards[${index}].title`, card.title);
-          formData.append(
-            `section4Cards[${index}].description`,
-            card.description
-          );
-          if (card.image)
-            formData.append(`section4Cards[${index}].image`, card.image);
-        });
-      }
-
-      // Section 5 data
-      if (data.section5Title)
-        formData.append("section5Title", data.section5Title);
-      if (data.section5Image)
-        formData.append("section5Image", data.section5Image);
-
-      if (data.section5PriceRanges && data.section5PriceRanges.length > 0) {
-        formData.append(
-          "section5PriceRangesCount",
-          data.section5PriceRanges.length.toString()
-        );
-
-        data.section5PriceRanges.forEach((range, index) => {
-          formData.append(`section5PriceRanges[${index}].title`, range.title);
-          if (range.startPrice !== undefined) {
-            formData.append(
-              `section5PriceRanges[${index}].startPrice`,
-              range.startPrice.toString()
-            );
-          }
-          if (range.endPrice !== undefined) {
-            formData.append(
-              `section5PriceRanges[${index}].endPrice`,
-              range.endPrice.toString()
-            );
-          }
-        });
-      }
-
-      const response = await fetch("/api/services", {
-        method: "POST",
-        body: formData,
+      const mainImage = await uploadImage(data.image!, {
+        folder: "services/main-images",
       });
 
-      const result = await response.json();
+      const body: Record<string, unknown> = {
+        categoryId: data.categoryId,
+        name: data.name,
+        overview: data.overview,
+        imageUrl: mainImage.secure_url,
+      };
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to create service");
+      // Initially create service database record with essential info to get the service ID
+      const initialDbResponse = await fetch("/api/services", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const initialDbResult = await initialDbResponse.json();
+      if (!initialDbResult.success || !initialDbResult.data?.id) {
+        throw new Error(
+          initialDbResult.error || "Failed to create initial service"
+        );
+      }
+
+      body["id"] = initialDbResult.data.id;
+      if (data.section1Title) {
+        body["section1Title"] = data.section1Title;
+      }
+      if (data.section1Description) {
+        body["section1Description"] = data.section1Description;
+      }
+      if (data.section1Image) {
+        const section1Image = await uploadImage(data.section1Image, {
+          folder: `services/${initialDbResult.data.id}/section1`,
+        });
+        body["section1ImageUrl"] = section1Image.secure_url;
+      }
+      if (data.section2VideoUrl) {
+        body["section2VideoUrl"] = data.section2VideoUrl;
+      }
+      if (data.section3Title) {
+        body["section3Title"] = data.section3Title;
+      }
+      if (data.section3Description) {
+        body["section3Description"] = data.section3Description;
+      }
+      if (data.section3Image) {
+        const section3Image = await uploadImage(data.section3Image, {
+          folder: `services/${initialDbResult.data.id}/section3`,
+        });
+        body["section3ImageUrl"] = section3Image.secure_url;
+      }
+      if (data.section4Title) {
+        body["section4Title"] = data.section4Title;
+      }
+      if (data.section4Cards && data.section4Cards.length > 0) {
+        const section4Cards = await Promise.all(
+          data.section4Cards.map(async (card, index) => {
+            // if (card.title) {
+            //   body[`section4Cards[${index}].title`] = card.title;
+            // }
+            // body[`section4Cards[${index}].description`] = card.description;
+            if (card.image) {
+              const cardImage = await uploadImage(card.image, {
+                folder: `services/${initialDbResult.data.id}/section4/card${index}`,
+              });
+              return {
+                ...card,
+                imageUrl: cardImage.secure_url,
+              };
+            }
+            return card;
+          })
+        );
+        body["section4Cards"] = section4Cards;
+      }
+      if (data.section5Title) {
+        body["section5Title"] = data.section5Title;
+      }
+      if (data.section5Image) {
+        const section5Image = await uploadImage(data.section5Image, {
+          folder: `services/${initialDbResult.data.id}/section5`,
+        });
+        body["section5ImageUrl"] = section5Image.secure_url;
+      }
+      if (data.section5PriceRanges && data.section5PriceRanges.length > 0) {
+        body["section5PriceRanges"] = data.section5PriceRanges;
+      }
+
+      const finalDbResponse = await fetch("/api/services", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const finalDbResult = await finalDbResponse.json();
+      if (!finalDbResult.success) {
+        throw new Error(finalDbResult.error || "Failed to create service");
       }
 
       // Success
@@ -280,7 +291,7 @@ export function CreateServiceForm() {
                   name="image"
                   render={({ field: { onChange, name, onBlur, ref } }) => (
                     <FormItem>
-                      <FormLabel>Service Image *</FormLabel>
+                      <FormLabel>Service Image</FormLabel>
                       <FormControl>
                         <Input
                           type="file"
