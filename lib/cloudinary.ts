@@ -23,8 +23,26 @@ export interface CloudinaryUploadResult {
   resource_type: "image" | "video" | "raw" | "auto";
   format: string;
   bytes: number;
+  asset_id?: string;
+  version?: number;
+  version_id?: string;
+  signature?: string;
+  api_key?: string;
   width?: number;
   height?: number;
+  created_at?: string;
+  tags?: string[];
+  pages?: number;
+  type?: "upload" | "fetch";
+  etag?: string;
+  placeholder?: boolean;
+  url?: string;
+  asset_folder?: string;
+  display_name?: string;
+  original_filename?: string;
+  original_extension?: string;
+  original_width?: number;
+  original_height?: number;
   duration?: number;
 }
 
