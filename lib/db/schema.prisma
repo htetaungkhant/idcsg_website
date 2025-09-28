@@ -290,8 +290,7 @@ model DentalTechnology {
   
   // Optional sections (one-to-one relationships)
   section1    DentalTechnologySection1?
-  card1       DentalTechnologyCard1?
-  card2       DentalTechnologyCard2?
+  cards       DentalTechnologyCard[] // Dynamic list of cards
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -311,29 +310,16 @@ model DentalTechnologySection1 {
   updatedAt DateTime @updatedAt
 }
 
-// Card 1: Image, Title, and Description
-model DentalTechnologyCard1 {
+// Dynamic Cards for Dental Technology: Image, Title, and Description
+model DentalTechnologyCard {
   id                 String           @id @default(cuid())
-  dentalTechnologyId String           @unique // One-to-one relationship with DentalTechnology
+  dentalTechnologyId String           // Foreign key to DentalTechnology (one-to-many relationship)
   dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
   
   imageUrl    String?  // Cloudinary URL for card image (optional)
   title       String?  // Card title (optional)
   description String?  @db.Text // Card description (optional)
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// Card 2: Image, Title, and Description
-model DentalTechnologyCard2 {
-  id                 String           @id @default(cuid())
-  dentalTechnologyId String           @unique // One-to-one relationship with DentalTechnology
-  dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?  // Cloudinary URL for card image (optional)
-  title       String?  // Card title (optional)
-  description String?  @db.Text // Card description (optional)
+  sortOrder   Int      @default(0) // For ordering cards within DentalTechnology
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
