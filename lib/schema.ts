@@ -299,39 +299,29 @@ const dentalTechnologyFormSchema = z.object({
     .optional()
     .or(z.literal("")),
 
-  // Card 1 (Image, Title, Description) - All optional
-  card1Image: z.instanceof(File).optional(),
-  card1Title: z
-    .string()
-    .max(100, {
-      message: "Card 1 title must be less than 100 characters.",
-    })
-    .optional()
-    .or(z.literal("")),
-  card1Description: z
-    .string()
-    .max(1000, {
-      message: "Card 1 description must be less than 1000 characters.",
-    })
-    .optional()
-    .or(z.literal("")),
-
-  // Card 2 (Image, Title, Description) - All optional
-  card2Image: z.instanceof(File).optional(),
-  card2Title: z
-    .string()
-    .max(100, {
-      message: "Card 2 title must be less than 100 characters.",
-    })
-    .optional()
-    .or(z.literal("")),
-  card2Description: z
-    .string()
-    .max(1000, {
-      message: "Card 2 description must be less than 1000 characters.",
-    })
-    .optional()
-    .or(z.literal("")),
+  // Dynamic Cards Array - All optional
+  cards: z
+    .array(
+      z.object({
+        id: z.string().optional(), // For existing cards during updates
+        image: z.instanceof(File).optional(),
+        title: z
+          .string()
+          .max(100, {
+            message: "Card title must be less than 100 characters.",
+          })
+          .optional()
+          .or(z.literal("")),
+        description: z
+          .string()
+          .max(1000, {
+            message: "Card description must be less than 1000 characters.",
+          })
+          .optional()
+          .or(z.literal("")),
+      })
+    )
+    .optional(),
 });
 
 type DentalTechnologyFormSchema = z.infer<typeof dentalTechnologyFormSchema>;

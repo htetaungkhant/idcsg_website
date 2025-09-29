@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Upload, Image as ImageIcon } from "lucide-react";
+import { Upload, Image as ImageIcon, Plus, Minus } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -24,11 +24,15 @@ import {
   dentalTechnologyFormSchema,
   type DentalTechnologyFormSchema,
 } from "@/lib/schema";
+import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 
 export function CreateTechnologyForm() {
+  const router = useRouter();
+
+  const { uploadImage } = useCloudinaryUpload();
+
   const [isLoading, setIsLoading] = useState(false);
   const [previews, setPreviews] = useState<{ [key: string]: string }>({});
-  const router = useRouter();
 
   // Form setup with default values
   const form = useForm<DentalTechnologyFormSchema>({
@@ -39,11 +43,18 @@ export function CreateTechnologyForm() {
       description: "",
       section1Title: "",
       section1Description: "",
-      card1Title: "",
-      card1Description: "",
-      card2Title: "",
-      card2Description: "",
+      cards: [],
     },
+  });
+
+  // Field arrays for dynamic cards
+  const {
+    fields: cardFields,
+    append: appendCard,
+    remove: removeCard,
+  } = useFieldArray({
+    control: form.control,
+    name: "cards",
   });
 
   // Image preview management
@@ -63,69 +74,146 @@ export function CreateTechnologyForm() {
   const onSubmit = async (data: DentalTechnologyFormSchema) => {
     try {
       setIsLoading(true);
+      const body: Record<string, unknown> = {
+        imageUrl: "", // Placeholder, will be updated after upload
+        title: data.title,
+        overview: data.overview,
+      };
 
-      // Create FormData for file uploads
-      const formData = new FormData();
-
-      // Required fields
-      formData.append("title", data.title);
-      formData.append("overview", data.overview);
-      if (data.mainImage) {
-        formData.append("mainImage", data.mainImage);
-      }
-
-      // Optional main description
       if (data.description) {
-        formData.append("description", data.description);
+        body.description = data.description;
       }
 
-      // Section 1 data
-      if (data.section1Title) {
-        formData.append("section1Title", data.section1Title);
-      }
-      if (data.section1Description) {
-        formData.append("section1Description", data.section1Description);
-      }
-      if (data.section1Image) {
-        formData.append("section1Image", data.section1Image);
-      }
-
-      // Card 1 data
-      if (data.card1Title) {
-        formData.append("card1Title", data.card1Title);
-      }
-      if (data.card1Description) {
-        formData.append("card1Description", data.card1Description);
-      }
-      if (data.card1Image) {
-        formData.append("card1Image", data.card1Image);
-      }
-
-      // Card 2 data
-      if (data.card2Title) {
-        formData.append("card2Title", data.card2Title);
-      }
-      if (data.card2Description) {
-        formData.append("card2Description", data.card2Description);
-      }
-      if (data.card2Image) {
-        formData.append("card2Image", data.card2Image);
-      }
-
-      const response = await fetch("/api/technologies", {
+      const initialDbResponse = await fetch("/api/technologies", {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(body),
       });
 
-      const result = await response.json();
+      const initialDbResult = await initialDbResponse.json();
 
-      if (!result.success) {
-        throw new Error(result.error || "Failed to create technology");
+      if (!initialDbResult.success) {
+        throw new Error(initialDbResult.error || "Failed to create technology");
+      }
+
+      const technologyId = initialDbResult.data.id;
+      body.id = technologyId;
+
+      // Upload main image
+      if (data.mainImage) {
+        const mainImage = await uploadImage(data.mainImage, {
+          folder: `technologies/${technologyId}/main`,
+        });
+        body.imageUrl = mainImage.secure_url;
+      }
+
+      if (data.section1Title) {
+        body.section1Title = data.section1Title;
+      }
+      if (data.section1Description) {
+        body.section1Description = data.section1Description;
+      }
+      if (data.section1Image) {
+        const section1ImageUrl = await uploadImage(data.section1Image, {
+          folder: `technologies/${technologyId}/section1`,
+        });
+        body.section1ImageUrl = section1ImageUrl.secure_url;
+      }
+
+      if (data.cards && data.cards.length > 0) {
+        const cardsData = await Promise.all(
+          data.cards.map(async (card, index) => {
+            // if (card.title) {
+            //   body[`cards[${index}].title`] = card.title;
+            // }
+            // if (card.description) {
+            //   body[`cards[${index}].description`] = card.description;
+            // }
+            if (card.image) {
+              const cardImage = await uploadImage(card.image, {
+                folder: `technologies/${technologyId}/cards${index}`,
+              });
+              return {
+                ...card,
+                imageUrl: cardImage.secure_url,
+              };
+            }
+            return card;
+          })
+        );
+        body.cards = cardsData;
+      }
+
+      const finalDbResponse = await fetch("/api/technologies", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      const finalDbResult = await finalDbResponse.json();
+      if (!finalDbResult.success) {
+        throw new Error(finalDbResult.error || "Failed to create technology");
       }
 
       // Success
       toast.success("Technology created successfully!");
       router.push("/admin/technology-management");
+
+      // // Create FormData for file uploads
+      // const formData = new FormData();
+
+      // // Required fields
+      // formData.append("title", data.title);
+      // formData.append("overview", data.overview);
+      // if (data.mainImage) {
+      //   formData.append("mainImage", data.mainImage);
+      // }
+
+      // // Optional main description
+      // if (data.description) {
+      //   formData.append("description", data.description);
+      // }
+
+      // // Section 1 data
+      // if (data.section1Title) {
+      //   formData.append("section1Title", data.section1Title);
+      // }
+      // if (data.section1Description) {
+      //   formData.append("section1Description", data.section1Description);
+      // }
+      // if (data.section1Image) {
+      //   formData.append("section1Image", data.section1Image);
+      // }
+
+      // // Cards data
+      // if (data.cards && data.cards.length > 0) {
+      //   data.cards.forEach((card, index) => {
+      //     if (card.title) {
+      //       formData.append(`cards[${index}].title`, card.title);
+      //     }
+      //     if (card.description) {
+      //       formData.append(`cards[${index}].description`, card.description);
+      //     }
+      //     if (card.image) {
+      //       formData.append(`cards[${index}].image`, card.image);
+      //     }
+      //   });
+      // }
+
+      // const response = await fetch("/api/technologies", {
+      //   method: "POST",
+      //   body: formData,
+      // });
+
+      // const result = await response.json();
+
+      // if (!result.success) {
+      //   throw new Error(result.error || "Failed to create technology");
+      // }
+
+      // // Success
+      // toast.success("Technology created successfully!");
+      // router.push("/admin/technology-management");
     } catch (error) {
       console.error("Error creating technology:", error);
       toast.error(
@@ -159,7 +247,7 @@ export function CreateTechnologyForm() {
             {/* Required Fields Section */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-primary">
-                Basic Information (Required)
+                Basic Information
               </h3>
 
               {/* Main Image - Required */}
@@ -250,7 +338,7 @@ export function CreateTechnologyForm() {
             {/* Optional Fields Section */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-secondary-foreground">
-                Additional Information (Optional)
+                Additional Information
               </h3>
 
               {/* Main Description - Optional */}
@@ -280,7 +368,7 @@ export function CreateTechnologyForm() {
             {/* Section 1 */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-secondary-foreground">
-                Section 1 (Optional)
+                Section 1
               </h3>
 
               {/* Section 1 Image */}
@@ -368,184 +456,138 @@ export function CreateTechnologyForm() {
 
             <Separator />
 
-            {/* Card 1 */}
+            {/* Dynamic Cards */}
             <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-secondary-foreground">
-                Card 1 (Optional)
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-secondary-foreground">
+                  Technology Cards
+                </h3>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => appendCard({ title: "", description: "" })}
+                  className="flex items-center gap-2"
+                  disabled={isLoading}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Card
+                </Button>
+              </div>
 
-              {/* Card 1 Image */}
-              <FormField
-                control={form.control}
-                name="card1Image"
-                render={({ field: { onChange, name, ref } }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Card 1 Image
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        <Input
-                          name={name}
-                          ref={ref}
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            onChange(file);
-                            handleImagePreview(file, "card1Image");
-                          }}
-                          className="cursor-pointer"
-                        />
-                        {previews.card1Image && (
-                          <div className="relative">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={previews.card1Image}
-                              alt="Card 1 preview"
-                              className="w-48 h-32 object-cover rounded-lg border"
-                            />
-                          </div>
-                        )}
+              <div className="space-y-4">
+                {cardFields.map((field, index) => (
+                  <Card key={field.id} className="p-4">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium">Card {index + 1}</h4>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeCard(index)}
+                          disabled={isLoading}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
                       </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              {/* Card 1 Title */}
-              <FormField
-                control={form.control}
-                name="card1Title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Card 1 Title
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter card 1 title..."
-                        className="text-base"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Card 1 Description */}
-              <FormField
-                control={form.control}
-                name="card1Description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Card 1 Description
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Enter card 1 description..."
-                        className="min-h-[100px] text-base resize-vertical"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <Separator />
-
-            {/* Card 2 */}
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-secondary-foreground">
-                Card 2 (Optional)
-              </h3>
-
-              {/* Card 2 Image */}
-              <FormField
-                control={form.control}
-                name="card2Image"
-                render={({ field: { onChange, name, ref } }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Card 2 Image
-                    </FormLabel>
-                    <FormControl>
-                      <div className="space-y-4">
-                        <Input
-                          name={name}
-                          ref={ref}
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            onChange(file);
-                            handleImagePreview(file, "card2Image");
-                          }}
-                          className="cursor-pointer"
-                        />
-                        {previews.card2Image && (
-                          <div className="relative">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              src={previews.card2Image}
-                              alt="Card 2 preview"
-                              className="w-48 h-32 object-cover rounded-lg border"
-                            />
-                          </div>
+                      {/* Card Image */}
+                      <FormField
+                        control={form.control}
+                        name={`cards.${index}.image`}
+                        render={({ field: { onChange, name, ref } }) => (
+                          <FormItem>
+                            <FormLabel className="text-base font-medium">
+                              Card Image
+                            </FormLabel>
+                            <FormControl>
+                              <div className="space-y-4">
+                                <Input
+                                  name={name}
+                                  ref={ref}
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    onChange(file);
+                                    handleImagePreview(file, `card-${index}`);
+                                  }}
+                                  className="cursor-pointer"
+                                />
+                                {previews[`card-${index}`] && (
+                                  <div className="relative">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                      src={previews[`card-${index}`]}
+                                      alt={`Card ${index + 1} preview`}
+                                      className="w-48 h-32 object-cover rounded-lg border"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Card 2 Title */}
-              <FormField
-                control={form.control}
-                name="card2Title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Card 2 Title
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Enter card 2 title..."
-                        className="text-base"
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
-              {/* Card 2 Description */}
-              <FormField
-                control={form.control}
-                name="card2Description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base font-medium">
-                      Card 2 Description
-                    </FormLabel>
-                    <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Enter card 2 description..."
-                        className="min-h-[100px] text-base resize-vertical"
+                      {/* Card Title */}
+                      <FormField
+                        control={form.control}
+                        name={`cards.${index}.title`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-base font-medium">
+                              Card Title
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Enter card title..."
+                                className="text-base"
+                                disabled={isLoading}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+
+                      {/* Card Description */}
+                      <FormField
+                        control={form.control}
+                        name={`cards.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-base font-medium">
+                              Card Description
+                            </FormLabel>
+                            <FormControl>
+                              <Textarea
+                                {...field}
+                                placeholder="Enter card description..."
+                                className="min-h-[100px] text-base resize-vertical"
+                                disabled={isLoading}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </Card>
+                ))}
+
+                {cardFields.length === 0 && (
+                  <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed">
+                    <p>
+                      No cards added yet. Click &quot;Add Card&quot; to get
+                      started.
+                    </p>
+                  </div>
                 )}
-              />
+              </div>
             </div>
 
             <Separator />
