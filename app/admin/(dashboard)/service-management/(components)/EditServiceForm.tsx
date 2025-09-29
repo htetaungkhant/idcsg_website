@@ -245,6 +245,7 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
         categoryId: data.categoryId,
         name: data.name,
         overview: data.overview,
+        imageUrl: service?.imageUrl || null, // Default to existing image URL
       };
 
       if (data.image) {

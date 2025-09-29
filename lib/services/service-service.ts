@@ -335,7 +335,10 @@ export class ServiceService {
       }
 
       // Delete old main image if it exists
-      if (existingService?.imageUrl) {
+      if (
+        existingService?.imageUrl &&
+        existingService.imageUrl !== data.imageUrl
+      ) {
         await deleteFromCloudinaryByUrl(existingService.imageUrl);
       }
 
