@@ -328,38 +328,34 @@ export class ServiceService {
     data: ServiceFormData
   ): Promise<ServiceWithSections> {
     try {
-      // Update the main service
-      const updateData: {
-        categoryId: string;
-        name: string;
-        overview: string;
-        imageUrl?: string;
-      } = {
-        categoryId: data.categoryId,
-        name: data.name,
-        overview: data.overview,
-      };
-
-      // Add main image URL if uploaded
-      if (data.imageUrl) {
-        // Delete old main image if it exists
-        const existingService = await this.getServiceById(id);
-        if (existingService?.imageUrl) {
-          await deleteFromCloudinaryByUrl(existingService.imageUrl);
-        }
-        updateData.imageUrl = data.imageUrl;
-      }
-
-      await db.service.update({
-        where: { id },
-        data: updateData,
-      });
-
       // Get existing service to handle image cleanup
       const existingService = await this.getServiceById(id);
       if (!existingService) {
         throw new Error("Service not found");
       }
+
+      // Delete old main image if it exists
+      if (existingService?.imageUrl) {
+        await deleteFromCloudinaryByUrl(existingService.imageUrl);
+      }
+
+      // Update the main service
+      const updateData: {
+        categoryId: string;
+        name: string;
+        overview: string;
+        imageUrl: string;
+      } = {
+        categoryId: data.categoryId,
+        name: data.name,
+        overview: data.overview,
+        imageUrl: data.imageUrl,
+      };
+
+      await db.service.update({
+        where: { id },
+        data: updateData,
+      });
 
       // Handle Section 1
       if (

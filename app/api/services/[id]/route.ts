@@ -95,6 +95,7 @@ export async function PUT(
 
     // Basic validation
     if (
+      !serviceData?.imageUrl ||
       !serviceData?.categoryId ||
       !serviceData?.name ||
       !serviceData?.overview
@@ -102,7 +103,7 @@ export async function PUT(
       return NextResponse.json(
         {
           success: false,
-          error: "Category ID, name, and overview are required",
+          error: "Category ID, name, overview, and image are required",
         },
         { status: 400 }
       );
