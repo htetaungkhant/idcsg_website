@@ -158,62 +158,6 @@ export function CreateTechnologyForm() {
       // Success
       toast.success("Technology created successfully!");
       router.push("/admin/technology-management");
-
-      // // Create FormData for file uploads
-      // const formData = new FormData();
-
-      // // Required fields
-      // formData.append("title", data.title);
-      // formData.append("overview", data.overview);
-      // if (data.mainImage) {
-      //   formData.append("mainImage", data.mainImage);
-      // }
-
-      // // Optional main description
-      // if (data.description) {
-      //   formData.append("description", data.description);
-      // }
-
-      // // Section 1 data
-      // if (data.section1Title) {
-      //   formData.append("section1Title", data.section1Title);
-      // }
-      // if (data.section1Description) {
-      //   formData.append("section1Description", data.section1Description);
-      // }
-      // if (data.section1Image) {
-      //   formData.append("section1Image", data.section1Image);
-      // }
-
-      // // Cards data
-      // if (data.cards && data.cards.length > 0) {
-      //   data.cards.forEach((card, index) => {
-      //     if (card.title) {
-      //       formData.append(`cards[${index}].title`, card.title);
-      //     }
-      //     if (card.description) {
-      //       formData.append(`cards[${index}].description`, card.description);
-      //     }
-      //     if (card.image) {
-      //       formData.append(`cards[${index}].image`, card.image);
-      //     }
-      //   });
-      // }
-
-      // const response = await fetch("/api/technologies", {
-      //   method: "POST",
-      //   body: formData,
-      // });
-
-      // const result = await response.json();
-
-      // if (!result.success) {
-      //   throw new Error(result.error || "Failed to create technology");
-      // }
-
-      // // Success
-      // toast.success("Technology created successfully!");
-      // router.push("/admin/technology-management");
     } catch (error) {
       console.error("Error creating technology:", error);
       toast.error(
@@ -272,6 +216,7 @@ export function CreateTechnologyForm() {
                             handleImagePreview(file, "mainImage");
                           }}
                           className="cursor-pointer"
+                          disabled={isLoading}
                         />
                         {previews.mainImage && (
                           <div className="relative">
@@ -304,6 +249,7 @@ export function CreateTechnologyForm() {
                         {...field}
                         placeholder="Enter technology title..."
                         className="text-base"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -325,6 +271,7 @@ export function CreateTechnologyForm() {
                         {...field}
                         placeholder="Enter technology overview..."
                         className="min-h-[100px] text-base resize-vertical"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -355,6 +302,7 @@ export function CreateTechnologyForm() {
                         {...field}
                         placeholder="Enter detailed description of the technology..."
                         className="min-h-[120px] text-base resize-vertical"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -393,6 +341,7 @@ export function CreateTechnologyForm() {
                             handleImagePreview(file, "section1Image");
                           }}
                           className="cursor-pointer"
+                          disabled={isLoading}
                         />
                         {previews.section1Image && (
                           <div className="relative">
@@ -425,6 +374,7 @@ export function CreateTechnologyForm() {
                         {...field}
                         placeholder="Enter section 1 title..."
                         className="text-base"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -446,6 +396,7 @@ export function CreateTechnologyForm() {
                         {...field}
                         placeholder="Enter section 1 description..."
                         className="min-h-[100px] text-base resize-vertical"
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -514,6 +465,7 @@ export function CreateTechnologyForm() {
                                     handleImagePreview(file, `card-${index}`);
                                   }}
                                   className="cursor-pointer"
+                                  disabled={isLoading}
                                 />
                                 {previews[`card-${index}`] && (
                                   <div className="relative">
