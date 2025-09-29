@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { TechnologyService, type CreateTechnologyFormData } from "@/lib/services/technology-service";
-
-// Type for updates - making mainImage optional by omitting it and adding it back as optional
-type UpdateTechnologyFormData = Omit<CreateTechnologyFormData, 'mainImage'> & {
-  mainImage?: File;
-};
+import {
+  TechnologyService,
+  type TechnologyFormData,
+} from "@/lib/services/technology-service";
 
 export async function GET(
   request: NextRequest,
@@ -51,90 +49,47 @@ export async function PUT(
       (session.user as unknown as Record<string, unknown>)?.role !== "ADMIN"
     ) {
       return NextResponse.json(
-        { success: false, error: "Unauthorized access" },
+        { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
     const { id } = await params;
 
-    // Check if technology exists
-    const existingTechnology = await TechnologyService.getTechnologyById(id);
-    if (!existingTechnology) {
+    if (!id) {
       return NextResponse.json(
-        { success: false, error: "Technology not found" },
-        { status: 404 }
-      );
-    }
-
-    // Parse form data and build update data dynamically
-    const formData = await request.formData();
-    const title = formData.get("title") as string;
-    const overview = formData.get("overview") as string;
-
-    // Validate required fields
-    if (!title || !overview) {
-      return NextResponse.json(
-        { success: false, error: "Title and overview are required" },
+        {
+          success: false,
+          error: "Technology ID is required",
+        },
         { status: 400 }
       );
     }
 
-    // Start with required fields
-    const updateData: UpdateTechnologyFormData = {
-      title,
-      overview,
-    };
+    // Parse JSON data
+    const technologyData = await request.json();
 
-    // Add optional fields only if they exist
-    const description = formData.get("description") as string | null;
-    if (description) updateData.description = description;
-
-    const mainImage = formData.get("mainImage") as File | null;
-    if (mainImage && mainImage.size > 0) updateData.mainImage = mainImage;
-
-    const section1Title = formData.get("section1Title") as string | null;
-    if (section1Title) updateData.section1Title = section1Title;
-
-    const section1Description = formData.get("section1Description") as
-      | string
-      | null;
-    if (section1Description)
-      updateData.section1Description = section1Description;
-
-    const section1Image = formData.get("section1Image") as File | null;
-    if (section1Image && section1Image.size > 0)
-      updateData.section1Image = section1Image;
-
-    const card1Title = formData.get("card1Title") as string | null;
-    if (card1Title) updateData.card1Title = card1Title;
-
-    const card1Description = formData.get("card1Description") as string | null;
-    if (card1Description) updateData.card1Description = card1Description;
-
-    const card1Image = formData.get("card1Image") as File | null;
-    if (card1Image && card1Image.size > 0) updateData.card1Image = card1Image;
-
-    const card2Title = formData.get("card2Title") as string | null;
-    if (card2Title) updateData.card2Title = card2Title;
-
-    const card2Description = formData.get("card2Description") as string | null;
-    if (card2Description) updateData.card2Description = card2Description;
-
-    const card2Image = formData.get("card2Image") as File | null;
-    if (card2Image && card2Image.size > 0) updateData.card2Image = card2Image;
+    // Validate required fields
+    if (
+      !technologyData?.title ||
+      !technologyData?.overview ||
+      !technologyData?.imageUrl
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Title, overview, and image are required" },
+        { status: 400 }
+      );
+    }
 
     // Update the technology
-    // We've validated required fields and mainImage is optional for updates
     const updatedTechnology = await TechnologyService.updateTechnology(
       id,
-      updateData as CreateTechnologyFormData
+      technologyData as TechnologyFormData
     );
 
     return NextResponse.json({
       success: true,
       data: updatedTechnology,
-      message: "Technology updated successfully",
     });
   } catch (error) {
     console.error("PUT /api/technologies/[id] error:", error);

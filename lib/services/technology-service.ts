@@ -1,53 +1,24 @@
 import db from "@/lib/db/db";
 import {
-  uploadToCloudinary,
   deleteFromCloudinaryByUrl,
   deleteFolderFromCloudinary,
 } from "@/lib/cloudinary";
 import type {
   DentalTechnology,
   DentalTechnologySection1,
-  DentalTechnologyCard1,
-  DentalTechnologyCard2,
+  DentalTechnologyCard,
 } from "@/app/generated/prisma";
 
 // Technology with all nested sections and relationships
 export interface TechnologyWithSections extends DentalTechnology {
   section1?: DentalTechnologySection1 | null;
-  card1?: DentalTechnologyCard1 | null;
-  card2?: DentalTechnologyCard2 | null;
+  cards?: DentalTechnologyCard[] | null;
 }
 
-// Create technology data interface
-export interface CreateTechnologyData {
-  imageUrl: string; // Main image (required)
-  title: string; // Title (required)
-  overview: string; // Overview (required)
-  description?: string; // Optional description
-  section1?: {
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-  };
-  card1?: {
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-  };
-  card2?: {
-    imageUrl?: string;
-    title?: string;
-    description?: string;
-  };
-}
-
-export interface UpdateTechnologyData extends Partial<CreateTechnologyData> {
-  id?: string; // For update operations
-}
-
-export interface CreateTechnologyFormData {
+export interface TechnologyFormData {
+  id?: string; // For updates
   // Required fields
-  mainImage: File;
+  imageUrl: string;
   title: string;
   overview: string;
 
@@ -55,19 +26,17 @@ export interface CreateTechnologyFormData {
   description?: string;
 
   // Section 1 fields
-  section1Image?: File;
+  section1ImageUrl?: string;
   section1Title?: string;
   section1Description?: string;
 
-  // Card 1 fields
-  card1Image?: File;
-  card1Title?: string;
-  card1Description?: string;
-
-  // Card 2 fields
-  card2Image?: File;
-  card2Title?: string;
-  card2Description?: string;
+  // Cards fields
+  cards?: {
+    id?: string; // For existing cards during updates
+    imageUrl?: string;
+    title?: string;
+    description?: string;
+  }[];
 }
 
 export class TechnologyService {
@@ -78,8 +47,7 @@ export class TechnologyService {
     const technologies = await db.dentalTechnology.findMany({
       include: {
         section1: true,
-        card1: true,
-        card2: true,
+        cards: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -97,8 +65,7 @@ export class TechnologyService {
       where: { id },
       include: {
         section1: true,
-        card1: true,
-        card2: true,
+        cards: true,
       },
     });
 
@@ -109,122 +76,70 @@ export class TechnologyService {
    * Create a new technology with all sections
    */
   static async createTechnology(
-    data: CreateTechnologyFormData
+    data: TechnologyFormData
   ): Promise<TechnologyWithSections> {
-    // First create the technology record without the main image URL to get the actual ID
-    const technology = await db.dentalTechnology.create({
-      data: {
-        imageUrl: "", // Temporary empty string, will be updated after image upload
-        title: data.title,
-        overview: data.overview,
-        description: data.description || null,
-      },
-    });
-
-    // Now upload all images using the actual technology ID
-    const uploadedImages: { [key: string]: string } = {};
+    const technologyId =
+      data.id ||
+      (
+        await db.dentalTechnology.create({
+          data: {
+            imageUrl: data.imageUrl,
+            title: data.title,
+            overview: data.overview,
+            description: data.description || null,
+          },
+        })
+      ).id;
 
     try {
-      // Upload main image (required)
-      const mainImageBuffer = Buffer.from(await data.mainImage.arrayBuffer());
-      const mainImageUpload = await uploadToCloudinary(mainImageBuffer, {
-        folder: `technologies/${technology.id}/main`,
+      // Update the technology with the main image URL
+      await db.dentalTechnology.update({
+        where: { id: technologyId },
+        data: { imageUrl: data.imageUrl },
       });
-      uploadedImages.mainImage = mainImageUpload.secure_url;
-
-      // Upload Section 1 image if provided
-      if (data.section1Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.section1Image.arrayBuffer()),
-          { folder: `technologies/${technology.id}/section1` }
-        );
-        uploadedImages.section1Image = uploadResult.secure_url;
-      }
-
-      // Upload Card 1 image if provided
-      if (data.card1Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.card1Image.arrayBuffer()),
-          { folder: `technologies/${technology.id}/card1` }
-        );
-        uploadedImages.card1Image = uploadResult.secure_url;
-      }
-
-      // Upload Card 2 image if provided
-      if (data.card2Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.card2Image.arrayBuffer()),
-          { folder: `technologies/${technology.id}/card2` }
-        );
-        uploadedImages.card2Image = uploadResult.secure_url;
-      }
-
-      // Create sections with uploaded image URLs in a transaction
-      return await db.$transaction(async (prisma) => {
-        // Update the technology with the main image URL
-        await prisma.dentalTechnology.update({
-          where: { id: technology.id },
-          data: { imageUrl: uploadedImages.mainImage },
+      // Create Section 1 if data is provided
+      if (
+        data.section1Title ||
+        data.section1Description ||
+        data.section1ImageUrl
+      ) {
+        await db.dentalTechnologySection1.create({
+          data: {
+            dentalTechnologyId: technologyId,
+            imageUrl: data.section1ImageUrl || null,
+            title: data.section1Title || null,
+            description: data.section1Description || null,
+          },
         });
-        // Create Section 1 if data is provided
-        if (
-          data.section1Title ||
-          data.section1Description ||
-          uploadedImages.section1Image
-        ) {
-          await prisma.dentalTechnologySection1.create({
+      }
+
+      // Create Cards if data is provided
+      if (data.cards && data.cards.length > 0) {
+        for (let i = 0; i < data.cards.length; i++) {
+          const card = data.cards[i];
+
+          await db.dentalTechnologyCard.createMany({
             data: {
-              dentalTechnologyId: technology.id,
-              imageUrl: uploadedImages.section1Image || null,
-              title: data.section1Title || null,
-              description: data.section1Description || null,
+              dentalTechnologyId: technologyId,
+              imageUrl: card.imageUrl || null,
+              title: card.title || null,
+              description: card.description || null,
+              sortOrder: i,
             },
           });
         }
+      }
 
-        // Create Card 1 if data is provided
-        if (
-          data.card1Title ||
-          data.card1Description ||
-          uploadedImages.card1Image
-        ) {
-          await prisma.dentalTechnologyCard1.create({
-            data: {
-              dentalTechnologyId: technology.id,
-              imageUrl: uploadedImages.card1Image || null,
-              title: data.card1Title || null,
-              description: data.card1Description || null,
-            },
-          });
-        }
-
-        // Create Card 2 if data is provided
-        if (
-          data.card2Title ||
-          data.card2Description ||
-          uploadedImages.card2Image
-        ) {
-          await prisma.dentalTechnologyCard2.create({
-            data: {
-              dentalTechnologyId: technology.id,
-              imageUrl: uploadedImages.card2Image || null,
-              title: data.card2Title || null,
-              description: data.card2Description || null,
-            },
-          });
-        }
-
-        // Return the full technology with all sections
-        const createdTechnology = await this.getTechnologyById(technology.id);
-        return createdTechnology as TechnologyWithSections;
-      });
+      // Return the full technology with all sections
+      const createdTechnology = await this.getTechnologyById(technologyId);
+      return createdTechnology as TechnologyWithSections;
     } catch (error) {
       // If there's an error, clean up the technology and any uploaded images
       try {
         // Delete the technology from database
-        await db.dentalTechnology.delete({ where: { id: technology.id } });
+        await db.dentalTechnology.delete({ where: { id: technologyId } });
         // Delete the entire folder from Cloudinary
-        await deleteFolderFromCloudinary(`technologies/${technology.id}`);
+        await deleteFolderFromCloudinary(`technologies/${technologyId}`);
       } catch (cleanupError) {
         console.error("Failed to cleanup technology and images:", cleanupError);
       }
@@ -237,219 +152,189 @@ export class TechnologyService {
    */
   static async updateTechnology(
     id: string,
-    data: CreateTechnologyFormData
+    data: TechnologyFormData
   ): Promise<TechnologyWithSections> {
-    // First, upload new images outside of the transaction
-    const uploadedImages: { [key: string]: string } = {};
-
     try {
-      // Upload main image if provided
-      if (data.mainImage) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.mainImage.arrayBuffer()),
-          { folder: `technologies/${id}/main` }
-        );
-        uploadedImages.mainImage = uploadResult.secure_url;
+      // Get existing technology to handle image cleanup
+      const existingTechnology = await this.getTechnologyById(id);
+      if (!existingTechnology) {
+        throw new Error("Technology not found");
       }
 
-      // Upload Section 1 image if provided
-      if (data.section1Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.section1Image.arrayBuffer()),
-          { folder: `technologies/${id}/section1` }
-        );
-        uploadedImages.section1Image = uploadResult.secure_url;
+      // Delete old main image if it exists
+      if (
+        existingTechnology?.imageUrl &&
+        existingTechnology.imageUrl !== data.imageUrl
+      ) {
+        await deleteFromCloudinaryByUrl(existingTechnology.imageUrl);
       }
 
-      // Upload Card 1 image if provided
-      if (data.card1Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.card1Image.arrayBuffer()),
-          { folder: `technologies/${id}/card1` }
-        );
-        uploadedImages.card1Image = uploadResult.secure_url;
-      }
+      // Update the main technology
+      const updateData: {
+        title: string;
+        overview: string;
+        description?: string | null;
+        imageUrl: string;
+      } = {
+        title: data.title,
+        overview: data.overview,
+        description: data.description || null,
+        imageUrl: data.imageUrl,
+      };
 
-      // Upload Card 2 image if provided
-      if (data.card2Image) {
-        const uploadResult = await uploadToCloudinary(
-          Buffer.from(await data.card2Image.arrayBuffer()),
-          { folder: `technologies/${id}/card2` }
-        );
-        uploadedImages.card2Image = uploadResult.secure_url;
-      }
+      await db.dentalTechnology.update({
+        where: { id },
+        data: updateData,
+      });
 
-      return await db.$transaction(async (prisma) => {
-        // Get existing technology to handle image cleanup
-        const existingTechnology = await this.getTechnologyById(id);
-        if (!existingTechnology) {
-          throw new Error("Technology not found");
-        }
+      // Handle Section 1
+      if (
+        data.section1Title ||
+        data.section1Description ||
+        data.section1ImageUrl
+      ) {
+        let section1ImageUrl = existingTechnology.section1?.imageUrl;
 
-        // Update the main technology
-        let mainImageUrl = existingTechnology.imageUrl;
-
-        // If new main image uploaded, delete old one and use new URL
-        if (uploadedImages.mainImage) {
-          if (mainImageUrl) {
-            await deleteFromCloudinaryByUrl(mainImageUrl);
+        // If new image uploaded, delete old one and use new URL
+        if (data.section1ImageUrl) {
+          if (section1ImageUrl) {
+            await deleteFromCloudinaryByUrl(section1ImageUrl);
           }
-          mainImageUrl = uploadedImages.mainImage;
+          section1ImageUrl = data.section1ImageUrl;
         }
 
-        await prisma.dentalTechnology.update({
-          where: { id },
-          data: {
-            imageUrl: mainImageUrl,
-            title: data.title,
-            overview: data.overview,
-            description: data.description || null,
+        await db.dentalTechnologySection1.upsert({
+          where: { dentalTechnologyId: id },
+          create: {
+            dentalTechnologyId: id,
+            imageUrl: section1ImageUrl,
+            title: data.section1Title || null,
+            description: data.section1Description || null,
+          },
+          update: {
+            imageUrl: section1ImageUrl,
+            title: data.section1Title || null,
+            description: data.section1Description || null,
           },
         });
+      } else {
+        // Delete section1 if no data is provided
+        const section1 = await db.dentalTechnologySection1.findUnique({
+          where: { dentalTechnologyId: id },
+        });
 
-        // Handle Section 1
-        if (
-          data.section1Title ||
-          data.section1Description ||
-          data.section1Image
-        ) {
-          let section1ImageUrl = existingTechnology.section1?.imageUrl;
-
-          // If new image uploaded, delete old one and use new URL
-          if (uploadedImages.section1Image) {
-            if (section1ImageUrl) {
-              await deleteFromCloudinaryByUrl(section1ImageUrl);
-            }
-            section1ImageUrl = uploadedImages.section1Image;
+        if (section1) {
+          if (section1.imageUrl) {
+            await deleteFromCloudinaryByUrl(section1.imageUrl);
           }
-
-          await prisma.dentalTechnologySection1.upsert({
-            where: { dentalTechnologyId: id },
-            create: {
-              dentalTechnologyId: id,
-              imageUrl: section1ImageUrl,
-              title: data.section1Title || null,
-              description: data.section1Description || null,
-            },
-            update: {
-              imageUrl: section1ImageUrl,
-              title: data.section1Title || null,
-              description: data.section1Description || null,
-            },
-          });
-        } else {
-          // Delete section1 if no data is provided
-          const section1 = await prisma.dentalTechnologySection1.findUnique({
+          await db.dentalTechnologySection1.delete({
             where: { dentalTechnologyId: id },
           });
-
-          if (section1) {
-            if (section1.imageUrl) {
-              await deleteFromCloudinaryByUrl(section1.imageUrl);
-            }
-            await prisma.dentalTechnologySection1.delete({
-              where: { dentalTechnologyId: id },
-            });
-          }
-        }
-
-        // Handle Card 1
-        if (data.card1Title || data.card1Description || data.card1Image) {
-          let card1ImageUrl = existingTechnology.card1?.imageUrl;
-
-          // If new image uploaded, delete old one and use new URL
-          if (uploadedImages.card1Image) {
-            if (card1ImageUrl) {
-              await deleteFromCloudinaryByUrl(card1ImageUrl);
-            }
-            card1ImageUrl = uploadedImages.card1Image;
-          }
-
-          await prisma.dentalTechnologyCard1.upsert({
-            where: { dentalTechnologyId: id },
-            create: {
-              dentalTechnologyId: id,
-              imageUrl: card1ImageUrl,
-              title: data.card1Title || null,
-              description: data.card1Description || null,
-            },
-            update: {
-              imageUrl: card1ImageUrl,
-              title: data.card1Title || null,
-              description: data.card1Description || null,
-            },
-          });
-        } else {
-          // Delete card1 if no data is provided
-          const card1 = await prisma.dentalTechnologyCard1.findUnique({
-            where: { dentalTechnologyId: id },
-          });
-
-          if (card1) {
-            if (card1.imageUrl) {
-              await deleteFromCloudinaryByUrl(card1.imageUrl);
-            }
-            await prisma.dentalTechnologyCard1.delete({
-              where: { dentalTechnologyId: id },
-            });
-          }
-        }
-
-        // Handle Card 2
-        if (data.card2Title || data.card2Description || data.card2Image) {
-          let card2ImageUrl = existingTechnology.card2?.imageUrl;
-
-          // If new image uploaded, delete old one and use new URL
-          if (uploadedImages.card2Image) {
-            if (card2ImageUrl) {
-              await deleteFromCloudinaryByUrl(card2ImageUrl);
-            }
-            card2ImageUrl = uploadedImages.card2Image;
-          }
-
-          await prisma.dentalTechnologyCard2.upsert({
-            where: { dentalTechnologyId: id },
-            create: {
-              dentalTechnologyId: id,
-              imageUrl: card2ImageUrl,
-              title: data.card2Title || null,
-              description: data.card2Description || null,
-            },
-            update: {
-              imageUrl: card2ImageUrl,
-              title: data.card2Title || null,
-              description: data.card2Description || null,
-            },
-          });
-        } else {
-          // Delete card2 if no data is provided
-          const card2 = await prisma.dentalTechnologyCard2.findUnique({
-            where: { dentalTechnologyId: id },
-          });
-
-          if (card2) {
-            if (card2.imageUrl) {
-              await deleteFromCloudinaryByUrl(card2.imageUrl);
-            }
-            await prisma.dentalTechnologyCard2.delete({
-              where: { dentalTechnologyId: id },
-            });
-          }
-        }
-
-        // Return the updated technology with all sections
-        const updatedTechnology = await this.getTechnologyById(id);
-        return updatedTechnology as TechnologyWithSections;
-      });
-    } catch (error) {
-      // If there's an error, clean up any newly uploaded images
-      for (const imageUrl of Object.values(uploadedImages)) {
-        try {
-          await deleteFromCloudinaryByUrl(imageUrl);
-        } catch (cleanupError) {
-          console.error("Failed to cleanup image:", imageUrl, cleanupError);
         }
       }
+
+      // Handle Cards
+      if (data.cards && data.cards.length > 0) {
+        // Get existing cards to handle cleanup
+        const existingCards = existingTechnology.cards || [];
+
+        // Track which existing cards are being updated
+        const updatedCardIds = new Set(
+          data.cards.filter((card) => card.id).map((card) => card.id!)
+        );
+
+        // Delete cards that are no longer needed
+        for (const existingCard of existingCards) {
+          if (!updatedCardIds.has(existingCard.id)) {
+            // Delete image if exists
+            if (existingCard.imageUrl) {
+              await deleteFromCloudinaryByUrl(existingCard.imageUrl);
+            }
+            // Delete card
+            await db.dentalTechnologyCard.delete({
+              where: { id: existingCard.id },
+            });
+          }
+        }
+
+        // Update existing cards and create new ones
+        for (let i = 0; i < data.cards.length; i++) {
+          const card = data.cards[i];
+
+          if (card.id) {
+            // Update existing card
+            const existingCard = existingCards.find((ec) => ec.id === card.id);
+            let cardImageUrl = existingCard?.imageUrl;
+
+            // If new image uploaded, delete old one and use new URL
+            if (card.imageUrl) {
+              if (cardImageUrl) {
+                await deleteFromCloudinaryByUrl(cardImageUrl);
+              }
+              cardImageUrl = card.imageUrl;
+            }
+
+            await db.dentalTechnologyCard.update({
+              where: { id: card.id },
+              data: {
+                imageUrl: cardImageUrl,
+                title: card.title || null,
+                description: card.description || null,
+                sortOrder: i,
+              },
+            });
+          } else {
+            // Create new card
+            await db.dentalTechnologyCard.create({
+              data: {
+                dentalTechnologyId: id,
+                imageUrl: card.imageUrl || null,
+                title: card.title || null,
+                description: card.description || null,
+                sortOrder: i,
+              },
+            });
+          }
+        }
+      } else {
+        // Delete all cards if no data is provided
+        const existingCards = existingTechnology.cards || [];
+
+        for (const card of existingCards) {
+          // Delete image if exists
+          if (card.imageUrl) {
+            await deleteFromCloudinaryByUrl(card.imageUrl);
+          }
+          // Delete card
+          await db.dentalTechnologyCard.delete({
+            where: { id: card.id },
+          });
+        }
+      }
+
+      // Return the updated technology with all sections
+      const updatedTechnology = await this.getTechnologyById(id);
+      return updatedTechnology as TechnologyWithSections;
+    } catch (error) {
+      // If there's an error, clean up any newly uploaded images
+      try {
+        if (data.imageUrl) {
+          await deleteFromCloudinaryByUrl(data.imageUrl);
+        }
+        if (data.section1ImageUrl) {
+          await deleteFromCloudinaryByUrl(data.section1ImageUrl);
+        }
+        if (data.cards) {
+          for (const card of data.cards) {
+            if (card.imageUrl) {
+              await deleteFromCloudinaryByUrl(card.imageUrl);
+            }
+          }
+        }
+      } catch (cleanupError) {
+        console.error("Failed to cleanup images:", cleanupError);
+      }
+
       throw error;
     }
   }
