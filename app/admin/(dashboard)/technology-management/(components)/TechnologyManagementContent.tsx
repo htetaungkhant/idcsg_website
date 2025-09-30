@@ -102,16 +102,15 @@ export function TechnologyManagementContent({
                               Sec1
                             </Badge>
                           )}
-                          {technology.card1 && (
-                            <Badge variant="outline" className="text-xs">
-                              C1
+                          {technology.cards?.map((_, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {`C${index + 1}`}
                             </Badge>
-                          )}
-                          {technology.card2 && (
-                            <Badge variant="outline" className="text-xs">
-                              C2
-                            </Badge>
-                          )}
+                          ))}
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-1">
