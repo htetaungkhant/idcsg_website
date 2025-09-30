@@ -2,7 +2,7 @@ import { HomePageBtn } from "@/components/CustomButtons";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="relative">
       <video
@@ -14,11 +14,11 @@ export default function Home() {
         <source src="/dummy-data/main_bg.mp4" type="video/mp4" />
       </video>
 
-      <div className="max-h-screen overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="h-screen flex flex-col">
+      <div className="max-h-screen h-screen overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="h-full flex flex-col">
           <Header />
 
-          <section className="flex-1 flex flex-col gap-10 lg:gap-18 items-center justify-center">
+          <section className="mt-28 flex-1 flex flex-col gap-10 lg:gap-18 items-center justify-center">
             <h1 className="text-white text-center text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-(family-name:--font-oswald) font-bold">
               International Dental Centre
             </h1>
@@ -28,9 +28,8 @@ export default function Home() {
               <HomePageBtn>Online Consultation</HomePageBtn>
             </div>
           </section>
+          <Footer />
         </div>
-
-        <Footer />
       </div>
     </div>
   );

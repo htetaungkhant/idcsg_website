@@ -73,7 +73,7 @@ export default function Header({
           </button> */}
         </ul>
 
-        <div className="py-2.5 flex items-center justify-between">
+        <div className="py-2.5 flex items-center justify-between gap-1.5">
           <ul className="list-none flex items-center gap-1.5">
             <li className="hover:scale-110 transition-all duration-300">
               <Link

@@ -124,36 +124,35 @@ export default function NavLinks({
   return (
     <ul
       className={cn(
-        "list-none flex items-center gap-1 lg:gap-3 font-(family-name:--font-oswald) text-base xl:text-lg",
+        "list-none flex items-center gap-1 font-(family-name:--font-oswald) text-base xl:text-lg",
         className
       )}
     >
-      <li className="w-12 text-center">
-        <Link
-          href="/"
-          className={cn(
-            "w-full hover:underline",
-            pathname === "/" && "font-bold"
-          )}
-        >
+      <li
+        className={cn(
+          "w-15 text-center rounded-full",
+          pathname === "/" && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/" className="w-full block">
           Home
         </Link>
       </li>
-      <li className="w-12.5 text-center">
-        <Link
-          href="/teams"
-          className={cn(
-            "w-full hover:underline",
-            pathname.startsWith("/teams") && "font-bold"
-          )}
-        >
+      <li
+        className={cn(
+          "w-15 text-center rounded-full",
+          pathname.startsWith("/teams") && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/teams" className="w-full block">
           Teams
         </Link>
       </li>
       <li
         className={cn(
-          "w-16 text-center relative",
-          pathname.startsWith("/services") && "font-bold"
+          "w-19 text-center rounded-full relative",
+          pathname.startsWith("/services") &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <span
@@ -198,8 +197,9 @@ export default function NavLinks({
       </li>
       <li
         className={cn(
-          "w-22 text-center relative",
-          pathname.startsWith("/information") && "font-bold"
+          "w-25 text-center rounded-full relative",
+          pathname.startsWith("/information") &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <span
@@ -387,47 +387,43 @@ export default function NavLinks({
           </div>
         </div>
       </li>
-      <li className="w-12 text-center">
-        <Link
-          href="/blog"
-          className={cn(
-            "w-full hover:underline",
-            pathname.startsWith("/blog") && "font-bold"
-          )}
-        >
+      <li
+        className={cn(
+          "w-15 text-center rounded-full",
+          pathname.startsWith("/blog") && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/blog" className="w-full block">
           Blog
         </Link>
       </li>
-      <li className="w-12 text-center">
-        <Link
-          href="/shop"
-          className={cn(
-            "w-full hover:underline",
-            pathname.startsWith("/shop") && "font-bold"
-          )}
-        >
+      <li
+        className={cn(
+          "w-15 text-center rounded-full",
+          pathname.startsWith("/shop") && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/shop" className="w-full block">
           Shop
         </Link>
       </li>
-      <li className="w-10 text-center">
-        <Link
-          href="/pay"
-          className={cn(
-            "w-full hover:underline",
-            pathname.startsWith("/pay") && "font-bold"
-          )}
-        >
+      <li
+        className={cn(
+          "w-13 text-center rounded-full",
+          pathname.startsWith("/pay") && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/pay" className="w-full block">
           Pay
         </Link>
       </li>
-      <li className="w-16 text-center">
-        <Link
-          href="/contact"
-          className={cn(
-            "w-full hover:underline",
-            pathname.startsWith("/contact") && "font-bold"
-          )}
-        >
+      <li
+        className={cn(
+          "w-19 text-center rounded-full",
+          pathname.startsWith("/contact") && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/contact" className="w-full block">
           Contact
         </Link>
       </li>
