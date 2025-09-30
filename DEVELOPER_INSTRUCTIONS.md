@@ -3,7 +3,7 @@
 ## Overview
 This document provides comprehensive guidelines for developing and maintaining the IDCSG website. These instructions are designed for senior Next.js developers to ensure consistency, maintainability, and optimal performance across the codebase.
 
-*Last Updated: September 26, 2025*
+*Last Updated: September 30, 2025*
 
 ## Project Architecture
 
@@ -11,15 +11,15 @@ This document provides comprehensive guidelines for developing and maintaining t
 - **Framework**: Next.js 15.4.5 with App Router and Turbopack
 - **Runtime**: React 19.1.0 with React DOM 19.1.0
 - **Database**: Prisma ORM 6.16.2 with PostgreSQL and Prisma Accelerate extension (@prisma/extension-accelerate 2.0.2)
-- **Authentication**: NextAuth.js v5 (beta.29) with Prisma adapter (@auth/prisma-adapter 2.10.0)
-- **Styling**: TailwindCSS v4 with Shadcn/UI and tw-animate-css v1.3.6, @tailwindcss/postcss v4
+- **Authentication**: NextAuth.js v5.0.0-beta.29 with Prisma adapter (@auth/prisma-adapter 2.10.0)
+- **Styling**: TailwindCSS v4 with @tailwindcss/postcss v4, Shadcn/UI and tw-animate-css v1.3.6
 - **TypeScript**: Full TypeScript implementation with strict mode (TypeScript 5)
 - **Form Management**: React Hook Form v7.62.0 with Zod validation v4.1.5 and @hookform/resolvers v5.2.1
 - **Icons**: Lucide React v0.536.0 & React Icons v5.5.0
 - **Notifications**: Sonner v2.0.7
 - **HTTP Client**: Axios v1.12.2 for API requests
 - **File Upload**: Multer v2.0.2 with Cloudinary v2.7.0 integration
-- **Security**: bcryptjs v3.0.2 for password hashing
+- **Security**: bcryptjs v3.0.2 for password hashing with @types/bcryptjs v2.4.6
 - **Theming**: Next-themes v0.4.6 for dark/light mode
 - **Phone Input**: React International Phone v4.6.0 for international phone numbers
 - **Utilities**: Class Variance Authority v0.7.1, clsx v2.1.1, tailwind-merge v3.3.1, uuid v13.0.0
@@ -33,6 +33,14 @@ This document provides comprehensive guidelines for developing and maintaining t
   - @radix-ui/react-switch v1.2.6
   - @radix-ui/react-tabs v1.1.13
   - @radix-ui/react-tooltip v1.2.8
+- **Dev Dependencies**: 
+  - @eslint/eslintrc v3
+  - @types/node v20
+  - @types/react v19
+  - @types/react-dom v19
+  - @types/multer v2.0.0
+  - eslint v9
+  - eslint-config-next 15.4.5
 
 ## Advanced Features and Patterns
 
@@ -49,7 +57,7 @@ The system manages multiple types of information pages through dedicated service
 - **Precise Information**: Multi-section content with different card styles for precise/technical information presentation
 - **Privacy Policy**: Single content section with hosting date and structured privacy policy content
 - **Safety Information**: Multi-section content with various card styles for safety protocols and guidelines
-- **Technology Information**: Comprehensive technology management with main fields (image, title, overview) plus optional sections and cards for detailed technology descriptions
+- **Technology Information**: Comprehensive technology management with main fields (image, title, overview) plus optional section1 and dynamic card list for detailed technology descriptions
 - **Terms of Service**: Single content section with hosting date and structured terms of service content
 
 #### Content Structure Patterns
@@ -98,6 +106,7 @@ The project includes a sophisticated homepage background management system:
 - **Professional Optimization**: Cloudinary integration for optimal media delivery
 - **Visual Control**: Opacity adjustment for better text readability over backgrounds
 - **State Management**: Automatic deactivation of previous settings when new ones are activated
+- **Database Constraint**: Unique constraint on `isActive` field ensures only one active setting exists at a time
 - **Admin Interface**: Dedicated management interface for homepage customization
 
 ### Patient Instructions Management System
@@ -164,10 +173,12 @@ Teams are organized by type with flexible member management:
 ### Security Implementations
 
 #### Authentication & Authorization
-- **NextAuth.js v5**: Latest authentication patterns with Prisma adapter
+- **NextAuth.js v5.0.0-beta.29**: Latest authentication patterns with Prisma adapter
 - **Role-based Access**: Admin-only routes and API endpoints
 - **Session Management**: Secure session handling and validation
 - **Protected Routes**: Middleware-based route protection
+- **WebAuthn Support**: Optional authenticator support for passwordless authentication
+- **Previous Admin Credentials**: PreviousAdminCredentials model for credential history
 
 #### Data Security
 - **Input Validation**: Zod schema validation at API boundaries
@@ -341,7 +352,7 @@ The project uses Next.js middleware for authentication and route protection:
 export { auth as middleware } from "@/lib/auth";
 ```
 
-The middleware automatically protects admin routes and handles authentication state across the application. It integrates seamlessly with NextAuth.js v5 to provide:
+The middleware automatically protects admin routes and handles authentication state across the application. It integrates seamlessly with NextAuth.js v5.0.0-beta.29 to provide:
 - **Route Protection**: Automatic redirect for unauthenticated users trying to access admin pages
 - **Session Validation**: Continuous session validation across requests
 - **Role-based Access Control**: Admin-only route protection based on user roles
@@ -483,8 +494,10 @@ app/                                    # Next.js 15 App Router
     │   ├── route.ts                  # Technology content management
     │   └── [id]/
     │       └── route.ts              # Technology CRUD operations
-    └── terms-of-service/             # Terms of service API
-        └── route.ts                  # Terms of service content management
+    ├── terms-of-service/             # Terms of service API
+    │   └── route.ts                  # Terms of service content management
+    └── upload-signed-params/         # Cloudinary upload API
+        └── route.ts                  # Generate signed upload parameters for secure Cloudinary uploads
 
 components/                           # Reusable UI components
 ├── ui/                              # Shadcn/UI components
@@ -508,30 +521,32 @@ components/                           # Reusable UI components
 │   ├── tabs.tsx
 │   ├── textarea.tsx
 │   └── tooltip.tsx
-├── CardCollection.tsx               # Custom common components
+├── providers/                      # Context providers (empty - for future use)
+├── CardCollection.tsx              # Custom common components
 ├── CustomButtons.tsx
 ├── CustomCard.tsx
 ├── Footer.tsx
 ├── GithubSignIn.tsx
 ├── SignOut.tsx
-└── Header/                         # Multi-file component
+└── Header/                        # Multi-file component
     ├── index.tsx
     └── NavLinks.tsx
 
 hooks/                              # Custom React hooks
-└── use-mobile.ts
+├── use-cloudinary-upload.ts       # Cloudinary upload with progress tracking
+└── use-mobile.ts                  # Mobile device detection
 
 lib/                               # Utility libraries and configurations
 ├── actions.ts                     # Server actions
-├── api-client.ts                  # HTTP client configuration
-├── auth.ts                        # NextAuth.js v5 configuration
+├── api-client.ts                  # Configured Axios instance with auth handling
+├── auth.ts                        # NextAuth.js v5.0.0-beta.29 configuration
 ├── cloudinary.ts                  # Cloudinary integration
-├── execute-action.ts              # Action execution utilities
-├── password.ts                    # Password utilities
+├── execute-action.ts              # Action execution utilities with error handling
+├── password.ts                    # Password hashing and verification utilities
 ├── schema.ts                      # Zod validation schemas
-├── utils.ts                       # Common utilities
+├── utils.ts                       # Common utilities (cn, formatDate, etc.)
 ├── db/                           # Database related files
-│   ├── db.ts                     # Database connection
+│   ├── db.ts                     # Database connection with Prisma Accelerate
 │   ├── schema.prisma             # Prisma schema (PostgreSQL)
 │   ├── seed.ts                   # Database seeding
 │   └── migrations/               # Database migrations
@@ -628,7 +643,9 @@ public/                          # Static assets
 - **Location**: `/hooks/` folder for custom React hooks
 - **Naming Convention**: Use `use-` prefix for hook files (kebab-case)
 - **Purpose**: Reusable logic that uses React hooks
-- **Example**: `/hooks/use-mobile.ts` for mobile detection logic
+- **Examples**: 
+  - `/hooks/use-mobile.ts` - Mobile device detection hook
+  - `/hooks/use-cloudinary-upload.ts` - Cloudinary upload hook with progress tracking
 
 ## Import Statement Guidelines
 
@@ -664,10 +681,19 @@ import { LocalComponent } from './LocalComponent';
 
 ### Database Management
 
-#### Service Management Tables
+#### Database Management Tables
 The database includes comprehensive service management with the following structure:
 
 ```sql
+-- Previous Admin Credentials for credential history
+PreviousAdminCredentials {
+  id       String @id @default(cuid())
+  email    String
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 -- Core service entity
 Service {
   id          String   @id @default(cuid())
@@ -762,6 +788,8 @@ HomepageSettings {
   backgroundColor    String?  # Hex color code
   backgroundOpacity  Int      @default(100) # 0-100
   isActive          Boolean  @default(true) # Only one setting can be active
+  
+  @@unique([isActive]) # Ensures only one active setting
 }
 
 -- Dental Technology Management
@@ -772,8 +800,24 @@ DentalTechnology {
   overview    String   @db.Text # Technology overview/summary (required)
   description String?  @db.Text # Detailed description (optional)
   section1    DentalTechnologySection1? # One-to-one optional sections
-  card1       DentalTechnologyCard1?
-  card2       DentalTechnologyCard2?
+  cards       DentalTechnologyCard[] # Dynamic list of cards (one-to-many)
+}
+
+DentalTechnologySection1 {
+  id                 String @id @default(cuid())
+  dentalTechnologyId String @unique
+  imageUrl    String?  # Cloudinary URL (optional)
+  title       String?
+  description String?  @db.Text
+}
+
+DentalTechnologyCard {
+  id                 String @id @default(cuid())
+  dentalTechnologyId String # Foreign key (one-to-many relationship)
+  imageUrl    String?  # Cloudinary URL (optional)
+  title       String?
+  description String?  @db.Text
+  sortOrder   Int      @default(0)
 }
 
 -- Information Management Systems
@@ -815,6 +859,24 @@ SafeSection {
 -- Similar structures for Precise, Personal, FirstVisit, and PatientInstructions
 -- All follow similar patterns with optional fields and proper relationships
 
+-- Patient Instructions Management
+PatientInstructions {
+  id          String                    @id @default(cuid())
+  bannerImage String?                   # Cloudinary URL for banner (optional)
+  cards       PatientInstructionCard[]  # One-to-many relationship
+}
+
+PatientInstructionCard {
+  id                     String @id @default(cuid())
+  patientInstructionsId  String # Foreign key
+  backgroundImage        String # Cloudinary URL (required)
+  contentTitle           String # Card title (required)
+  contentImage           String? # Cloudinary URL (optional)
+  contentDescription     String @db.Text # Description (required)
+  downloadableFile       String? # Cloudinary URL for file (optional)
+  sortOrder              Int @default(0)
+}
+
 -- Enum Types for Type Safety
 UserRole { USER, ADMIN }
 TeamType { DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF }
@@ -835,6 +897,51 @@ User {
   sessions      Session[]
   Authenticator Authenticator[] # WebAuthn support
 }
+
+Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  
+  @@unique([provider, providerAccountId])
+}
+
+Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+}
+
+VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+  
+  @@unique([identifier, token])
+}
+
+Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  
+  @@id([userId, credentialID])
+}
 ```
 
 ### Prisma Configuration
@@ -842,9 +949,12 @@ User {
 - **Database**: PostgreSQL with Prisma Accelerate extension (@prisma/extension-accelerate 2.0.2) for enhanced performance
 - **Client Output**: Generated in `app/generated/prisma` directory
 - **Seed File**: `lib/db/seed.ts` for database seeding with `npx tsx lib/db/seed.ts` configuration
-- **Authentication Models**: Complete NextAuth.js v5 integration with User, Account, Session, VerificationToken, and Authenticator models
+- **Authentication Models**: Complete NextAuth.js v5.0.0-beta.29 integration with User, Account, Session, VerificationToken, and Authenticator models
+- **Previous Admin Credentials**: PreviousAdminCredentials model for tracking credential history
 - **Team Management**: Member model with TeamType enum (DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF)
 - **Content Management**: Comprehensive models for all information systems with proper relationships
+- **Technology Management**: DentalTechnology model with flexible card system (one-to-many relationship)
+- **Patient Instructions**: PatientInstructions model with card-based system for instruction content
 
 ### Database Scripts
 ```bash
@@ -892,6 +1002,9 @@ npx prisma generate --no-engine
 - **Transaction Safety**: Handle file uploads outside database transactions to prevent inconsistencies
 - **Error Handling**: Proper cleanup of uploaded files when database operations fail
 - **URL Management**: Store and manage Cloudinary URLs in database with proper validation
+- **Signed Uploads**: Use signed upload parameters via `/api/upload-signed-params` endpoint for secure uploads
+- **Client-Side Hook**: Use `useCloudinaryUpload` hook for file uploads with progress tracking
+- **Upload Options**: Support for folder specification, resource type, transformations, max bytes, and allowed formats
 
 ## Development Workflow
 
@@ -1395,6 +1508,44 @@ export const metadata: Metadata = {
 
 ## Common Patterns and Utilities
 
+### Cloudinary Upload Hook
+The project includes a custom hook for handling Cloudinary uploads with progress tracking:
+
+```typescript
+import { useCloudinaryUpload } from '@/hooks/use-cloudinary-upload';
+
+export default function UploadComponent() {
+  const { uploadImage, uploading, progress } = useCloudinaryUpload();
+
+  const handleFileUpload = async (file: File) => {
+    try {
+      const result = await uploadImage(file, {
+        folder: 'services/images',
+        resourceType: 'image',
+        maxBytes: 5000000, // 5MB limit
+        allowedFormats: ['jpg', 'png', 'webp'],
+        transformation: 'c_limit,w_1920,h_1080',
+      });
+      
+      console.log('Upload successful:', result.secure_url);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="file"
+        onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+        disabled={uploading}
+      />
+      {uploading && <p>Uploading: {progress}%</p>}
+    </div>
+  );
+}
+```
+
 ### Utility Functions
 ```typescript
 // lib/utils.ts
@@ -1412,6 +1563,64 @@ export function formatDate(date: Date): string {
     day: 'numeric',
   }).format(date);
 }
+```
+
+### API Client Configuration
+The project includes a configured Axios instance with automatic authentication handling:
+
+```typescript
+// lib/api-client.ts
+import apiClient from '@/lib/api-client';
+
+// All requests automatically include:
+// - Base URL configured to /api
+// - 10 second timeout
+// - JSON content type headers
+// - Automatic 401 handling with redirect to login
+// - Request/response interceptors
+
+// Usage example:
+const fetchData = async () => {
+  try {
+    const response = await apiClient.get('/services');
+    return response.data;
+  } catch (error) {
+    console.error('API Error:', error);
+  }
+};
+```
+
+### Action Execution Utility
+For handling server actions with consistent error handling:
+
+```typescript
+// lib/execute-action.ts
+import { executeAction } from '@/lib/execute-action';
+
+// Usage example:
+const result = await executeAction({
+  actionFn: async () => {
+    // Your action logic here
+    await someAsyncOperation();
+  },
+  successMessage: 'Operation completed successfully',
+});
+
+// Returns: { success: boolean, message: string }
+```
+
+### Password Utilities
+Secure password hashing and verification using bcryptjs:
+
+```typescript
+// lib/password.ts
+import { hashPassword, verifyPassword } from '@/lib/password';
+
+// Hash a password (uses 12 salt rounds)
+const hashedPassword = await hashPassword('userPassword123');
+
+// Verify a password
+const isValid = await verifyPassword('userPassword123', hashedPassword);
 ```
 
 ### Error Handling
@@ -1518,7 +1727,7 @@ export class ServiceService {
 - Follow the principle of least privilege for data access
 - Implement proper error boundaries for production stability
 - Use Turbopack for development for faster compilation
-- Leverage NextAuth.js v5 (beta.29) features for secure authentication
+- Leverage NextAuth.js v5.0.0-beta.29 features for secure authentication
 - Use Prisma migrations for all database schema changes
 - Test thoroughly with both light and dark themes (next-themes)
 - Optimize images and media uploads with Cloudinary transformations
@@ -1528,6 +1737,7 @@ export class ServiceService {
 - Seed the database consistently for development and testing
 - Follow role-based access control for admin dashboard features
 - Monitor bundle size and Core Web Vitals regularly
+- Maintain WebAuthn support for passwordless authentication options
 
 Remember: Code is read more often than it's written. Write code that your future self and your team members will thank you for.
 
