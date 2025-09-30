@@ -17,9 +17,6 @@ export default function Shop() {
       <p className="text-center text-[#6C6C6C] text-lg lg:text-2xl font-(family-name:--font-ubuntu)">
         Stay tuned for something amazing
       </p>
-      <span className="text-center text-[#9C1016] text-xl lg:text-3xl font-(family-name:--font-ubuntu)">
-        80 Days : 10 Hrs : 46 Mins : 13 Secs
-      </span>
     </div>
   );
 }
