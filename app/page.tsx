@@ -1,18 +1,56 @@
 import { HomePageBtn } from "@/components/CustomButtons";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { HomepageSettingsService } from "@/lib/services/homepage-settings-service";
 
 export default async function Home() {
+  // Fetch homepage settings from the backend
+  const homepageSettings = await HomepageSettingsService.getActiveSettings();
+
+  // Determine background type and styling
+  const hasMediaBackground =
+    homepageSettings?.backgroundMediaUrl &&
+    homepageSettings?.backgroundMediaType;
+
   return (
     <div className="relative">
-      <video
-        autoPlay
-        muted
-        loop
-        className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-      >
-        <source src="/dummy-data/main_bg.mp4" type="video/mp4" />
-      </video>
+      {/* Render media background (image or video) */}
+      {hasMediaBackground ? (
+        <>
+          {homepageSettings.backgroundMediaType === "video" ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+            >
+              <source
+                src={homepageSettings.backgroundMediaUrl!}
+                type="video/mp4"
+              />
+            </video>
+          ) : (
+            <div
+              className="absolute top-0 left-0 w-full h-full object-cover -z-10 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${homepageSettings.backgroundMediaUrl})`,
+              }}
+            />
+          )}
+        </>
+      ) : (
+        /* Fallback to default video if no media background is available */
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+        >
+          <source src="/dummy-data/main_bg.mp4" type="video/mp4" />
+        </video>
+      )}
 
       <div className="max-h-screen h-screen overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="h-full flex flex-col">
