@@ -2,6 +2,9 @@ import React from "react";
 import Header from "@/components/Header";
 import { HomepageSettingsService } from "@/lib/services/homepage-settings-service";
 
+// Revalidate this layout every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 export default async function MainPagesLayout({
   children,
 }: Readonly<{

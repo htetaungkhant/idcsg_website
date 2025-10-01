@@ -3,6 +3,9 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { HomepageSettingsService } from "@/lib/services/homepage-settings-service";
 
+// Revalidate this page every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 export default async function Home() {
   // Fetch homepage settings from the backend
   const homepageSettings = await HomepageSettingsService.getActiveSettings();
