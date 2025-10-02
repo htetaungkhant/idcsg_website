@@ -26,6 +26,7 @@ export interface GetMembersOptions {
   isActive?: boolean;
   orderBy?: "name" | "sortOrder" | "createdAt";
   orderDirection?: "asc" | "desc";
+  limit?: number;
 }
 
 export class MemberService {
@@ -85,6 +86,7 @@ export class MemberService {
         isActive = true,
         orderBy = "sortOrder",
         orderDirection = "asc",
+        limit,
       } = options;
 
       const where: { isActive: boolean; team?: TeamType } = { isActive };
@@ -95,6 +97,7 @@ export class MemberService {
       const members = await db.member.findMany({
         where,
         orderBy: { [orderBy]: orderDirection },
+        take: limit,
       });
 
       return members;

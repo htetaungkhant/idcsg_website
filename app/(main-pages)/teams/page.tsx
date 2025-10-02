@@ -1,88 +1,54 @@
+import { memberService } from "@/lib/services/member-service";
 import TeamList from "./(components)/TeamList";
 
-const getData = async () => {
-  return [
-    {
-      id: "doctor1",
-      name: "Dr.  Kyaw Soe Oo",
-      degree: "B.D.A (Orthodontist)",
-      about:
-        "Dr. Kyaw Soe Oo is an experienced Orthodontist with a strong foundation in dental and orthodontic care. He specializes in the diagnosis and treatment of misaligned teeth and jaw irregularities in both children and adults. Dr. Choo is committed to providing precise, personalized care using modern techniques such as metal braces and clear aligners. With a focus on function, aesthetics, and long-term stability, he helps patients achieve confident, healthy smiles through expert orthodontic planning.",
-      image: {
-        id: "doctor1",
-        image: "/dummy-data/doctor.png",
-        thumbnail: "/dummy-data/doctor.png",
-      },
-    },
-    {
-      id: "doctor2",
-      name: "Dr.  Lien Li Choo",
-      degree: "B.D.A (Orthodontist)",
-      about:
-        "Dr. Lien Li Choo is an experienced Orthodontist with a strong foundation in dental and orthodontic care. He specializes in the diagnosis and treatment of misaligned teeth and jaw irregularities in both children and adults. Dr. Choo is committed to providing precise, personalized care using modern techniques such as metal braces and clear aligners. With a focus on function, aesthetics, and long-term stability, he helps patients achieve confident, healthy smiles through expert orthodontic planning.",
-      image: {
-        id: "doctor1",
-        image: "/dummy-data/doctor.png",
-        thumbnail: "/dummy-data/doctor.png",
-      },
-    },
-    {
-      id: "doctor3",
-      name: "Dr.  Lien Li Choo",
-      degree: "B.D.A (Orthodontist)",
-      about:
-        "Dr. Lien Li Choo is an experienced Orthodontist with a strong foundation in dental and orthodontic care. He specializes in the diagnosis and treatment of misaligned teeth and jaw irregularities in both children and adults. Dr. Choo is committed to providing precise, personalized care using modern techniques such as metal braces and clear aligners. With a focus on function, aesthetics, and long-term stability, he helps patients achieve confident, healthy smiles through expert orthodontic planning.",
-      image: {
-        id: "doctor1",
-        image: "/dummy-data/doctor.png",
-        thumbnail: "/dummy-data/doctor.png",
-      },
-    },
-    {
-      id: "doctor4",
-      name: "Dr.  Lien Li Choo",
-      degree: "B.D.A (Orthodontist)",
-      about:
-        "Dr. Lien Li Choo is an experienced Orthodontist with a strong foundation in dental and orthodontic care. He specializes in the diagnosis and treatment of misaligned teeth and jaw irregularities in both children and adults. Dr. Choo is committed to providing precise, personalized care using modern techniques such as metal braces and clear aligners. With a focus on function, aesthetics, and long-term stability, he helps patients achieve confident, healthy smiles through expert orthodontic planning.",
-      image: {
-        id: "doctor1",
-        image: "/dummy-data/doctor.png",
-        thumbnail: "/dummy-data/doctor.png",
-      },
-    },
-    {
-      id: "doctor5",
-      name: "Dr.  Lien Li Choo",
-      degree: "B.D.A (Orthodontist)",
-      about:
-        "Dr. Lien Li Choo is an experienced Orthodontist with a strong foundation in dental and orthodontic care. He specializes in the diagnosis and treatment of misaligned teeth and jaw irregularities in both children and adults. Dr. Choo is committed to providing precise, personalized care using modern techniques such as metal braces and clear aligners. With a focus on function, aesthetics, and long-term stability, he helps patients achieve confident, healthy smiles through expert orthodontic planning.",
-      image: {
-        id: "doctor1",
-        image: "/dummy-data/doctor.png",
-        thumbnail: "/dummy-data/doctor.png",
-      },
-    },
-    {
-      id: "doctor6",
-      name: "Dr.  Lien Li Choo",
-      degree: "B.D.A (Orthodontist)",
-      about:
-        "Dr. Lien Li Choo is an experienced Orthodontist with a strong foundation in dental and orthodontic care. He specializes in the diagnosis and treatment of misaligned teeth and jaw irregularities in both children and adults. Dr. Choo is committed to providing precise, personalized care using modern techniques such as metal braces and clear aligners. With a focus on function, aesthetics, and long-term stability, he helps patients achieve confident, healthy smiles through expert orthodontic planning.",
-      image: {
-        id: "doctor1",
-        image: "/dummy-data/doctor.png",
-        thumbnail: "/dummy-data/doctor.png",
-      },
-    },
-  ];
-};
+// Revalidate this page every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
 
 export default async function Teams() {
-  const doctors = await getData();
+  const doctors = await memberService.getMembers({
+    isActive: true,
+    orderBy: "createdAt",
+    team: "DOCTORS",
+  });
+
+  const consultantSpecialists = await memberService.getMembers({
+    isActive: true,
+    orderBy: "createdAt",
+    team: "CONSULTANT_SPECIALISTS",
+  });
+
+  const alliedHealthAndSupportStaff = await memberService.getMembers({
+    isActive: true,
+    orderBy: "createdAt",
+    team: "ALLIED_HEALTH_SUPPORT_STAFF",
+  });
+
+  if (
+    !doctors ||
+    doctors.length < 5 ||
+    !consultantSpecialists ||
+    consultantSpecialists.length < 5 ||
+    !alliedHealthAndSupportStaff ||
+    alliedHealthAndSupportStaff.length < 5
+  ) {
+    return (
+      <>
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-2xl text-gray-600">
+            Our team is being assembled. Please check back soon!
+          </p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
-      <TeamList doctors={doctors} />
+      <TeamList
+        doctors={doctors}
+        consultantSpecialists={consultantSpecialists}
+        alliedHealthAndSupportStaff={alliedHealthAndSupportStaff}
+      />
     </>
   );
 }

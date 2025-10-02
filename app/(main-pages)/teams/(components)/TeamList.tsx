@@ -5,23 +5,18 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 
 import { cn } from "@/lib/utils";
-import { Doctor } from "@/types/global";
 import { PrimaryBtn1 } from "@/components/CustomButtons";
-
-type Category = "doctors" | "consultant" | "allied";
-interface CategoriesProps {
-  onSelectCategory?: (category: Category) => void;
+import { Member, TeamType } from "@/app/generated/prisma";
+interface TeamFilterProps {
+  onSelectTeam?: (team: TeamType) => void;
   className?: string;
 }
-const Categories: React.FC<CategoriesProps> = ({
-  className,
-  onSelectCategory,
-}) => {
-  const [activeCategory, setActiveCategory] = useState<Category>("doctors");
+const TeamFilter: React.FC<TeamFilterProps> = ({ className, onSelectTeam }) => {
+  const [activeTeam, setActiveTeam] = useState<TeamType>("DOCTORS");
 
-  const handleCategorySelect = (category: Category) => {
-    setActiveCategory(category);
-    onSelectCategory?.(category);
+  const handleTeamSelect = (team: TeamType) => {
+    setActiveTeam(team);
+    onSelectTeam?.(team);
   };
 
   return (
@@ -34,29 +29,31 @@ const Categories: React.FC<CategoriesProps> = ({
       <button
         className={cn(
           "uppercase flex-1 p-1.5 rounded-2xl cursor-pointer",
-          activeCategory === "doctors" ? "bg-[#233259] text-white" : "bg-white"
+          activeTeam === "DOCTORS" ? "bg-[#233259] text-white" : "bg-white"
         )}
-        onClick={() => handleCategorySelect("doctors")}
+        onClick={() => handleTeamSelect("DOCTORS")}
       >
         Doctors
       </button>
       <button
         className={cn(
           "uppercase flex-1 p-1.5 rounded-2xl cursor-pointer",
-          activeCategory === "consultant"
+          activeTeam === "CONSULTANT_SPECIALISTS"
             ? "bg-[#233259] text-white"
             : "bg-white"
         )}
-        onClick={() => handleCategorySelect("consultant")}
+        onClick={() => handleTeamSelect("CONSULTANT_SPECIALISTS")}
       >
         Consultant Specialists
       </button>
       <button
         className={cn(
           "uppercase flex-1 p-1.5 rounded-2xl cursor-pointer",
-          activeCategory === "allied" ? "bg-[#233259] text-white" : "bg-white"
+          activeTeam === "ALLIED_HEALTH_SUPPORT_STAFF"
+            ? "bg-[#233259] text-white"
+            : "bg-white"
         )}
-        onClick={() => handleCategorySelect("allied")}
+        onClick={() => handleTeamSelect("ALLIED_HEALTH_SUPPORT_STAFF")}
       >
         Allied Health & Support Staff
       </button>
@@ -64,14 +61,14 @@ const Categories: React.FC<CategoriesProps> = ({
   );
 };
 
-interface DoctorCardProps {
-  doctor: Doctor;
+interface MemberCardProps {
+  member: Member;
   overlay?: boolean;
   onClose?: () => void;
   className?: string;
 }
-const DoctorCard: React.FC<DoctorCardProps> = ({
-  doctor,
+const MemberCard: React.FC<MemberCardProps> = ({
+  member,
   overlay = false,
   onClose,
   className,
@@ -87,12 +84,12 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
   // }, []);
 
   React.useEffect(() => {
-    if (doctor) {
+    if (member) {
       setTimeout(() => {
         containerRef.current?.classList?.add("opacity-100");
       }, 100);
     }
-  }, [doctor]);
+  }, [member]);
 
   const handleClose = () => {
     containerRef.current?.classList?.remove("opacity-100");
@@ -116,7 +113,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
 
       <div
         className={cn(
-          "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[300px] max-w-4/5 max-h-[80vh] p-2.5 lg:p-4 text-[#233259] bg-white rounded-2xl border border-[#233259] shadow-lg flex gap-12 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]",
+          "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[300px] max-w-4/5 max-h-[80vh] p-2.5 lg:p-4 text-[#233259] bg-white rounded-2xl border border-[#233259] shadow-lg flex gap-12",
           className
         )}
       >
@@ -125,23 +122,24 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
           onClick={handleClose}
         />
         <Image
-          src={doctor.image.image}
-          alt={doctor.name}
+          src={member.imageUrl || "/dummy-data/doctor.png"}
+          alt={member.name}
           width={300}
           height={450}
-          className="rounded-2xl"
+          className="rounded-2xl w-80 h-auto object-cover flex-shrink-0"
+          priority
         />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <div>
-            <h3 className="text-3xl font-semibold">{doctor.name}</h3>
-            <p className="text-lg">{doctor.degree}</p>
+            <h3 className="text-3xl font-semibold">{member.name}</h3>
+            <p className="text-lg">{member.designation}</p>
           </div>
           <div className="flex flex-col gap-1.5">
             <h4 className="font-(family-name:--font-poppins) font-semibold">
               About
             </h4>
             <p className="font-(family-name:--font-old-standard-tt)">
-              {doctor.about}
+              {member.description}
             </p>
           </div>
         </div>
@@ -151,12 +149,47 @@ const DoctorCard: React.FC<DoctorCardProps> = ({
 };
 
 interface TeamListProps {
-  doctors: Doctor[];
+  doctors: Member[];
+  consultantSpecialists: Member[];
+  alliedHealthAndSupportStaff: Member[];
   className?: string;
 }
-export default function TeamList({ doctors, className }: TeamListProps) {
+export default function TeamList({
+  doctors,
+  consultantSpecialists,
+  alliedHealthAndSupportStaff,
+  className,
+}: TeamListProps) {
   const mobileScrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<TeamType>("DOCTORS");
+
+  // Get members based on selected team
+  const getFilteredMembers = () => {
+    switch (selectedTeam) {
+      case "DOCTORS":
+        return doctors;
+      case "CONSULTANT_SPECIALISTS":
+        return consultantSpecialists;
+      case "ALLIED_HEALTH_SUPPORT_STAFF":
+        return alliedHealthAndSupportStaff;
+      default:
+        return doctors;
+    }
+  };
+
+  const members = getFilteredMembers();
+
+  const handleTeamChange = (team: TeamType) => {
+    // Reset scroll position when team changes
+    if (mobileScrollContainerRef.current) {
+      mobileScrollContainerRef.current.scrollTo({
+        left: 0,
+        behavior: "instant",
+      });
+    }
+    setSelectedTeam(team);
+  };
 
   const handleLeftArrowClick = () => {
     if (mobileScrollContainerRef.current) {
@@ -189,36 +222,48 @@ export default function TeamList({ doctors, className }: TeamListProps) {
       }
     }
   };
+
   return (
     <div className={cn("flex flex-col gap-8", className)}>
-      <Categories />
+      <TeamFilter onSelectTeam={handleTeamChange} />
       <div
         ref={mobileScrollContainerRef}
         className="flex overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        {doctors?.length >= 5 &&
-          doctors.map((doctor, index) => (
+        {members && members.length >= 5 ? (
+          members.map((member, index) => (
             <div
-              key={`${doctor.id}-${index}`}
+              key={`${member.id}-${index}`}
               className="group flex-shrink-0 max-lg:min-w-[300px] w-full lg:w-1/5 h-100 lg:h-120 bg-cover bg-center bg-no-repeat flex overflow-hidden"
-              style={{ backgroundImage: `url(${doctor.image.image})` }}
+              style={{
+                backgroundImage: `url(${
+                  member.imageUrl || "/dummy-data/doctor.png"
+                })`,
+              }}
             >
               {/* overlay */}
               {/* <div className="absolute w-[200%] inset-0 bg-black opacity-60"></div> */}
 
               <div className="min-w-[100%] h-full bg-black opacity-60 group-hover:-translate-x-full transition-all duration-500 ease-in-out"></div>
               <div className="min-w-[100%] h-full px-2.5 py-5 flex flex-col items-end justify-end group-hover:-translate-x-full transition-all duration-500 ease-in-out">
-                <PrimaryBtn1 onClick={() => setSelectedDoctor(doctor)}>
+                <PrimaryBtn1 onClick={() => setSelectedMember(member)}>
                   View Details
                 </PrimaryBtn1>
               </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className="w-full text-center py-10">
+            <p className="text-xl text-gray-600">
+              Our team is being assembled. Please check back soon!
+            </p>
+          </div>
+        )}
       </div>
-      {selectedDoctor && (
-        <DoctorCard
-          doctor={selectedDoctor}
-          onClose={() => setSelectedDoctor(null)}
+      {selectedMember && (
+        <MemberCard
+          member={selectedMember}
+          onClose={() => setSelectedMember(null)}
         />
       )}
 
