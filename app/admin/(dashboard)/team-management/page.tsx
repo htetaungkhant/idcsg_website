@@ -7,8 +7,8 @@ export default async function TeamManagementPage() {
     // Fetch all active members from the database
     const members = await memberService.getMembers({
       isActive: true,
-      orderBy: "sortOrder",
-      orderDirection: "asc",
+      orderBy: "createdAt",
+      orderDirection: "desc",
     });
 
     return <TeamManagementContent initialMembers={members} />;
