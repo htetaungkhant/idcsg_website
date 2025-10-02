@@ -41,7 +41,7 @@ export default async function Safe() {
               }
               className={index > 0 ? "mt-40" : ""}
             >
-              <p className="font-(family-name:--font-old-standard-tt)">
+              <p className="font-(family-name:--font-old-standard-tt) whitespace-pre-wrap">
                 {section.description}
               </p>
             </CardCollectionStyle1>
@@ -53,7 +53,7 @@ export default async function Safe() {
               imageTitle={section.title || ""}
               className={index > 0 ? "mt-20" : ""}
             >
-              <p className="font-(family-name:--font-old-standard-tt)">
+              <p className="font-(family-name:--font-old-standard-tt) whitespace-pre-wrap">
                 {section.description}
               </p>
             </CardCollectionStyle2>

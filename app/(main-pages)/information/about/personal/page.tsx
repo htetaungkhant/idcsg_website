@@ -43,7 +43,7 @@ export default async function Personal() {
               }
               className={index > 0 ? "mt-40" : ""}
             >
-              <p className="font-(family-name:--font-old-standard-tt)">
+              <p className="font-(family-name:--font-old-standard-tt) whitespace-pre-wrap">
                 {section.description}
               </p>
             </CardCollectionStyle1>
@@ -55,7 +55,7 @@ export default async function Personal() {
               imageTitle={section.title || ""}
               className={index > 0 ? "mt-20" : ""}
             >
-              <p className="font-(family-name:--font-old-standard-tt)">
+              <p className="font-(family-name:--font-old-standard-tt) whitespace-pre-wrap">
                 {section.description}
               </p>
             </CardCollectionStyle2>
