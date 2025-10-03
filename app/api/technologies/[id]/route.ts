@@ -71,6 +71,17 @@ export async function PUT(
 
     // Validate required fields
     if (
+      !technologyData?.cardStyle ||
+      !["CARDSTYLE1", "CARDSTYLE2"].includes(technologyData.cardStyle)
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Please select a valid card style.",
+        },
+        { status: 400 }
+      );
+    } else if (
       !technologyData?.title ||
       !technologyData?.overview ||
       !technologyData?.imageUrl

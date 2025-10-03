@@ -252,6 +252,9 @@ type EditServiceFormSchema = z.infer<typeof editServiceFormSchema>;
 
 // Dental Technology form schema for comprehensive technology management
 const dentalTechnologyFormSchema = z.object({
+  cardStyle: z.enum(["CARDSTYLE1", "CARDSTYLE2"], {
+    message: "Please select a card style.",
+  }),
   // Required fields
   mainImage: z.instanceof(File, {
     message: "Main technology image is required.",
@@ -273,7 +276,14 @@ const dentalTechnologyFormSchema = z.object({
       message: "Technology overview must be less than 1000 characters.",
     }),
 
-  // Optional main description
+  // Optional title and main description
+  descriptionTitle: z
+    .string()
+    .max(100, {
+      message: "Description title must be less than 100 characters.",
+    })
+    .optional()
+    .or(z.literal("")),
   description: z
     .string()
     .max(2000, {

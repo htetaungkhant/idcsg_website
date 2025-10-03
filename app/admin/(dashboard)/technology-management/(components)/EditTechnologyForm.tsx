@@ -10,6 +10,13 @@ import Image from "next/image";
 
 import { Card } from "@/components/ui/card";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Form,
   FormControl,
   FormField,
@@ -54,8 +61,10 @@ export function EditTechnologyForm({ technologyId }: EditTechnologyFormProps) {
   const form = useForm<EditDentalTechnologyFormSchema>({
     resolver: zodResolver(editDentalTechnologyFormSchema),
     defaultValues: {
+      cardStyle: undefined,
       title: "",
       overview: "",
+      descriptionTitle: "",
       description: "",
       section1Title: "",
       section1Description: "",
@@ -87,8 +96,10 @@ export function EditTechnologyForm({ technologyId }: EditTechnologyFormProps) {
 
           // Set form values
           form.reset({
+            cardStyle: technologyData.cardStyle || undefined,
             title: technologyData.title || "",
             overview: technologyData.overview || "",
+            descriptionTitle: technologyData.descriptionTitle || "",
             description: technologyData.description || "",
             section1Title: technologyData.section1?.title || "",
             section1Description: technologyData.section1?.description || "",
@@ -131,13 +142,19 @@ export function EditTechnologyForm({ technologyId }: EditTechnologyFormProps) {
       setIsLoading(true);
 
       const body: Record<string, unknown> = {
+        cardStyle: data.cardStyle,
         title: data.title,
         overview: data.overview,
         imageUrl: technology?.imageUrl || null, // Default to existing image URL
       };
 
-      // Add optional main description
-      if (data.description) body.description = data.description;
+      // Optional fields
+      if (data.descriptionTitle) {
+        body.descriptionTitle = data.descriptionTitle;
+      }
+      if (data.description) {
+        body.description = data.description;
+      }
 
       // Upload main image if provided
       if (data.mainImage) {
@@ -246,6 +263,35 @@ export function EditTechnologyForm({ technologyId }: EditTechnologyFormProps) {
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Card Style Selection */}
+          <FormField
+            control={form.control}
+            name="cardStyle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Card Style</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value}
+                  disabled={isLoading}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select card style" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="CARDSTYLE1">Card Style 1</SelectItem>
+                    <SelectItem value="CARDSTYLE2">Card Style 2</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Separator />
+
           {/* Basic Information Section */}
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-primary">
@@ -355,6 +401,27 @@ export function EditTechnologyForm({ technologyId }: EditTechnologyFormProps) {
               Additional Information (Optional)
             </h3>
 
+            {/* Main title - Optional */}
+            <FormField
+              control={form.control}
+              name="descriptionTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base font-medium">
+                    Description Title
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Enter description title..."
+                      className="text-base"
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* Main Description - Optional */}
             <FormField
               control={form.control}

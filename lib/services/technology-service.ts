@@ -7,6 +7,7 @@ import type {
   DentalTechnology,
   DentalTechnologySection1,
   DentalTechnologyCard,
+  TechnologyCardStyle,
 } from "@/app/generated/prisma";
 
 // Technology with all nested sections and relationships
@@ -17,12 +18,14 @@ export interface TechnologyWithSections extends DentalTechnology {
 
 export interface TechnologyFormData {
   id?: string; // For updates
+  cardStyle: TechnologyCardStyle;
   // Required fields
   imageUrl: string;
   title: string;
   overview: string;
 
-  // Optional main description
+  // Optional title and main description
+  descriptionTitle?: string;
   description?: string;
 
   // Section 1 fields
@@ -83,9 +86,11 @@ export class TechnologyService {
       (
         await db.dentalTechnology.create({
           data: {
+            cardStyle: data.cardStyle,
             imageUrl: data.imageUrl,
             title: data.title,
             overview: data.overview,
+            descriptionTitle: data.descriptionTitle || null,
             description: data.description || null,
           },
         })
@@ -171,13 +176,17 @@ export class TechnologyService {
 
       // Update the main technology
       const updateData: {
+        cardStyle: TechnologyCardStyle;
         title: string;
         overview: string;
+        descriptionTitle?: string | null;
         description?: string | null;
         imageUrl: string;
       } = {
+        cardStyle: data.cardStyle,
         title: data.title,
         overview: data.overview,
+        descriptionTitle: data.descriptionTitle || null,
         description: data.description || null,
         imageUrl: data.imageUrl,
       };

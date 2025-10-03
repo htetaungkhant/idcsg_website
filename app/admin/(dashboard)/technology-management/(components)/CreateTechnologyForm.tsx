@@ -19,6 +19,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import {
   dentalTechnologyFormSchema,
@@ -38,8 +45,10 @@ export function CreateTechnologyForm() {
   const form = useForm<DentalTechnologyFormSchema>({
     resolver: zodResolver(dentalTechnologyFormSchema),
     defaultValues: {
+      cardStyle: undefined,
       title: "",
       overview: "",
+      descriptionTitle: "",
       description: "",
       section1Title: "",
       section1Description: "",
@@ -75,11 +84,16 @@ export function CreateTechnologyForm() {
     try {
       setIsLoading(true);
       const body: Record<string, unknown> = {
+        cardStyle: data.cardStyle,
         imageUrl: "", // Placeholder, will be updated after upload
         title: data.title,
         overview: data.overview,
       };
 
+      // Optional fields
+      if (data.descriptionTitle) {
+        body.descriptionTitle = data.descriptionTitle;
+      }
       if (data.description) {
         body.description = data.description;
       }
@@ -188,6 +202,35 @@ export function CreateTechnologyForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            {/* Card Style Selection */}
+            <FormField
+              control={form.control}
+              name="cardStyle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Card Style</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    disabled={isLoading}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select card style" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="CARDSTYLE1">Card Style 1</SelectItem>
+                      <SelectItem value="CARDSTYLE2">Card Style 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Separator />
+
             {/* Required Fields Section */}
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-primary">
@@ -288,6 +331,27 @@ export function CreateTechnologyForm() {
                 Additional Information
               </h3>
 
+              {/* Main title - Optional */}
+              <FormField
+                control={form.control}
+                name="descriptionTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-medium">
+                      Description Title
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Enter description title..."
+                        className="text-base"
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               {/* Main Description - Optional */}
               <FormField
                 control={form.control}

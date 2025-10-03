@@ -19,6 +19,11 @@ enum TeamType {
   ALLIED_HEALTH_SUPPORT_STAFF
 }
 
+enum TechnologyCardStyle {
+  CARDSTYLE1
+  CARDSTYLE2
+}
+
 enum SafeCardStyle {
   CARDSTYLE1
   CARDSTYLE2
@@ -121,74 +126,74 @@ model Authenticator {
 }
 
 model HomepageSettings {
-  id                String   @id @default(cuid())
-  backgroundMediaUrl String?  // Cloudinary URL for background image/video
+  id                  String  @id @default(cuid())
+  backgroundMediaUrl  String? // Cloudinary URL for background image/video
   backgroundMediaType String? // 'image' or 'video'
-  backgroundColor   String?  // Hex color code
-  backgroundOpacity Int      @default(100) // 0-100
-  isActive          Boolean  @default(true) // Only one setting can be active at a time
-  
+  backgroundColor     String? // Hex color code
+  backgroundOpacity   Int     @default(100) // 0-100
+  isActive            Boolean @default(true) // Only one setting can be active at a time
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Ensure only one active setting exists
   @@unique([isActive])
 }
 
 model Member {
-  id            String   @id @default(cuid())
-  imageUrl      String?  // Cloudinary URL for member photo (optional)
-  name          String
-  designation   String?  // Optional designation
-  team          TeamType
-  description   String   @db.Text
-  isActive      Boolean  @default(true)
-  sortOrder     Int      @default(0) // For ordering members within teams
-  
+  id          String   @id @default(cuid())
+  imageUrl    String? // Cloudinary URL for member photo (optional)
+  name        String
+  designation String? // Optional designation
+  team        TeamType
+  description String   @db.Text
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0) // For ordering members within teams
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Category {
-  id        String    @id @default(cuid())
-  title     String
-  services  Service[] // One category can have multiple services
-  
+  id       String    @id @default(cuid())
+  title    String
+  services Service[] // One category can have multiple services
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Service {
-  id           String   @id @default(cuid())
-  categoryId   String
-  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  
+  id         String   @id @default(cuid())
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
   // Main service information
-  imageUrl     String   // Cloudinary URL for main service image (mandatory)
-  name         String
-  overview     String   @db.Text
-  
+  imageUrl String // Cloudinary URL for main service image (mandatory)
+  name     String
+  overview String @db.Text
+
   // Service sections (one-to-one relationships)
-  section1     ServiceSection1?
-  section2     ServiceSection2?
-  section3     ServiceSection3?
-  section4     ServiceSection4?
-  section5     ServiceSection5?
-  
+  section1 ServiceSection1?
+  section2 ServiceSection2?
+  section3 ServiceSection3?
+  section4 ServiceSection4?
+  section5 ServiceSection5?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Section 1: Image, Title, and Description
 model ServiceSection1 {
-  id          String  @id @default(cuid())
-  serviceId   String  @unique // One-to-one relationship with Service
-  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?  // Cloudinary URL for section image
+  id        String  @id @default(cuid())
+  serviceId String  @unique // One-to-one relationship with Service
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  imageUrl    String? // Cloudinary URL for section image
   title       String?
-  description String?   @db.Text
-  
+  description String? @db.Text
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -198,65 +203,65 @@ model ServiceSection2 {
   id        String  @id @default(cuid())
   serviceId String  @unique // One-to-one relationship with Service
   service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  
-  videoUrl  String   // Video URL (YouTube, Vimeo, or direct link)
-  
+
+  videoUrl String // Video URL (YouTube, Vimeo, or direct link)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Section 3: Image, Title, and Description
 model ServiceSection3 {
-  id          String  @id @default(cuid())
-  serviceId   String  @unique // One-to-one relationship with Service
-  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?  // Cloudinary URL for section image
+  id        String  @id @default(cuid())
+  serviceId String  @unique // One-to-one relationship with Service
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  imageUrl    String? // Cloudinary URL for section image
   title       String?
-  description String?   @db.Text
-  
+  description String? @db.Text
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Section 4: Title and List of Cards
 model ServiceSection4 {
-  id        String                @id @default(cuid())
-  serviceId String                @unique // One-to-one relationship with Service
-  service   Service               @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  
-  title     String?
-  cards     ServiceSection4Card[] // List of cards for this section
-  
+  id        String  @id @default(cuid())
+  serviceId String  @unique // One-to-one relationship with Service
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  title String?
+  cards ServiceSection4Card[] // List of cards for this section
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Cards for Section 4 (Image, Title, Description)
 model ServiceSection4Card {
-  id          String          @id @default(cuid())
-  section4Id  String
-  section4    ServiceSection4 @relation(fields: [section4Id], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?  // Cloudinary URL for card image
+  id         String          @id @default(cuid())
+  section4Id String
+  section4   ServiceSection4 @relation(fields: [section4Id], references: [id], onDelete: Cascade)
+
+  imageUrl    String? // Cloudinary URL for card image
   title       String?
-  description String   @db.Text
-  sortOrder   Int      @default(0) // For ordering cards within section4
-  
+  description String  @db.Text
+  sortOrder   Int     @default(0) // For ordering cards within section4
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Section 5: Image, Title, and List of Price Ranges
 model ServiceSection5 {
-  id          String                   @id @default(cuid())
-  serviceId   String                   @unique // One-to-one relationship with Service
-  service     Service                  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?                  // Cloudinary URL for section image
+  id        String  @id @default(cuid())
+  serviceId String  @unique // One-to-one relationship with Service
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  imageUrl    String? // Cloudinary URL for section image
   title       String?
   priceRanges ServiceSection5PriceRange[] // List of price ranges for this section
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -266,32 +271,34 @@ model ServiceSection5PriceRange {
   id         String          @id @default(cuid())
   section5Id String
   section5   ServiceSection5 @relation(fields: [section5Id], references: [id], onDelete: Cascade)
-  
+
   title      String
-  startPrice Decimal?         @db.Decimal(10, 2) // Starting price with 2 decimal places
-  endPrice   Decimal?         @db.Decimal(10, 2) // Ending price with 2 decimal places
-  sortOrder  Int             @default(0) // For ordering price ranges within section5
-  
+  startPrice Decimal? @db.Decimal(10, 2) // Starting price with 2 decimal places
+  endPrice   Decimal? @db.Decimal(10, 2) // Ending price with 2 decimal places
+  sortOrder  Int      @default(0) // For ordering price ranges within section5
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Dental Technology Management System
 model DentalTechnology {
-  id          String   @id @default(cuid())
-  
+  id String @id @default(cuid())
+  cardStyle        TechnologyCardStyle // Card style (CARDSTYLE1, or CARDSTYLE2)
+
   // Main mandatory fields
-  imageUrl    String   // Cloudinary URL for main technology image (required)
-  title       String   // Technology title (required)
-  overview    String   @db.Text // Technology overview/summary (required)
-  
+  imageUrl String // Cloudinary URL for main technology image (required)
+  title    String // Technology title (required)
+  overview String @db.Text // Technology overview/summary (required)
+
   // Optional fields
-  description String?  @db.Text // Detailed description (optional)
-  
+  descriptionTitle String? @db.Text // Description title/heading (optional)
+  description      String? @db.Text // Detailed description (optional)
+
   // Optional sections (one-to-one relationships)
-  section1    DentalTechnologySection1?
-  cards       DentalTechnologyCard[] // Dynamic list of cards
-  
+  section1 DentalTechnologySection1?
+  cards    DentalTechnologyCard[] // Dynamic list of cards
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -301,11 +308,11 @@ model DentalTechnologySection1 {
   id                 String           @id @default(cuid())
   dentalTechnologyId String           @unique // One-to-one relationship with DentalTechnology
   dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?  // Cloudinary URL for section image (optional)
-  title       String?  // Section title (optional)
-  description String?  @db.Text // Section description (optional)
-  
+
+  imageUrl    String? // Cloudinary URL for section image (optional)
+  title       String? // Section title (optional)
+  description String? @db.Text // Section description (optional)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -313,164 +320,164 @@ model DentalTechnologySection1 {
 // Dynamic Cards for Dental Technology: Image, Title, and Description
 model DentalTechnologyCard {
   id                 String           @id @default(cuid())
-  dentalTechnologyId String           // Foreign key to DentalTechnology (one-to-many relationship)
+  dentalTechnologyId String // Foreign key to DentalTechnology (one-to-many relationship)
   dentalTechnology   DentalTechnology @relation(fields: [dentalTechnologyId], references: [id], onDelete: Cascade)
-  
-  imageUrl    String?  // Cloudinary URL for card image (optional)
-  title       String?  // Card title (optional)
-  description String?  @db.Text // Card description (optional)
-  sortOrder   Int      @default(0) // For ordering cards within DentalTechnology
-  
+
+  imageUrl    String? // Cloudinary URL for card image (optional)
+  title       String? // Card title (optional)
+  description String? @db.Text // Card description (optional)
+  sortOrder   Int     @default(0) // For ordering cards within DentalTechnology
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Terms of Service Management System
 model TermsOfService {
-  id          String   @id @default(cuid())
-  
-  hostingDate String   // Date as text (user will manually enter)
-  description String   @db.Text // Terms of service content
-  
+  id String @id @default(cuid())
+
+  hostingDate String // Date as text (user will manually enter)
+  description String @db.Text // Terms of service content
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Privacy Policy Management System  
 model PrivacyPolicy {
-  id          String   @id @default(cuid())
-  
-  hostingDate String   // Date as text (user will manually enter)
-  description String   @db.Text // Privacy policy content
-  
+  id String @id @default(cuid())
+
+  hostingDate String // Date as text (user will manually enter)
+  description String @db.Text // Privacy policy content
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Office Policy Management System
 model OfficePolicy {
-  id          String   @id @default(cuid())
-  
-  hostingDate String   // Date as text (user will manually enter)
-  description String   @db.Text // Office policy content
-  
+  id String @id @default(cuid())
+
+  hostingDate String // Date as text (user will manually enter)
+  description String @db.Text // Office policy content
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Safe Management System
 model Safe {
-  id          String        @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   // Multiple sections (one-to-many relationship)
-  sections    SafeSection[] // Safe can have multiple sections
-  
+  sections SafeSection[] // Safe can have multiple sections
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Safe Section: Image, Title, Description Title, Description, and Card Style
 model SafeSection {
-  id                String        @id @default(cuid())
-  safeId            String        // Foreign key to Safe (one-to-many relationship)
-  safe              Safe          @relation(fields: [safeId], references: [id], onDelete: Cascade)
-  
-  imageUrl          String?       // Cloudinary URL for section image (optional)
-  title             String?       // Section title (optional)
-  descriptionTitle  String?       // Description title/heading (optional)
-  description       String?       @db.Text // Section description (optional)
-  cardStyle         SafeCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
-  sortOrder         Int           @default(0) // For ordering sections within a Safe
-  
+  id     String @id @default(cuid())
+  safeId String // Foreign key to Safe (one-to-many relationship)
+  safe   Safe   @relation(fields: [safeId], references: [id], onDelete: Cascade)
+
+  imageUrl         String? // Cloudinary URL for section image (optional)
+  title            String? // Section title (optional)
+  descriptionTitle String? // Description title/heading (optional)
+  description      String?       @db.Text // Section description (optional)
+  cardStyle        SafeCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
+  sortOrder        Int           @default(0) // For ordering sections within a Safe
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Precise Management System
 model Precise {
-  id          String           @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   // Multiple sections (one-to-many relationship)
-  sections    PreciseSection[] // Precise can have multiple sections
-  
+  sections PreciseSection[] // Precise can have multiple sections
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Precise Section: Image, Title, Description Title, Description, and Card Style
 model PreciseSection {
-  id                String           @id @default(cuid())
-  preciseId         String           // Foreign key to Precise (one-to-many relationship)
-  precise           Precise          @relation(fields: [preciseId], references: [id], onDelete: Cascade)
-  
-  imageUrl          String?          // Cloudinary URL for section image (optional)
-  title             String?          // Section title (optional)
-  descriptionTitle  String?          // Description title/heading (optional)
-  description       String?          @db.Text // Section description (optional)
-  cardStyle         PreciseCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
-  sortOrder         Int              @default(0) // For ordering sections within a Precise
-  
+  id        String  @id @default(cuid())
+  preciseId String // Foreign key to Precise (one-to-many relationship)
+  precise   Precise @relation(fields: [preciseId], references: [id], onDelete: Cascade)
+
+  imageUrl         String? // Cloudinary URL for section image (optional)
+  title            String? // Section title (optional)
+  descriptionTitle String? // Description title/heading (optional)
+  description      String?          @db.Text // Section description (optional)
+  cardStyle        PreciseCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
+  sortOrder        Int              @default(0) // For ordering sections within a Precise
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Personal Management System
 model Personal {
-  id          String            @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   // Multiple sections (one-to-many relationship)
-  sections    PersonalSection[] // Personal can have multiple sections
-  
+  sections PersonalSection[] // Personal can have multiple sections
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Personal Section: Image, Title, Description Title, Description, and Card Style
 model PersonalSection {
-  id                String            @id @default(cuid())
-  personalId        String            // Foreign key to Personal (one-to-many relationship)
-  personal          Personal          @relation(fields: [personalId], references: [id], onDelete: Cascade)
-  
-  imageUrl          String?           // Cloudinary URL for section image (optional)
-  title             String?           // Section title (optional)
-  descriptionTitle  String?           // Description title/heading (optional)
-  description       String?           @db.Text // Section description (optional)
-  cardStyle         PersonalCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
-  sortOrder         Int               @default(0) // For ordering sections within a Personal
-  
+  id         String   @id @default(cuid())
+  personalId String // Foreign key to Personal (one-to-many relationship)
+  personal   Personal @relation(fields: [personalId], references: [id], onDelete: Cascade)
+
+  imageUrl         String? // Cloudinary URL for section image (optional)
+  title            String? // Section title (optional)
+  descriptionTitle String? // Description title/heading (optional)
+  description      String?           @db.Text // Section description (optional)
+  cardStyle        PersonalCardStyle // Card style (CARDSTYLE1, CARDSTYLE2, or CARDSTYLE3)
+  sortOrder        Int               @default(0) // For ordering sections within a Personal
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // First Visit Management System
 model FirstVisit {
-  id          String                 @id @default(cuid())
-  
+  id String @id @default(cuid())
+
   // Multiple general sections (one-to-many relationship)
-  sections    FirstVisitSection[]    // FirstVisit can have multiple general sections
-  
+  sections FirstVisitSection[] // FirstVisit can have multiple general sections
+
   // Optional video section (one-to-one relationship)
   videoSection FirstVisitVideoSection?
-  
+
   // Optional information section (one-to-one relationship)
   informationSection FirstVisitInformationSection?
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // First Visit General Section: Image, Title, Description Title, and Description
 model FirstVisitSection {
-  id                String     @id @default(cuid())
-  firstVisitId      String     // Foreign key to FirstVisit (one-to-many relationship)
-  firstVisit        FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
-  
-  imageUrl          String?    // Cloudinary URL for section image (optional)
-  title             String?    // Section title (optional)
-  descriptionTitle  String?    // Description title/heading (optional)
-  description       String     @db.Text // Section description (required)
-  sortOrder         Int        @default(0) // For ordering sections within a FirstVisit
-  
+  id           String     @id @default(cuid())
+  firstVisitId String // Foreign key to FirstVisit (one-to-many relationship)
+  firstVisit   FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
+
+  imageUrl         String? // Cloudinary URL for section image (optional)
+  title            String? // Section title (optional)
+  descriptionTitle String? // Description title/heading (optional)
+  description      String  @db.Text // Section description (required)
+  sortOrder        Int     @default(0) // For ordering sections within a FirstVisit
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -480,63 +487,63 @@ model FirstVisitVideoSection {
   id           String     @id @default(cuid())
   firstVisitId String     @unique // One-to-one relationship with FirstVisit
   firstVisit   FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
-  
-  videoUrl     String     // Video URL (YouTube, Vimeo, or direct link)
-  
+
+  videoUrl String // Video URL (YouTube, Vimeo, or direct link)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // First Visit Information Section: Image, Description Title, and Description
 model FirstVisitInformationSection {
-  id                String     @id @default(cuid())
-  firstVisitId      String     @unique // One-to-one relationship with FirstVisit
-  firstVisit        FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
-  
-  imageUrl          String?    // Cloudinary URL for section image (optional)
-  descriptionTitle  String?    // Description title/heading (optional)
-  description       String     @db.Text // Section description (required)
-  
+  id           String     @id @default(cuid())
+  firstVisitId String     @unique // One-to-one relationship with FirstVisit
+  firstVisit   FirstVisit @relation(fields: [firstVisitId], references: [id], onDelete: Cascade)
+
+  imageUrl         String? // Cloudinary URL for section image (optional)
+  descriptionTitle String? // Description title/heading (optional)
+  description      String  @db.Text // Section description (required)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Contact Form Submissions
 model ContactMessage {
-  id            String   @id @default(cuid())
-  name          String   // Sender's name
-  emailId       String   // Sender's email address
-  mobileNumber  String   // Sender's phone number with country code
-  message       String   @db.Text // Message content
-  
+  id           String @id @default(cuid())
+  name         String // Sender's name
+  emailId      String // Sender's email address
+  mobileNumber String // Sender's phone number with country code
+  message      String @db.Text // Message content
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Patient Instructions Management System
 model PatientInstructions {
-  id            String                    @id @default(cuid())
-  
-  bannerImage   String?                   // Cloudinary URL for banner image (optional)
-  cards         PatientInstructionCard[]  // One-to-many relationship with cards
-  
+  id String @id @default(cuid())
+
+  bannerImage String? // Cloudinary URL for banner image (optional)
+  cards       PatientInstructionCard[] // One-to-many relationship with cards
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Patient Instruction Card: Background Image, Content Title, Content Image, Content Description, and Downloadable File
 model PatientInstructionCard {
-  id                     String               @id @default(cuid())
-  patientInstructionsId  String               // Foreign key to PatientInstructions (one-to-many relationship)
-  patientInstructions    PatientInstructions  @relation(fields: [patientInstructionsId], references: [id], onDelete: Cascade)
-  
-  backgroundImage        String               // Cloudinary URL for background image (required)
-  contentTitle           String               // Card content title (required)
-  contentImage           String?              // Cloudinary URL for content image (optional)
-  contentDescription     String               @db.Text // Card content description (required)
-  downloadableFile       String?              // Cloudinary URL for downloadable file (optional)
-  sortOrder              Int                  @default(0) // For ordering cards within PatientInstructions
-  
+  id                    String              @id @default(cuid())
+  patientInstructionsId String // Foreign key to PatientInstructions (one-to-many relationship)
+  patientInstructions   PatientInstructions @relation(fields: [patientInstructionsId], references: [id], onDelete: Cascade)
+
+  backgroundImage    String // Cloudinary URL for background image (required)
+  contentTitle       String // Card content title (required)
+  contentImage       String? // Cloudinary URL for content image (optional)
+  contentDescription String  @db.Text // Card content description (required)
+  downloadableFile   String? // Cloudinary URL for downloadable file (optional)
+  sortOrder          Int     @default(0) // For ordering cards within PatientInstructions
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
