@@ -501,6 +501,18 @@ model FirstVisitInformationSection {
   updatedAt DateTime @updatedAt
 }
 
+// Contact Form Submissions
+model ContactMessage {
+  id            String   @id @default(cuid())
+  name          String   // Sender's name
+  emailId       String   // Sender's email address
+  mobileNumber  String   // Sender's phone number with country code
+  message       String   @db.Text // Message content
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // Patient Instructions Management System
 model PatientInstructions {
   id            String                    @id @default(cuid())

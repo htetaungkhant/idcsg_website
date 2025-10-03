@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import { PhoneInput } from "react-international-phone";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { ParsedCountry, PhoneInput } from "react-international-phone";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import axios from "axios";
 
 import {
   Form,
@@ -24,6 +26,8 @@ interface ContactFormProps {
   className?: string;
 }
 export default function ContactForm({ className }: ContactFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<ContactFormSchema>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -34,9 +38,50 @@ export default function ContactForm({ className }: ContactFormProps) {
     },
   });
 
-  function onSubmit(values: ContactFormSchema) {
-    console.log(values);
-    // Handle form submission here
+  async function onSubmit(values: ContactFormSchema) {
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post("/api/contact", values);
+
+      if (response.data.success) {
+        toast.success(response.data.message || "Message sent successfully!");
+
+        // Reset form after successful submission
+        form.reset();
+      } else {
+        toast.error(response.data.error || "Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+
+      if (axios.isAxiosError(error) && error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("An unexpected error occurred. Please try again later.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  function handlePhoneNumberChange(
+    phone: string,
+    meta: { country: ParsedCountry; inputValue: string }
+  ) {
+    const trimmedPhone = phone.trim();
+    form.setValue("mobileNumber", trimmedPhone);
+    // form.setValue("mobileNumber", {
+    //   phone: trimmedPhone,
+    //   dialCode: meta?.country?.dialCode,
+    // });
+
+    if (
+      form.formState.isSubmitted &&
+      trimmedPhone.replace(`+${meta?.country?.dialCode}`, "").length > 0
+    ) {
+      form.trigger("mobileNumber");
+    }
   }
 
   return (
@@ -128,8 +173,8 @@ export default function ContactForm({ className }: ContactFormProps) {
                         <FormControl>
                           <PhoneInput
                             defaultCountry="gb"
-                            value={field.value}
-                            onChange={field.onChange}
+                            value={field.value || ""}
+                            onChange={handlePhoneNumberChange}
                             className="rounded-[3px] focus-within:border-gray-600 border border-[#8D8B8B] h-10"
                             inputClassName="w-full h-full! bg-transparent! border-none!"
                             countrySelectorStyleProps={{
@@ -183,10 +228,15 @@ export default function ContactForm({ className }: ContactFormProps) {
         <div className="mt-5 relative flex justify-end">
           <button
             type="submit"
-            className="px-6 py-3.5 uppercase border border-black bg-white text-[#233259] text-xl font-sans font-medium rounded-xl flex gap-3 items-center justify-between hover:bg-gray-100 cursor-pointer"
+            disabled={isSubmitting}
+            className="px-6 py-3.5 uppercase border border-black bg-white text-[#233259] text-xl font-sans font-medium rounded-xl flex gap-3 items-center justify-between hover:bg-gray-100 disabled:cursor-not-allowed transition-all duration-200 cursor-pointer"
           >
-            <span>SEND MESSAGE</span>
-            <ArrowRight className="text-[#233259] h-8 w-8" />
+            <span>{isSubmitting ? "SENDING..." : "SEND MESSAGE"}</span>
+            {isSubmitting ? (
+              <Loader2 className="text-[#233259] h-8 w-8 animate-spin" />
+            ) : (
+              <ArrowRight className="text-[#233259] h-8 w-8" />
+            )}
           </button>
         </div>
       </form>
