@@ -9,7 +9,7 @@ export default async function DentalTechnology() {
   const technologies = await TechnologyService.getTechnologies();
 
   if (!technologies || technologies.length <= 0) {
-    return <div>No technologies available</div>;
+    return <div className="mx-auto w-[90%]">No technologies available</div>;
   }
 
   return (
