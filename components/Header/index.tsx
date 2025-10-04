@@ -7,15 +7,22 @@ import { FaLocationDot } from "react-icons/fa6";
 
 import { cn } from "@/lib/utils";
 import NavLinks from "./NavLinks";
+import { TechnologyService } from "@/lib/services/technology-service";
 
 interface HeaderProps {
   color?: "transparent" | "white";
   className?: string;
 }
-export default function Header({
+export default async function Header({
   className,
   color = "transparent",
 }: HeaderProps) {
+  const technologies = await TechnologyService.getTechnologies();
+  const technologyData = technologies?.map((tech) => ({
+    id: tech.id,
+    title: tech.title,
+  }));
+
   return (
     <section
       className={cn(
@@ -136,7 +143,7 @@ export default function Header({
               </Link>
             </li>
           </ul>
-          <NavLinks />
+          <NavLinks technologyData={technologyData} />
         </div>
       </div>
     </section>

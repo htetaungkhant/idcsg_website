@@ -59,11 +59,13 @@ const ServiceMenuItem = ({ name, children, onClick }: ServiceMenuItemProps) => (
 
 interface NavLinksProps {
   servicesData?: { [category: string]: string[] };
+  technologyData?: { id: string; title: string }[];
   className?: string;
 }
 export default function NavLinks({
   className,
   servicesData = dentalServicesData,
+  technologyData,
 }: NavLinksProps) {
   const pathname = usePathname();
   const serviceRef = React.useRef<HTMLDivElement>(null);
@@ -353,7 +355,7 @@ export default function NavLinks({
                 <ul className="ml-5 w-50 p-4 bg-white rounded-2xl shadow-md opacity-0 group-hover/menu:opacity-100 invisible group-hover/menu:visible transition-all duration-300 flex flex-col gap-2.5">
                   <li>
                     <Link
-                      href="/information/technology/dental-technology"
+                      href="/information/technology"
                       onClick={toggleInformationDropdown}
                       className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
                     >
@@ -361,26 +363,20 @@ export default function NavLinks({
                       <ArrowRight className="w-5 h-5" />
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      href="/information/technology/cone-beam-imaging"
-                      onClick={toggleInformationDropdown}
-                      className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
-                    >
-                      <span>Cone Beam Imaging</span>
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/information/technology/laser-dentistry"
-                      onClick={toggleInformationDropdown}
-                      className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
-                    >
-                      <span>Laser Dentistry</span>
-                      <ArrowRight className="w-5 h-5" />
-                    </Link>
-                  </li>
+                  {technologyData?.map((tech) => (
+                    <li key={tech.id}>
+                      <Link
+                        href={`/information/technology/${encodeURIComponent(
+                          tech.title.toLowerCase().replace(/ /g, "-")
+                        )}?id=${tech.id}`}
+                        onClick={toggleInformationDropdown}
+                        className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
+                      >
+                        <span>{tech.title}</span>
+                        <ArrowRight className="w-5 h-5" />
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>

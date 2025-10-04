@@ -42,17 +42,28 @@ export interface TechnologyFormData {
   }[];
 }
 
+export interface GetTechnologiesOptions {
+  orderBy?: "name" | "sortOrder" | "createdAt";
+  orderDirection?: "asc" | "desc";
+  limit?: number;
+}
+
 export class TechnologyService {
   /**
    * Get all technologies with their sections
    */
-  static async getTechnologies(): Promise<TechnologyWithSections[]> {
+  static async getTechnologies(
+    options: GetTechnologiesOptions = {}
+  ): Promise<TechnologyWithSections[]> {
+    const { orderBy = "createdAt", orderDirection = "asc", limit } = options;
+
     const technologies = await db.dentalTechnology.findMany({
       include: {
         section1: true,
         cards: true,
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { [orderBy]: orderDirection },
+      take: limit,
     });
 
     return technologies;
