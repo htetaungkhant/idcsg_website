@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 interface FooterProps {
   className?: string;
 }
-export default function Footer({ className }: FooterProps) {
+export const OriginalFooter: React.FC<FooterProps> = ({ className }) => {
   return (
     <section
       className={cn(
@@ -113,6 +113,114 @@ export default function Footer({ className }: FooterProps) {
         >
           Terms of Service
         </Link>
+      </div>
+    </section>
+  );
+};
+
+export default function Footer({ className }: FooterProps) {
+  return (
+    <section
+      className={cn(
+        "px-20 py-4 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-ubuntu)",
+        className
+      )}
+    >
+      <div className="py-2 flex items-center justify-between gap-6 max-md:gap-3 border-b border-white">
+        <Link href="/">
+          <Image
+            src="/logo_with_text_1.svg"
+            alt="Logo"
+            width={100}
+            height={100}
+            className="h-15 w-auto"
+          />
+        </Link>
+        <div className="flex flex-col gap-1">
+          <p className="text-center text-sm">
+            <Link
+              href="/information/patient-info/privacy-policy"
+              className="hover:underline"
+            >
+              Privacy Policy
+            </Link>{" "}
+            |{" "}
+            <Link
+              href="/information/patient-info/terms-of-service"
+              className="hover:underline"
+            >
+              Terms of Service
+            </Link>{" "}
+            | Copyright © 2025 International Dental Centre. All rights reserved.
+          </p>
+          <p className="text-center text-[10px]">
+            IDC® and the IDC logo are registered trademarks of International
+            Dental Centre. All other names, trademarks, and logos are the
+            property of their respective owners.
+          </p>
+        </div>
+        <ul className="list-none flex items-center gap-4">
+          <li className="hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.facebook.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/facebook.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-6 h-6 rounded-sm object-contain"
+              />
+            </Link>
+          </li>
+          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.youtube.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/youtube.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-full h-full object-contain"
+              />
+            </Link>
+          </li>
+          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.google.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/google.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-full h-full object-contain"
+              />
+            </Link>
+          </li>
+          <li className="hover:scale-110 transition-all duration-300">
+            <Link
+              href="https://www.instagram.com/idcsg"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/instagram.svg"
+                alt="Description of image"
+                width={19}
+                height={19}
+                className="w-6 h-6 rounded-sm object-contain"
+              />
+            </Link>
+          </li>
+        </ul>
       </div>
     </section>
   );

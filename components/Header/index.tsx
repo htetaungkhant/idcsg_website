@@ -42,7 +42,7 @@ export default async function Header({
       </Link>
 
       <div>
-        <ul className="flex gap-2.5 xl:gap-5 items-center list-none font-(family-name:--font-ubuntu-condensed) text-[10px] xl:text-xs border-b border-[#E6E6E6] py-2.5">
+        <ul className="flex gap-2.5 xl:gap-5 items-center justify-between list-none font-(family-name:--font-ubuntu-condensed) text-[10px] xl:text-xs border-b border-[#E6E6E6] py-2.5">
           <li className="flex gap-1 xl:gap-1.5 items-center whitespace-nowrap">
             <FaWhatsapp />
             <span>+65-96870775</span>
@@ -80,7 +80,7 @@ export default async function Header({
           </button> */}
         </ul>
 
-        <div className="py-2.5 flex items-center justify-between gap-1.5">
+        <div className="py-2.5 flex items-center justify-between gap-20">
           <ul className="list-none flex items-center gap-1.5">
             <li className="hover:scale-110 transition-all duration-300">
               <Link
