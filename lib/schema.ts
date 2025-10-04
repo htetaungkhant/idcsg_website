@@ -716,8 +716,8 @@ const patientInstructionsFormSchema = z.object({
             .min(1, {
               message: "Content description is required for each card.",
             })
-            .max(2000, {
-              message: "Content description must be less than 2000 characters.",
+            .max(5000, {
+              message: "Content description must be less than 5000 characters.",
             }),
 
           // Downloadable file (optional)
