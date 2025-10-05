@@ -3,6 +3,9 @@ import Image from "next/image";
 import { PatientInstructionsService } from "@/lib/services/patient-instructions-service";
 import { CustomCard2 } from "@/components/CustomCard";
 
+// Revalidate this page every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 export default async function PatientInstructions() {
   const patientInstructionsData =
     await PatientInstructionsService.getPatientInstructions();

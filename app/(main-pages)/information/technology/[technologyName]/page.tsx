@@ -4,6 +4,9 @@ import { TechnologyService } from "@/lib/services/technology-service";
 import { CardCollectionStyle3 } from "@/components/CardCollection";
 import { TechnologyCardGrid } from "@/components/TechnologyCardGrid";
 
+// Revalidate this page every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 interface TechnologyDetailsProps {
   params: Promise<{
     technologyName: string;
