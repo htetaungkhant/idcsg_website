@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const services = await ServiceService.getServices(categoryId);
+    const services = await ServiceService.getServices({ categoryId });
 
     return NextResponse.json({
       success: true,
