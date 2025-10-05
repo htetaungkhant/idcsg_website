@@ -72,6 +72,7 @@ export default async function FirstVisit() {
                 width={400}
                 height={400}
                 className="w-48 lg:w-68 h-full object-cover rounded-2xl"
+                priority
               />
             )}
           </div>
