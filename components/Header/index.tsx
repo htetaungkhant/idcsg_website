@@ -33,7 +33,10 @@ export default async function Header({
       (service) => service.categoryId === category.id
     );
     if (relatedServices?.length === 0) return [];
-    return relatedServices.map((service) => service.name);
+    return relatedServices.map((service) => ({
+      id: service.id,
+      name: service.name,
+    }));
   });
 
   return (

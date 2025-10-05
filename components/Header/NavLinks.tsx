@@ -8,19 +8,21 @@ import { cn } from "@/lib/utils";
 import { Category } from "@/app/generated/prisma";
 
 interface ServiceMenuItemProps {
-  name?: string;
+  id: string;
+  name: string;
   onClick?: () => void;
   children: React.ReactNode;
   className?: string;
 }
 const ServiceMenuItem = ({
+  id,
   name,
   children,
   onClick,
   className,
 }: ServiceMenuItemProps) => (
   <Link
-    href={name ? `/services/${encodeURIComponent(name)}` : "#"}
+    href={name ? `/services/${encodeURIComponent(name)}?id=${id}` : "#"}
     onClick={onClick}
     className={cn(
       "flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300",
@@ -33,7 +35,7 @@ const ServiceMenuItem = ({
 );
 
 interface NavLinksProps {
-  servicesData: string[][];
+  servicesData: { id: string; name: string }[][];
   technologyData: { id: string; title: string }[];
   categoryData: Category[];
   className?: string;
@@ -168,10 +170,11 @@ export default function NavLinks({
               service ? (
                 <ServiceMenuItem
                   key={`${service}-${index}`}
-                  name={service}
+                  id={service?.id}
+                  name={service?.name}
                   onClick={toggleServiceDropdown}
                 >
-                  {service}
+                  {service?.name}
                 </ServiceMenuItem>
               ) : (
                 <div key={`placeholder-${index}`} aria-hidden="true"></div>
