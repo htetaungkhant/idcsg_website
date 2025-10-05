@@ -2,20 +2,27 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { PrimaryBtn2 } from "@/components/CustomButtons";
+import { ServiceService } from "@/lib/services/service-service";
 
 interface ServiceProps {
-  params: Promise<{
-    serviceName: string;
-  }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function Service({ params }: ServiceProps) {
-  const { serviceName } = await params;
+export default async function Service({ searchParams }: ServiceProps) {
+  const { id } = await searchParams;
+  if (!id) {
+    return <div>Service not found</div>;
+  }
+
+  const service = await ServiceService.getServiceById(id as string);
+  if (!service) {
+    return <div>Service not found</div>;
+  }
 
   return (
     <div className="mx-auto w-[90%] pb-10">
       <h1 className="text-6xl text-[#233259] font-semibold">
-        General Dentistry
+        {service.category.title}
       </h1>
       <div className="mt-10 flex relative">
         <div className="absolute w-[90%] h-[85%] inset-0 bg-gradient-to-r from-[#CA4E48] to-[#642724] rounded-3xl"></div>
@@ -23,8 +30,8 @@ export default async function Service({ params }: ServiceProps) {
         <div className="relative max-w-64 pl-5 py-5 pr-3 flex flex-col gap-y-4">
           <Link
             href={`/services/${encodeURIComponent(
-              decodeURIComponent(serviceName)
-            )}/serviceDetails`}
+              service.name
+            )}/serviceDetails?id=${service.id}`}
             className="px-2 pt-3 pb-1.5 flex flex-col gap-3 items-end bg-[#68211E] border border-[#650F0F] rounded-tl-2xl rounded-tr-lg rounded-bl-lg rounded-br-3xl hover:scale-105 transition-all duration-300"
           >
             <h2 className="text-white text-3xl">
@@ -47,21 +54,14 @@ export default async function Service({ params }: ServiceProps) {
               </svg>
             </div>
           </Link>
-          <div className="z-10 w-100 xl:w-130 ml-12 flex flex-col gap-y-2 text-[#233259] bg-white px-5 py-3 rounded-3xl shadow-lg">
+          <div className="z-10 w-100 xl:w-130 ml-12 flex flex-col gap-y-4 text-[#233259] bg-white px-5 py-3 rounded-3xl shadow-lg">
             <h3 className="text-center text-2xl xl:text-4xl font-bold">
               Overview
             </h3>
-            <p className="text-base xl:text-xl font-(family-name:--font-old-standard-tt)">
-              A dental check-up at IDC is a comprehensive assessment designed to
-              maintain your oral health and catch potential issues early. It
-              includes a detailed dental examination, digital X-rays,
-              high-resolution photographs, and professional teeth cleaning. Our
-              dentists also provide personalised oral hygiene guidance tailored
-              to your needs. Whether you&apos;re a first-time visitor or
-              returning for routine care, each check-up is conducted in a calm,
-              patient-focused environment—ensuring comfort, clarity, and
-              long-term dental wellness.
-            </p>
+            <p
+              className="text-base xl:text-xl font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+              dangerouslySetInnerHTML={{ __html: service.overview }}
+            />
             <div className="flex items-center justify-center gap-5 mt-2">
               <PrimaryBtn2>Book</PrimaryBtn2>
               <PrimaryBtn2>Pre-Pay</PrimaryBtn2>
@@ -70,14 +70,15 @@ export default async function Service({ params }: ServiceProps) {
         </div>
         <div className="relative flex-1 mt-16">
           <h1 className="absolute top-2 right-4 text-right text-white text-6xl w-52">
-            {decodeURIComponent(serviceName)}
+            {service.name}
           </h1>
           <Image
-            src="/little_boy_dentist.jpg"
-            alt="Little Boy Dentist"
+            src={service.imageUrl}
+            alt={service.name}
             width={500}
             height={500}
             className="w-full rounded-3xl shadow-lg object-cover"
+            priority
           />
         </div>
       </div>
