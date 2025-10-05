@@ -6,8 +6,10 @@ import { MdMailOutline } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 
 import { cn } from "@/lib/utils";
-import NavLinks from "./NavLinks";
 import { TechnologyService } from "@/lib/services/technology-service";
+import { getCategories } from "@/lib/services/category-service";
+import { ServiceService } from "@/lib/services/service-service";
+import NavLinks from "./NavLinks";
 
 interface HeaderProps {
   color?: "transparent" | "white";
@@ -22,6 +24,17 @@ export default async function Header({
     id: tech.id,
     title: tech.title,
   }));
+
+  const categories = await getCategories();
+  const services = await ServiceService.getServices();
+
+  const servicesData = categories?.map((category) => {
+    const relatedServices = services.filter(
+      (service) => service.categoryId === category.id
+    );
+    if (relatedServices?.length === 0) return [];
+    return relatedServices.map((service) => service.name);
+  });
 
   return (
     <section
@@ -143,7 +156,11 @@ export default async function Header({
               </Link>
             </li>
           </ul>
-          <NavLinks technologyData={technologyData} />
+          <NavLinks
+            technologyData={technologyData}
+            categoryData={categories}
+            servicesData={servicesData}
+          />
         </div>
       </div>
     </section>

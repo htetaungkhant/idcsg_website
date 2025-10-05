@@ -113,13 +113,35 @@ export interface ServiceFormData {
   }[];
 }
 
+export interface GetServicesOptions {
+  categoryId?: string;
+  orderBy?: "name" | "sortOrder" | "createdAt";
+  orderDirection?: "asc" | "desc";
+  section4CardOrderBy?: "title" | "sortOrder" | "createdAt";
+  section4CardOrderDirection?: "asc" | "desc";
+  section5PriceRangeOrderBy?: "title" | "sortOrder" | "createdAt";
+  section5PriceRangeOrderDirection?: "asc" | "desc";
+  limit?: number;
+}
+
 export class ServiceService {
   /**
    * Get all services with their sections and category info
    */
   static async getServices(
-    categoryId?: string
+    options: GetServicesOptions = {}
   ): Promise<ServiceWithSections[]> {
+    const {
+      categoryId,
+      orderBy = "createdAt",
+      orderDirection = "asc",
+      section4CardOrderBy = "sortOrder",
+      section4CardOrderDirection = "asc",
+      section5PriceRangeOrderBy = "sortOrder",
+      section5PriceRangeOrderDirection = "asc",
+      limit,
+    } = options;
+
     const services = await db.service.findMany({
       where: categoryId ? { categoryId } : undefined,
       include: {
@@ -130,19 +152,22 @@ export class ServiceService {
         section4: {
           include: {
             cards: {
-              orderBy: { sortOrder: "asc" },
+              orderBy: { [section4CardOrderBy]: section4CardOrderDirection },
             },
           },
         },
         section5: {
           include: {
             priceRanges: {
-              orderBy: { sortOrder: "asc" },
+              orderBy: {
+                [section5PriceRangeOrderBy]: section5PriceRangeOrderDirection,
+              },
             },
           },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: { [orderBy]: orderDirection },
+      take: limit,
     });
 
     return services.map((service) => serializeServiceForClient(service));

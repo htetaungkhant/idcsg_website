@@ -11,11 +11,21 @@ export interface CategoryWithServicesCount extends Category {
   };
 }
 
+export interface GetCategoriesOptions {
+  orderBy?: "name" | "sortOrder" | "createdAt";
+  orderDirection?: "asc" | "desc";
+  limit?: number;
+}
+
 /**
  * Fetch all categories with service count
  */
-export async function getCategories(): Promise<CategoryWithServicesCount[]> {
+export async function getCategories(
+  options: GetCategoriesOptions = {}
+): Promise<CategoryWithServicesCount[]> {
   try {
+    const { orderBy = "createdAt", orderDirection = "asc", limit } = options;
+
     const categories = await db.category.findMany({
       include: {
         _count: {
@@ -24,9 +34,8 @@ export async function getCategories(): Promise<CategoryWithServicesCount[]> {
           },
         },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { [orderBy]: orderDirection },
+      take: limit,
     });
 
     return categories;

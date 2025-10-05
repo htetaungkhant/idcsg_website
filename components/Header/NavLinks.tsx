@@ -5,41 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
-const dentalServicesData = {
-  "GENERAL DENTISTRY": [
-    "General Check-up",
-    "Scaling and Polishing",
-    "Airflow Cleaning",
-    "Dental Fillings",
-    "Kids Dental",
-    "Orthodontics (Braces)",
-    "Periodontal Gum Disease",
-    "Dental X-Rays",
-  ],
-  "EMERGENCY DENTISTRY": [
-    "Toothache",
-    "Root Canal Treatment",
-    "Tooth Extraction",
-    "Wisdom Tooth Removal",
-    "TMJ Disorder",
-  ],
-  "RESTORATIVE DENTAL": [
-    "Dental Crowns",
-    "Dental Bridge",
-    "Same Day Dentures",
-    "Missing Teeth Replacement",
-    "Smile Improvement",
-    "ICON Resin Infiltration",
-  ],
-  "WELLNESS DENTISTRY": [
-    "Sports Guard",
-    "Dental Mouth Guard",
-    "Sleep Apnea Device",
-    "Clear Retainer",
-    "Holistic Dentistry",
-  ],
-};
+import { Category } from "@/app/generated/prisma";
 
 interface ServiceMenuItemProps {
   name?: string;
@@ -67,14 +33,16 @@ const ServiceMenuItem = ({
 );
 
 interface NavLinksProps {
-  servicesData?: { [category: string]: string[] };
-  technologyData?: { id: string; title: string }[];
+  servicesData: string[][];
+  technologyData: { id: string; title: string }[];
+  categoryData: Category[];
   className?: string;
 }
 export default function NavLinks({
   className,
-  servicesData = dentalServicesData,
+  servicesData,
   technologyData,
+  categoryData,
 }: NavLinksProps) {
   const pathname = usePathname();
   const serviceRef = React.useRef<HTMLDivElement>(null);
@@ -82,19 +50,18 @@ export default function NavLinks({
   const informationRef = React.useRef<HTMLDivElement>(null);
   const informationDropdownRef = React.useRef<HTMLDivElement>(null);
 
-  const { categoryTitles, serviceRows } = useMemo(() => {
-    const titles = Object.keys(servicesData);
-    const arrays = Object.values(servicesData);
-
-    const maxServices = Math.max(...arrays.map((services) => services.length));
+  const { serviceRows } = useMemo(() => {
+    const maxServices = Math.max(
+      ...servicesData?.map((services) => services.length)
+    );
 
     const rows = [];
     for (let i = 0; i < maxServices; i++) {
-      const row = arrays.map((services) => services[i] || null);
+      const row = servicesData?.map((services) => services[i] || null);
       rows.push(row);
     }
 
-    return { categoryTitles: titles, serviceRows: rows };
+    return { serviceRows: rows };
   }, [servicesData]);
 
   const toggleServiceDropdown = () => {
@@ -182,17 +149,19 @@ export default function NavLinks({
 
           <div
             className={cn(
-              `w-150 lg:max-w-150 p-4 font-normal text-[#010101] bg-white rounded-3xl shadow-md grid gap-x-4 gap-y-2.5 max-h-[76vh] overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`,
-              categoryTitles.length === 2 && "w-100 lg:max-w-100",
-              categoryTitles.length === 1 && "w-50 lg:max-w-50"
+              `w-50 lg:max-w-50 p-4 font-normal text-[#010101] bg-white rounded-3xl shadow-md grid gap-x-4 gap-y-2.5 max-h-[76vh] overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`,
+              categoryData?.length === 2 && "w-100 lg:max-w-100",
+              categoryData?.length >= 3 && "w-150 lg:max-w-150"
             )}
             style={{
-              gridTemplateColumns: `repeat(${categoryTitles.length}, minmax(130px, 1fr))`,
+              gridTemplateColumns: `repeat(${
+                categoryData?.length || 1
+              }, minmax(130px, 1fr))`,
             }}
           >
-            {categoryTitles.map((title) => (
-              <h2 key={title} className="uppercase tracking-widest">
-                {title}
+            {categoryData?.map((category) => (
+              <h2 key={category.id} className="uppercase tracking-widest">
+                {category.title}
               </h2>
             ))}
             {serviceRows.flat().map((service, index) =>
@@ -377,7 +346,7 @@ export default function NavLinks({
                       <ArrowRight className="w-5 h-5" />
                     </Link>
                   </li>
-                  {technologyData?.map((tech) => (
+                  {technologyData.map((tech) => (
                     <li key={tech.id}>
                       <Link
                         href={`/information/technology/${encodeURIComponent(
