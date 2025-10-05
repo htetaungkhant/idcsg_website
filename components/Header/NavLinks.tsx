@@ -45,12 +45,21 @@ interface ServiceMenuItemProps {
   name?: string;
   onClick?: () => void;
   children: React.ReactNode;
+  className?: string;
 }
-const ServiceMenuItem = ({ name, children, onClick }: ServiceMenuItemProps) => (
+const ServiceMenuItem = ({
+  name,
+  children,
+  onClick,
+  className,
+}: ServiceMenuItemProps) => (
   <Link
     href={name ? `/services/${encodeURIComponent(name)}` : "#"}
     onClick={onClick}
-    className="flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300"
+    className={cn(
+      "flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300",
+      className
+    )}
   >
     <span>{children}</span>
     <ArrowRight />
@@ -173,8 +182,13 @@ export default function NavLinks({
 
           <div
             className={cn(
-              "w-150 p-4 font-normal text-[#010101] bg-white rounded-3xl shadow-md grid grid-cols-4 gap-x-4 gap-y-2.5 max-h-[76vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              `w-150 lg:max-w-150 p-4 font-normal text-[#010101] bg-white rounded-3xl shadow-md grid gap-x-4 gap-y-2.5 max-h-[76vh] overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]`,
+              categoryTitles.length === 2 && "w-100 lg:max-w-100",
+              categoryTitles.length === 1 && "w-50 lg:max-w-50"
             )}
+            style={{
+              gridTemplateColumns: `repeat(${categoryTitles.length}, minmax(130px, 1fr))`,
+            }}
           >
             {categoryTitles.map((title) => (
               <h2 key={title} className="uppercase tracking-widest">
