@@ -116,9 +116,22 @@ const serviceFormSchema = z.object({
     message: "Category selection is required.",
   }),
   // Main service image (mandatory)
-  image: z.instanceof(File, {
-    message: "Service image is required.",
-  }),
+  image: z
+    .instanceof(File, {
+      message: "Service image is required.",
+    })
+    .refine((file) => file.size <= 10 * 1024 * 1024, {
+      message: "Image size must be less than 10MB.",
+    })
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+          file.type
+        ),
+      {
+        message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+      }
+    ),
   name: z
     .string()
     .min(2, {
@@ -137,7 +150,21 @@ const serviceFormSchema = z.object({
     }),
 
   // Section 1 (Image, Title, Description)
-  section1Image: z.instanceof(File).optional(),
+  section1Image: z
+    .instanceof(File)
+    .refine((file) => file.size <= 10 * 1024 * 1024, {
+      message: "Image size must be less than 10MB.",
+    })
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+          file.type
+        ),
+      {
+        message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+      }
+    )
+    .optional(),
   section1Title: z
     .string()
     .max(100, {
@@ -161,7 +188,21 @@ const serviceFormSchema = z.object({
     .or(z.literal("")),
 
   // Section 3 (Image, Title, Description)
-  section3Image: z.instanceof(File).optional(),
+  section3Image: z
+    .instanceof(File)
+    .refine((file) => file.size <= 10 * 1024 * 1024, {
+      message: "Image size must be less than 10MB.",
+    })
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+          file.type
+        ),
+      {
+        message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+      }
+    )
+    .optional(),
   section3Title: z
     .string()
     .max(100, {
@@ -186,7 +227,22 @@ const serviceFormSchema = z.object({
     .array(
       z.object({
         id: z.string().optional(), // For existing cards during updates
-        image: z.instanceof(File).optional(),
+        image: z
+          .instanceof(File)
+          .refine((file) => file.size <= 5 * 1024 * 1024, {
+            message: "Image size must be less than 5MB.",
+          })
+          .refine(
+            (file) =>
+              ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+                file.type
+              ),
+            {
+              message:
+                "Only .jpg, .jpeg, .png and .webp formats are supported.",
+            }
+          )
+          .optional(),
         title: z
           .string()
           .max(100, {
@@ -206,7 +262,21 @@ const serviceFormSchema = z.object({
     .optional(),
 
   // Section 5 (Image, Title, Price Ranges)
-  section5Image: z.instanceof(File).optional(),
+  section5Image: z
+    .instanceof(File)
+    .refine((file) => file.size <= 10 * 1024 * 1024, {
+      message: "Image size must be less than 10MB.",
+    })
+    .refine(
+      (file) =>
+        ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(
+          file.type
+        ),
+      {
+        message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+      }
+    )
+    .optional(),
   section5Title: z
     .string()
     .max(100, {

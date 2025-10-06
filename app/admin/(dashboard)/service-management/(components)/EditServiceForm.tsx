@@ -96,7 +96,7 @@ interface EditServiceFormProps {
 export function EditServiceForm({ serviceId }: EditServiceFormProps) {
   const router = useRouter();
 
-  const { uploadImage } = useCloudinaryUpload();
+  const { uploadWithCompression: uploadImage } = useCloudinaryUpload();
 
   const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);

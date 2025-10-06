@@ -1,8 +1,10 @@
-import { SignApiOptions } from "cloudinary";
 import { useState } from "react";
+import { SignApiOptions } from "cloudinary";
+import imageCompression, { Options } from "browser-image-compression";
 import { CloudinaryUploadResult } from "@/lib/cloudinary";
 
 export const useCloudinaryUpload = () => {
+  const [compressing, setCompressing] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
 
@@ -99,5 +101,52 @@ export const useCloudinaryUpload = () => {
     }
   };
 
-  return { uploadImage, uploading, progress };
+  const uploadWithCompression = async (
+    file: File,
+    uploadOptions: SignApiOptions = {},
+    compressionOptions: Options = {}
+  ) => {
+    setCompressing(true);
+
+    try {
+      // Step 1: Client-side compression
+      const defaultCompressionOptions = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 2400,
+        useWebWorker: true,
+        initialQuality: 0.85,
+        ...compressionOptions,
+      };
+
+      // console.log(`Original size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
+      const compressedFile = await imageCompression(
+        file,
+        defaultCompressionOptions
+      );
+
+      // console.log(`Compressed size: ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+
+      setCompressing(false);
+
+      // Step 2: Upload with Cloudinary transformations
+      const result = await uploadImage(compressedFile, {
+        ...uploadOptions,
+        transformation: uploadOptions.transformation || "q_auto:good,f_auto",
+      });
+
+      return result;
+    } catch (error) {
+      setCompressing(false);
+      throw error;
+    }
+  };
+
+  return {
+    uploadImage,
+    uploadWithCompression,
+    compressing,
+    uploading,
+    progress,
+  };
 };
