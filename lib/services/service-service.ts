@@ -225,108 +225,106 @@ export class ServiceService {
       ).id;
 
     try {
-      await db.$transaction(async (prisma) => {
-        // Create Section 1 if data is provided
-        if (
-          data.section1Title ||
-          data.section1Description ||
-          data.section1ImageUrl
-        ) {
-          await prisma.serviceSection1.create({
-            data: {
-              serviceId: id,
-              imageUrl: data.section1ImageUrl || null,
-              title: data.section1Title || null,
-              description: data.section1Description || null,
-            },
-          });
-        }
+      // Create Section 1 if data is provided
+      if (
+        data.section1Title ||
+        data.section1Description ||
+        data.section1ImageUrl
+      ) {
+        await db.serviceSection1.create({
+          data: {
+            serviceId: id,
+            imageUrl: data.section1ImageUrl || null,
+            title: data.section1Title || null,
+            description: data.section1Description || null,
+          },
+        });
+      }
 
-        // Create Section 2 if data is provided
-        if (data.section2VideoUrl) {
-          await prisma.serviceSection2.create({
-            data: {
-              serviceId: id,
-              videoUrl: data.section2VideoUrl,
-            },
-          });
-        }
+      // Create Section 2 if data is provided
+      if (data.section2VideoUrl) {
+        await db.serviceSection2.create({
+          data: {
+            serviceId: id,
+            videoUrl: data.section2VideoUrl,
+          },
+        });
+      }
 
-        // Create Section 3 if data is provided
-        if (
-          data.section3Title ||
-          data.section3Description ||
-          data.section3ImageUrl
-        ) {
-          await prisma.serviceSection3.create({
-            data: {
-              serviceId: id,
-              imageUrl: data.section3ImageUrl || null,
-              title: data.section3Title || null,
-              description: data.section3Description || null,
-            },
-          });
-        }
+      // Create Section 3 if data is provided
+      if (
+        data.section3Title ||
+        data.section3Description ||
+        data.section3ImageUrl
+      ) {
+        await db.serviceSection3.create({
+          data: {
+            serviceId: id,
+            imageUrl: data.section3ImageUrl || null,
+            title: data.section3Title || null,
+            description: data.section3Description || null,
+          },
+        });
+      }
 
-        // Create Section 4 if data is provided
-        if (data.section4Title || data.section4Cards?.length) {
-          const section4 = await prisma.serviceSection4.create({
-            data: {
-              serviceId: id,
-              title: data.section4Title || null,
-            },
-          });
+      // Create Section 4 if data is provided
+      if (data.section4Title || data.section4Cards?.length) {
+        const section4 = await db.serviceSection4.create({
+          data: {
+            serviceId: id,
+            title: data.section4Title || null,
+          },
+        });
 
-          // Create cards if provided
-          if (data.section4Cards?.length) {
-            for (let i = 0; i < data.section4Cards.length; i++) {
-              const card = data.section4Cards[i];
+        // Create cards if provided
+        if (data.section4Cards?.length) {
+          for (let i = 0; i < data.section4Cards.length; i++) {
+            const card = data.section4Cards[i];
 
-              await prisma.serviceSection4Card.create({
-                data: {
-                  section4Id: section4.id,
-                  imageUrl: card.imageUrl || null,
-                  title: card.title || null,
-                  description: card.description,
-                  sortOrder: i,
-                },
-              });
-            }
+            await db.serviceSection4Card.create({
+              data: {
+                section4Id: section4.id,
+                imageUrl: card.imageUrl || null,
+                title: card.title || null,
+                description: card.description,
+                sortOrder: i,
+              },
+            });
           }
         }
+      }
 
-        // Create Section 5 if data is provided
-        if (
-          data.section5Title ||
-          data.section5PriceRanges?.length ||
-          data.section5ImageUrl
-        ) {
-          const section5 = await prisma.serviceSection5.create({
-            data: {
-              serviceId: id,
-              imageUrl: data.section5ImageUrl || null,
-              title: data.section5Title || null,
-            },
-          });
+      // Create Section 5 if data is provided
+      if (
+        data.section5Title ||
+        data.section5PriceRanges?.length ||
+        data.section5ImageUrl
+      ) {
+        const section5 = await db.serviceSection5.create({
+          data: {
+            serviceId: id,
+            imageUrl: data.section5ImageUrl || null,
+            title: data.section5Title || null,
+          },
+        });
 
-          // Create price ranges if provided
-          if (data.section5PriceRanges?.length) {
-            for (let i = 0; i < data.section5PriceRanges.length; i++) {
-              const priceRange = data.section5PriceRanges[i];
+        // Create price ranges if provided
+        if (data.section5PriceRanges?.length) {
+          for (let i = 0; i < data.section5PriceRanges.length; i++) {
+            const priceRange = data.section5PriceRanges[i];
 
-              await prisma.serviceSection5PriceRange.create({
-                data: {
-                  section5Id: section5.id,
-                  title: priceRange.title,
-                  startPrice: priceRange.startPrice || null,
-                  endPrice: priceRange.endPrice || null,
-                  sortOrder: i,
-                },
-              });
-            }
+            await db.serviceSection5PriceRange.create({
+              data: {
+                section5Id: section5.id,
+                title: priceRange.title,
+                startPrice: priceRange.startPrice || null,
+                endPrice: priceRange.endPrice || null,
+                sortOrder: i,
+              },
+            });
           }
         }
-      });
+      }
 
       // Return the full service with all sections
       const createdService = await this.getServiceById(id);
