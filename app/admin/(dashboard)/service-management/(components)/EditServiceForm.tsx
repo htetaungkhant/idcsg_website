@@ -1011,7 +1011,7 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                           )}
                         />
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-3 items-start">
                           <FormField
                             control={form.control}
                             name={`section5PriceRanges.${index}.startPrice`}

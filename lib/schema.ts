@@ -229,12 +229,14 @@ const serviceFormSchema = z.object({
           .min(0, {
             message: "Start price must be a positive number.",
           })
+          .nullable()
           .optional(),
         endPrice: z
           .number()
           .min(0, {
             message: "End price must be a positive number.",
           })
+          .nullable()
           .optional(),
       })
     )
