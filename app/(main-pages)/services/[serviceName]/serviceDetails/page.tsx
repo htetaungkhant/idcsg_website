@@ -126,7 +126,7 @@ export default async function ServiceDetails({
               </h1>
             )}
             {service.section5?.imageUrl && service.section5?.priceRanges && (
-              <div className="grid grid-cols-[35%_1fr] gap-4">
+              <div className="grid grid-cols-[25%_1fr] gap-4">
                 {service.section5.imageUrl && (
                   <div>
                     <Image
@@ -140,9 +140,12 @@ export default async function ServiceDetails({
                   </div>
                 )}
                 {service.section5.priceRanges && (
-                  <div className="flex flex-col items-end gap-4 bg-white p-4 rounded-2xl">
+                  <div className="flex flex-col items-end gap-y-4 bg-white p-4 rounded-2xl">
                     {service.section5.priceRanges.map((priceRange, index) => (
-                      <div key={index} className="w-full flex justify-between">
+                      <div
+                        key={index}
+                        className="w-full flex justify-between lg:text-lg"
+                      >
                         <span className="font-bold">{priceRange.title}</span>
                         <span className="font-(family-name:--font-ubuntu) font-medium">
                           {priceRange.startPrice && priceRange.endPrice
@@ -158,7 +161,9 @@ export default async function ServiceDetails({
                       </div>
                     ))}
                     <span className="w-full font-light">
-                      (*$35.00 each for additional images)
+                      (Prices are customized based on your unique needs and are
+                      inclusive of GST. The dentist will advise you of your
+                      treatment costs following your consultation.)
                     </span>
                     <PrimaryBtn2>Pay Now</PrimaryBtn2>
                   </div>
