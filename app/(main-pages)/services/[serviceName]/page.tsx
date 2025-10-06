@@ -69,7 +69,7 @@ export default async function Service({ searchParams }: ServiceProps) {
           </div>
         </div>
         <div className="relative flex-1 mt-16">
-          <h1 className="absolute top-2 right-4 text-right text-white text-6xl w-52">
+          <h1 className="absolute top-2 right-4 text-right text-white text-6xl w-72">
             {service.name}
           </h1>
           <Image
