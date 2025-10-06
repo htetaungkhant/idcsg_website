@@ -137,16 +137,16 @@ const serviceFormSchema = z.object({
     .min(2, {
       message: "Service name must be at least 2 characters.",
     })
-    .max(100, {
-      message: "Service name must be less than 100 characters.",
+    .max(300, {
+      message: "Service name must be less than 300 characters.",
     }),
   overview: z
     .string()
     .min(10, {
       message: "Service overview must be at least 10 characters.",
     })
-    .max(1000, {
-      message: "Service overview must be less than 1000 characters.",
+    .max(3000, {
+      message: "Service overview must be less than 3000 characters.",
     }),
 
   // Section 1 (Image, Title, Description)
@@ -167,14 +167,14 @@ const serviceFormSchema = z.object({
     .optional(),
   section1Title: z
     .string()
-    .max(100, {
-      message: "Section 1 title must be less than 100 characters.",
+    .max(300, {
+      message: "Section 1 title must be less than 300 characters.",
     })
     .optional(),
   section1Description: z
     .string()
-    .max(1000, {
-      message: "Section 1 description must be less than 1000 characters.",
+    .max(3000, {
+      message: "Section 1 description must be less than 3000 characters.",
     })
     .optional(),
 
@@ -205,22 +205,22 @@ const serviceFormSchema = z.object({
     .optional(),
   section3Title: z
     .string()
-    .max(100, {
-      message: "Section 3 title must be less than 100 characters.",
+    .max(300, {
+      message: "Section 3 title must be less than 300 characters.",
     })
     .optional(),
   section3Description: z
     .string()
-    .max(1000, {
-      message: "Section 3 description must be less than 1000 characters.",
+    .max(3000, {
+      message: "Section 3 description must be less than 3000 characters.",
     })
     .optional(),
 
   // Section 4 (Title and Cards)
   section4Title: z
     .string()
-    .max(100, {
-      message: "Section 4 title must be less than 100 characters.",
+    .max(300, {
+      message: "Section 4 title must be less than 300 characters.",
     })
     .optional(),
   section4Cards: z
@@ -245,8 +245,8 @@ const serviceFormSchema = z.object({
           .optional(),
         title: z
           .string()
-          .max(100, {
-            message: "Card title must be less than 100 characters.",
+          .max(300, {
+            message: "Card title must be less than 300 characters.",
           })
           .optional(),
         description: z
@@ -254,8 +254,8 @@ const serviceFormSchema = z.object({
           .min(1, {
             message: "Card description is required.",
           })
-          .max(500, {
-            message: "Card description must be less than 500 characters.",
+          .max(1000, {
+            message: "Card description must be less than 1000 characters.",
           }),
       })
     )
@@ -279,8 +279,8 @@ const serviceFormSchema = z.object({
     .optional(),
   section5Title: z
     .string()
-    .max(100, {
-      message: "Section 5 title must be less than 100 characters.",
+    .max(300, {
+      message: "Section 5 title must be less than 300 characters.",
     })
     .optional(),
   section5PriceRanges: z
@@ -291,8 +291,8 @@ const serviceFormSchema = z.object({
           .min(1, {
             message: "Price range title is required.",
           })
-          .max(100, {
-            message: "Price range title must be less than 100 characters.",
+          .max(300, {
+            message: "Price range title must be less than 300 characters.",
           }),
         startPrice: z
           .number()
