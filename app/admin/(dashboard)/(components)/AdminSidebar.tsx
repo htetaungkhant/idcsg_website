@@ -159,7 +159,7 @@ export function AdminSidebar() {
       <SidebarHeader className="border-b border-gray-200 pb-4">
         <div className="flex items-center gap-3 px-3 py-2">
           <Image
-            src={"/logo.jpg"}
+            src={"/logo.png"}
             alt="IDCSG Logo"
             width={40}
             height={40}
