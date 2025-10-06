@@ -43,7 +43,10 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ className }) => {
                   <div className="flex items-center">
                     <span className="px-1">/</span>
                     {isLast ? (
-                      <span className="font-bold" aria-current="page">
+                      <span
+                        className="font-bold text-[#233259]"
+                        aria-current="page"
+                      >
                         {decodeURIComponent(displayName)}
                       </span>
                     ) : (
