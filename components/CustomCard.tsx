@@ -166,58 +166,6 @@ export const CustomCard2 = ({
               />
             )}
           </div>
-
-          {/* <div className="">
-            <Image
-              src={contentImageUrl!}
-              alt="Temporary Crown Care"
-              width={500}
-              height={300}
-              className="rounded-lg float-right"
-            />
-            <p className="">
-              The process to prepare your tooth to receive a permanent crown is
-              very irritating both to the prepared tooth and its surrounding gum
-              tissue. You may experience tenderness or a dull, achy feeling in
-              this area for the next few days to one week. You may take any Over
-              the Counter (OTC) analgesic for the discomfort. While your
-              permanent crown is being fabricated, you will wear the temporary
-              acrylic crown we have fabricated and placed with temporary cement.
-              Because it is a temporary crown, you will care for it differently
-              than you would your natural teeth. The material we use to make
-              your temporary crown is a dental acrylic. It is not as strong a
-              your permanent one will be. The acrylic will tend to expand, flex,
-              bend and wear more easily than a permanent crown. Therefore, we
-              strongly suggest watching your diet, doing the majority of your
-              chewing away from your temporary crown. Do not subject your
-              temporary crown to undue stress in function such as biting into
-              Jolly Ranchers, ice, gum or hard nuts. Rule of thumb: nothing
-              sticky, chewy, or crunchy while in your temporary. If you wear any
-              type of appliance, (example: TMJ orthotic, sleep appliances,
-              retainers) you cannot wear it during temporary stage or it will
-              pull off your temporary crown.
-              The process to prepare your tooth to receive a permanent crown is
-              very irritating both to the prepared tooth and its surrounding gum
-              tissue. You may experience tenderness or a dull, achy feeling in
-              this area for the next few days to one week. You may take any Over
-              the Counter (OTC) analgesic for the discomfort. While your
-              permanent crown is being fabricated, you will wear the temporary
-              acrylic crown we have fabricated and placed with temporary cement.
-              Because it is a temporary crown, you will care for it differently
-              than you would your natural teeth. The material we use to make
-              your temporary crown is a dental acrylic. It is not as strong a
-              your permanent one will be. The acrylic will tend to expand, flex,
-              bend and wear more easily than a permanent crown. Therefore, we
-              strongly suggest watching your diet, doing the majority of your
-              chewing away from your temporary crown. Do not subject your
-              temporary crown to undue stress in function such as biting into
-              Jolly Ranchers, ice, gum or hard nuts. Rule of thumb: nothing
-              sticky, chewy, or crunchy while in your temporary. If you wear any
-              type of appliance, (example: TMJ orthotic, sleep appliances,
-              retainers) you cannot wear it during temporary stage or it will
-              pull off your temporary crown.
-            </p>
-          </div> */}
         </div>
       </DialogContent>
     </Dialog>
