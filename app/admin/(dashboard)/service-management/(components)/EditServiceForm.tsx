@@ -1028,7 +1028,7 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                                     value={field.value ?? ""}
                                     onChange={(e) =>
                                       field.onChange(
-                                        parseFloat(e.target.value) || undefined
+                                        parseFloat(e.target.value) || null
                                       )
                                     }
                                     disabled={isLoading}
@@ -1055,7 +1055,7 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                                     value={field.value ?? ""}
                                     onChange={(e) =>
                                       field.onChange(
-                                        parseFloat(e.target.value) || undefined
+                                        parseFloat(e.target.value) || null
                                       )
                                     }
                                     disabled={isLoading}
