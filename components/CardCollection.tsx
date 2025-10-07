@@ -213,7 +213,7 @@ export const CardCollectionStyle4: React.FC<CardCollectionStyle4Props> = ({
         </div>
       </div>
       <div className="relative flex-1 mt-16">
-        <h1 className="absolute top-0 left-0 text-white text-6xl w-[50%] h-[85%] bg-gradient-to-r from-[#000000] to-[#00000000] rounded-l-2xl px-4 py-3">
+        <h1 className="absolute top-0 left-0 text-white text-6xl w-[85%] xl:w-[50%] h-[85%] bg-gradient-to-r from-[#000000] to-[#00000000] rounded-l-2xl px-4 py-3">
           {imageTitle}
         </h1>
         <Image
@@ -277,7 +277,7 @@ export const CardCollectionStyle5: React.FC<CardCollectionStyle5Props> = ({
       </div>
 
       <div className="z-10 w-1/2 pt-24 mb-28">
-        <div className="flex flex-col gap-y-2 xl:gap-y-4 text-[#233259] bg-white px-5 py-3 rounded-3xl shadow-lg font-(family-name:--font-ubuntu)">
+        <div className="flex flex-col gap-y-2 xl:gap-y-4 text-[#233259] bg-white pl-5 pr-12 py-3 rounded-3xl shadow-lg font-(family-name:--font-ubuntu)">
           {overviewTitle && (
             <h3 className="text-center text-2xl xl:text-4xl font-bold">
               {overviewTitle}
