@@ -148,6 +148,7 @@ export default async function ServiceDetails({
                       >
                         <span className="font-bold">{priceRange.title}</span>
                         <span className="font-(family-name:--font-ubuntu) font-medium">
+                          {!priceRange.endPrice && "Start from "}
                           {priceRange.startPrice && priceRange.endPrice
                             ? `${formatPrice(
                                 priceRange.startPrice
