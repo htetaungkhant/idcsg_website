@@ -29,8 +29,8 @@ const ServiceMenuItem = ({
       className
     )}
   >
-    <span>{children}</span>
-    <ArrowRight />
+    <span className="flex-1">{children}</span>
+    <ArrowRight size={20} />
   </Link>
 );
 
