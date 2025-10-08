@@ -5,6 +5,9 @@ import { PrimaryBtn2 } from "@/components/CustomButtons";
 import { formatPrice } from "@/lib/utils";
 import ServiceDetailsCardsSection from "@/app/(main-pages)/services/(components)/ServiceDetailsCardsSection";
 
+// Revalidate this page every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 interface ServiceDetailsProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }

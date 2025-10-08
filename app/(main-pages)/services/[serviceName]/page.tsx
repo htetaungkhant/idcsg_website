@@ -4,6 +4,9 @@ import Link from "next/link";
 import { PrimaryBtn2 } from "@/components/CustomButtons";
 import { ServiceService } from "@/lib/services/service-service";
 
+// Revalidate this page every 60 seconds (ISR - Incremental Static Regeneration)
+export const revalidate = 60;
+
 interface ServiceProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
