@@ -8,7 +8,7 @@ export const revalidate = 60;
 
 export default async function Pay() {
   const services = await ServiceService.getServices();
-  console.log(services);
+
   return (
     <div className="pb-10">
       <div className="relative flex justify-center py-8 lg:py-16">
