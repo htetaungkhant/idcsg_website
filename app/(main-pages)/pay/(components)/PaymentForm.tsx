@@ -16,11 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { paymentFormSchema, PaymentFormSchema } from "@/lib/schema";
+import { ServiceWithSections } from "@/lib/services/service-service";
 
 interface PaymentFormProps {
+  services: ServiceWithSections[];
   className?: string;
 }
-export default function PaymentForm({ className }: PaymentFormProps) {
+export default function PaymentForm({ className, services }: PaymentFormProps) {
   const form = useForm<PaymentFormSchema>({
     resolver: zodResolver(paymentFormSchema),
     defaultValues: {
@@ -152,9 +154,11 @@ export default function PaymentForm({ className }: PaymentFormProps) {
                     <option value="" disabled>
                       Select service
                     </option>
-                    <option value="service1">Service 1</option>
-                    <option value="service2">Service 2</option>
-                    <option value="service3">Service 3</option>
+                    {services?.map((service) => (
+                      <option key={service.id} value={service.id}>
+                        {service.name}
+                      </option>
+                    ))}
                   </select>
                 </FormControl>
                 <FormMessage className="-mt-1 text-[10px] sm:text-xs" />
