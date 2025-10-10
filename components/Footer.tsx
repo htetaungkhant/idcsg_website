@@ -18,7 +18,7 @@ export const OriginalFooter: React.FC<FooterProps> = ({ className }) => {
       <div className="flex justify-center items-center gap-8 max-lg:flex-col max-lg:gap-4">
         <Link href="/">
           <Image
-            src="/logo_with_text.svg"
+            src="/footer_logo.svg"
             alt="Logo"
             width={100}
             height={100}
@@ -129,7 +129,7 @@ export default function Footer({ className }: FooterProps) {
       <div className="py-2 flex items-center justify-between gap-6 max-md:gap-3 border-b border-white">
         <Link href="/">
           <Image
-            src="/logo_with_text.svg"
+            src="/footer_logo.svg"
             alt="Logo"
             width={100}
             height={100}
