@@ -67,7 +67,7 @@ export default async function Service({ searchParams }: ServiceProps) {
             />
             <div className="flex items-center justify-center gap-5 mt-2">
               <PrimaryBtn2>Book</PrimaryBtn2>
-              <PrimaryBtn2>Pre-Pay</PrimaryBtn2>
+              {/* <PrimaryBtn2>Pre-Pay</PrimaryBtn2> */}
             </div>
           </div>
         </div>

@@ -66,7 +66,7 @@ export default async function Home() {
 
             <div className="flex gap-6 lg:gap-10 items-center max-md:flex-col">
               <HomePageBtn>WhatsApp to Book</HomePageBtn>
-              <HomePageBtn>Pay Online</HomePageBtn>
+              {/* <HomePageBtn>Pay Online</HomePageBtn> */}
             </div>
           </section>
           <Footer />

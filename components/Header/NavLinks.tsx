@@ -389,7 +389,7 @@ export default function NavLinks({
           Shop
         </Link>
       </li>
-      <li
+      {/* <li
         className={cn(
           "w-13 text-center rounded-full",
           pathname.startsWith("/pay") && "font-bold text-white bg-[#30457C]"
@@ -398,7 +398,7 @@ export default function NavLinks({
         <Link href="/pay" className="w-full block">
           Pay
         </Link>
-      </li>
+      </li> */}
       <li
         className={cn(
           "w-19 text-center rounded-full",

@@ -169,7 +169,7 @@ export default async function ServiceDetails({
                       inclusive of GST. The dentist will advise you of your
                       treatment costs following your consultation.)
                     </span>
-                    <PrimaryBtn2>Pay Now</PrimaryBtn2>
+                    {/* <PrimaryBtn2>Pay Now</PrimaryBtn2> */}
                   </div>
                 )}
               </div>
