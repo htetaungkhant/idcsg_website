@@ -148,6 +148,25 @@ const serviceFormSchema = z.object({
     .max(3000, {
       message: "Service overview must be less than 3000 characters.",
     }),
+  // Gradient colors for overview section background
+  overviewBgStartingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+    message:
+      "Overview background starting color must be a valid hex color (e.g., #CA4E48).",
+  }),
+  overviewBgEndingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+    message:
+      "Overview background ending color must be a valid hex color (e.g., #642724).",
+  }),
+  // Gradient colors for details section background
+  detailsBgStartingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+    message:
+      "Details background starting color must be a valid hex color (e.g., #FFFFFF).",
+  }),
+  detailsBgEndingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+    message:
+      "Details background ending color must be a valid hex color (e.g., #D2F7FF).",
+  }),
+  /* Lines 151-153 omitted */
 
   // Section 1 (Image, Title, Description)
   section1Image: z

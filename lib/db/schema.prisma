@@ -169,9 +169,13 @@ model Service {
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   // Main service information
-  imageUrl String // Cloudinary URL for main service image (mandatory)
-  name     String
-  overview String @db.Text
+  imageUrl                String // Cloudinary URL for main service image (mandatory)
+  name                    String
+  overview                String @db.Text
+  overviewBgStartingColor String @default("#CA4E48") // Hex color code for gradient start
+  overviewBgEndingColor   String @default("#642724") // Hex color code for gradient end
+  detailsBgStartingColor  String @default("#FFFFFF") // Hex color code for gradient start
+  detailsBgEndingColor    String @default("#D2F7FF") // Hex color code for gradient end
 
   // Service sections (one-to-one relationships)
   section1 ServiceSection1?
@@ -283,8 +287,8 @@ model ServiceSection5PriceRange {
 
 // Dental Technology Management System
 model DentalTechnology {
-  id String @id @default(cuid())
-  cardStyle        TechnologyCardStyle // Card style (CARDSTYLE1, or CARDSTYLE2)
+  id        String              @id @default(cuid())
+  cardStyle TechnologyCardStyle // Card style (CARDSTYLE1, or CARDSTYLE2)
 
   // Main mandatory fields
   imageUrl String // Cloudinary URL for main technology image (required)

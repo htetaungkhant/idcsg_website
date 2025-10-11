@@ -80,6 +80,10 @@ export interface ServiceFormData {
   imageUrl: string;
   name: string;
   overview: string;
+  overviewBgStartingColor?: string;
+  overviewBgEndingColor?: string;
+  detailsBgStartingColor?: string;
+  detailsBgEndingColor?: string;
 
   // Section 1
   section1ImageUrl?: string;
@@ -220,6 +224,10 @@ export class ServiceService {
             imageUrl: data.imageUrl,
             name: data.name,
             overview: data.overview,
+            overviewBgStartingColor: data.overviewBgStartingColor || "#CA4E48",
+            overviewBgEndingColor: data.overviewBgEndingColor || "#642724",
+            detailsBgStartingColor: data.detailsBgStartingColor || "#FFFFFF",
+            detailsBgEndingColor: data.detailsBgEndingColor || "#D2F7FF",
           },
         })
       ).id;
@@ -371,11 +379,19 @@ export class ServiceService {
         name: string;
         overview: string;
         imageUrl: string;
+        overviewBgStartingColor?: string;
+        overviewBgEndingColor?: string;
+        detailsBgStartingColor?: string;
+        detailsBgEndingColor?: string;
       } = {
         categoryId: data.categoryId,
         name: data.name,
         overview: data.overview,
         imageUrl: data.imageUrl,
+        overviewBgStartingColor: data.overviewBgStartingColor || "#CA4E48",
+        overviewBgEndingColor: data.overviewBgEndingColor || "#642724",
+        detailsBgStartingColor: data.detailsBgStartingColor || "#FFFFFF",
+        detailsBgEndingColor: data.detailsBgEndingColor || "#D2F7FF",
       };
 
       await db.service.update({

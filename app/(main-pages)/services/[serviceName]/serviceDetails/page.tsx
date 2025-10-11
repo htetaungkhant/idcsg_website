@@ -30,7 +30,14 @@ export default async function ServiceDetails({
         {service.category.title}
       </h1>
       {/* Figma => shadow-[4px_4px_12px_0px_rgba(0,0,0,0.25)] */}
-      <div className="p-4 lg:px-6 lg:py-8 flex flex-col gap-y-10 rounded-2xl bg-radial from-[#FFFFFF] to-[#D2F7FF] shadow-lg">
+      <div
+        className="p-4 lg:px-6 lg:py-8 flex flex-col gap-y-10 rounded-2xl shadow-lg"
+        style={{
+          background: `radial-gradient(circle at 50% 50%, ${
+            service.detailsBgStartingColor || "#FFFFFF"
+          }, ${service.detailsBgEndingColor || "#D2F7FF"})`,
+        }}
+      >
         {service.section1 && (
           <section className="flex gap-2 md:gap-4 lg:gap-8 text-[#233259]">
             {service.section1?.imageUrl && (

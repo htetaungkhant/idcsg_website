@@ -112,6 +112,10 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
       image: undefined,
       name: "",
       overview: "",
+      overviewBgStartingColor: "#CA4E48",
+      overviewBgEndingColor: "#642724",
+      detailsBgStartingColor: "#FFFFFF",
+      detailsBgEndingColor: "#D2F7FF",
       section1Title: "",
       section1Description: "",
       section2VideoUrl: "",
@@ -175,6 +179,13 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
             image: undefined, // Optional for editing existing services
             name: serviceData.name || "",
             overview: serviceData.overview || "",
+            overviewBgStartingColor:
+              serviceData.overviewBgStartingColor || "#CA4E48",
+            overviewBgEndingColor:
+              serviceData.overviewBgEndingColor || "#642724",
+            detailsBgStartingColor:
+              serviceData.detailsBgStartingColor || "#FFFFFF",
+            detailsBgEndingColor: serviceData.detailsBgEndingColor || "#D2F7FF",
             section1Title: serviceData.section1?.title || "",
             section1Description: serviceData.section1?.description || "",
             section2VideoUrl: serviceData.section2?.videoUrl || "",
@@ -246,6 +257,10 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
         name: data.name,
         overview: data.overview,
         imageUrl: service?.imageUrl || null, // Default to existing image URL
+        overviewBgStartingColor: data.overviewBgStartingColor || "#CA4E48",
+        overviewBgEndingColor: data.overviewBgEndingColor || "#642724",
+        detailsBgStartingColor: data.detailsBgStartingColor || "#FFFFFF",
+        detailsBgEndingColor: data.detailsBgEndingColor || "#D2F7FF",
       };
 
       if (data.image) {
@@ -498,6 +513,136 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                   </FormItem>
                 )}
               />
+
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Background Colors</h3>
+                <p className="text-sm text-gray-600">
+                  Set gradient background colors for service overview and
+                  details sections
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                  <FormField
+                    control={form.control}
+                    name="overviewBgStartingColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Overview Gradient Start Color</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl>
+                            <Input
+                              type="color"
+                              {...field}
+                              disabled={isLoading}
+                              className="w-20 h-10 cursor-pointer"
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={isLoading}
+                              placeholder="#CA4E48"
+                              className="flex-1"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="overviewBgEndingColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Overview Gradient End Color</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl>
+                            <Input
+                              type="color"
+                              {...field}
+                              disabled={isLoading}
+                              className="w-20 h-10 cursor-pointer"
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={isLoading}
+                              placeholder="#642724"
+                              className="flex-1"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="detailsBgStartingColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Details Gradient Start Color</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl>
+                            <Input
+                              type="color"
+                              {...field}
+                              disabled={isLoading}
+                              className="w-20 h-10 cursor-pointer"
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={isLoading}
+                              placeholder="#FFFFFF"
+                              className="flex-1"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="detailsBgEndingColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Details Gradient End Color</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl>
+                            <Input
+                              type="color"
+                              {...field}
+                              disabled={isLoading}
+                              className="w-20 h-10 cursor-pointer"
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={isLoading}
+                              placeholder="#D2F7FF"
+                              className="flex-1"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
 

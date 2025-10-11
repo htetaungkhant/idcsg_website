@@ -28,7 +28,14 @@ export default async function Service({ searchParams }: ServiceProps) {
         {service.category.title}
       </h1>
       <div className="mt-10 flex relative">
-        <div className="absolute w-[90%] h-[85%] inset-0 bg-gradient-to-r from-[#CA4E48] to-[#642724] rounded-3xl"></div>
+        <div
+          className="absolute w-[90%] h-[85%] inset-0 rounded-3xl"
+          style={{
+            background: `linear-gradient(to right, ${
+              service.overviewBgStartingColor || "#CA4E48"
+            }, ${service.overviewBgEndingColor || "#642724"})`,
+          }}
+        ></div>
 
         <div className="relative max-w-64 pl-5 py-5 pr-3 flex flex-col gap-y-4">
           <Link
