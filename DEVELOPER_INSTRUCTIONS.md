@@ -3,7 +3,7 @@
 ## Overview
 This document provides comprehensive guidelines for developing and maintaining the IDCSG website. These instructions are designed for senior Next.js developers to ensure consistency, maintainability, and optimal performance across the codebase.
 
-*Last Updated: September 30, 2025*
+*Last Updated: October 11, 2025*
 
 ## Project Architecture
 
@@ -22,7 +22,7 @@ This document provides comprehensive guidelines for developing and maintaining t
 - **Security**: bcryptjs v3.0.2 for password hashing with @types/bcryptjs v2.4.6
 - **Theming**: Next-themes v0.4.6 for dark/light mode
 - **Phone Input**: React International Phone v4.6.0 for international phone numbers
-- **Utilities**: Class Variance Authority v0.7.1, clsx v2.1.1, tailwind-merge v3.3.1, uuid v13.0.0
+- **Utilities**: Class Variance Authority v0.7.1, clsx v2.1.1, tailwind-merge v3.3.1, uuid v13.0.0, browser-image-compression v2.0.2
 - **UI Components**: Radix UI primitives for accessible component foundations
   - @radix-ui/react-alert-dialog v1.1.15
   - @radix-ui/react-dialog v1.1.15
@@ -57,7 +57,7 @@ The system manages multiple types of information pages through dedicated service
 - **Precise Information**: Multi-section content with different card styles for precise/technical information presentation
 - **Privacy Policy**: Single content section with hosting date and structured privacy policy content
 - **Safety Information**: Multi-section content with various card styles for safety protocols and guidelines
-- **Technology Information**: Comprehensive technology management with main fields (image, title, overview) plus optional section1 and dynamic card list for detailed technology descriptions
+- **Technology Information**: Comprehensive technology management with card style (CARDSTYLE1, CARDSTYLE2), main fields (image, title, overview), optional description title and description, optional section1, and dynamic card list for detailed technology descriptions
 - **Terms of Service**: Single content section with hosting date and structured terms of service content
 
 #### Content Structure Patterns
@@ -130,6 +130,17 @@ The project includes a comprehensive patient instructions system:
 - **Resource Downloads**: Support for downloadable files like forms, guides, or PDFs
 - **Cloudinary Integration**: All media handled through Cloudinary for optimization
 - **Structured Content**: Clear separation between visual elements and instructional content
+
+### Contact Form Management System
+The project includes a contact form submission system:
+
+#### Contact Form Features
+- **Form Fields**: Name, email ID, mobile number (with international phone support), and message
+- **International Phone Support**: React International Phone v4.6.0 for proper phone number formatting
+- **Database Storage**: ContactMessage model stores all form submissions with timestamps
+- **Service Layer**: ContactService handles form submission logic and validation
+- **API Integration**: Dedicated `/api/contact` endpoint for form submissions
+- **Validation**: Zod schema validation for all input fields
 
 ### Team Management System
 The project includes a sophisticated team management system:
@@ -464,6 +475,8 @@ app/                                    # Next.js 15 App Router
     │   ├── route.ts                  # GET, POST categories
     │   └── [id]/
     │       └── route.ts              # GET, PUT, DELETE category by ID
+    ├── contact/                      # Contact form API
+    │   └── route.ts                  # POST contact form submissions
     ├── first-visit/                  # First visit API
     │   └── route.ts                  # First visit content management
     ├── homepage-settings/            # Homepage settings API
@@ -521,16 +534,17 @@ components/                           # Reusable UI components
 │   ├── tabs.tsx
 │   ├── textarea.tsx
 │   └── tooltip.tsx
-├── providers/                      # Context providers (empty - for future use)
-├── CardCollection.tsx              # Custom common components
-├── CustomButtons.tsx
-├── CustomCard.tsx
-├── Footer.tsx
-├── GithubSignIn.tsx
-├── SignOut.tsx
-└── Header/                        # Multi-file component
-    ├── index.tsx
-    └── NavLinks.tsx
+├── providers/                      # Context providers
+├── Breadcrumb.tsx                  # Breadcrumb navigation component
+├── CardCollection.tsx              # Card collection components with multiple styles
+├── CustomButtons.tsx               # Custom button components
+├── CustomCard.tsx                  # Custom card component
+├── Footer.tsx                      # Footer component
+├── GithubSignIn.tsx                # GitHub sign-in component
+├── SignOut.tsx                     # Sign-out component
+└── Header/                        # Multi-file header component
+    ├── index.tsx                  # Main header component
+    └── NavLinks.tsx               # Navigation links component
 
 hooks/                              # Custom React hooks
 ├── use-cloudinary-upload.ts       # Cloudinary upload with progress tracking
@@ -553,6 +567,7 @@ lib/                               # Utility libraries and configurations
 │       └── migration_lock.toml
 └── services/                     # Business logic services
     ├── category-service.ts       # Category CRUD operations
+    ├── contact-service.ts        # Contact form submission handling
     ├── example.ts                # Example service patterns
     ├── first-visit-service.ts    # First visit content management
     ├── homepage-settings-service.ts # Homepage settings management
@@ -794,13 +809,15 @@ HomepageSettings {
 
 -- Dental Technology Management
 DentalTechnology {
-  id          String   @id @default(cuid())
-  imageUrl    String   # Cloudinary URL for main technology image (required)
-  title       String   # Technology title (required)
-  overview    String   @db.Text # Technology overview/summary (required)
-  description String?  @db.Text # Detailed description (optional)
-  section1    DentalTechnologySection1? # One-to-one optional sections
-  cards       DentalTechnologyCard[] # Dynamic list of cards (one-to-many)
+  id               String              @id @default(cuid())
+  cardStyle        TechnologyCardStyle # Card style (CARDSTYLE1 or CARDSTYLE2)
+  imageUrl         String              # Cloudinary URL for main technology image (required)
+  title            String              # Technology title (required)
+  overview         String              @db.Text # Technology overview/summary (required)
+  descriptionTitle String?             @db.Text # Description title/heading (optional)
+  description      String?             @db.Text # Detailed description (optional)
+  section1         DentalTechnologySection1? # One-to-one optional sections
+  cards            DentalTechnologyCard[] # Dynamic list of cards (one-to-many)
 }
 
 DentalTechnologySection1 {
@@ -877,9 +894,19 @@ PatientInstructionCard {
   sortOrder              Int @default(0)
 }
 
+-- Contact Form Submissions
+ContactMessage {
+  id           String @id @default(cuid())
+  name         String # Sender's name
+  emailId      String # Sender's email address
+  mobileNumber String # Sender's phone number with country code
+  message      String @db.Text # Message content
+}
+
 -- Enum Types for Type Safety
 UserRole { USER, ADMIN }
 TeamType { DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF }
+TechnologyCardStyle { CARDSTYLE1, CARDSTYLE2 }
 SafeCardStyle { CARDSTYLE1, CARDSTYLE2, CARDSTYLE3 }
 PreciseCardStyle { CARDSTYLE1, CARDSTYLE2, CARDSTYLE3 }
 PersonalCardStyle { CARDSTYLE1, CARDSTYLE2, CARDSTYLE3 }
@@ -930,6 +957,7 @@ VerificationToken {
   @@unique([identifier, token])
 }
 
+// Optional for WebAuthn support
 Authenticator {
   credentialID         String  @unique
   userId               String
@@ -953,8 +981,9 @@ Authenticator {
 - **Previous Admin Credentials**: PreviousAdminCredentials model for tracking credential history
 - **Team Management**: Member model with TeamType enum (DOCTORS, CONSULTANT_SPECIALISTS, ALLIED_HEALTH_SUPPORT_STAFF)
 - **Content Management**: Comprehensive models for all information systems with proper relationships
-- **Technology Management**: DentalTechnology model with flexible card system (one-to-many relationship)
+- **Technology Management**: DentalTechnology model with TechnologyCardStyle enum (CARDSTYLE1, CARDSTYLE2) and flexible card system (one-to-many relationship)
 - **Patient Instructions**: PatientInstructions model with card-based system for instruction content
+- **Contact Management**: ContactMessage model for storing contact form submissions
 
 ### Database Scripts
 ```bash
