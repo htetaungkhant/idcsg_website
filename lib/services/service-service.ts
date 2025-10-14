@@ -84,6 +84,8 @@ export interface ServiceFormData {
   overviewBgEndingColor?: string;
   detailsBgStartingColor?: string;
   detailsBgEndingColor?: string;
+  detailsLinkBgColor?: string;
+  detailsTextColor?: string;
 
   // Section 1
   section1ImageUrl?: string;
@@ -228,6 +230,8 @@ export class ServiceService {
             overviewBgEndingColor: data.overviewBgEndingColor || "#642724",
             detailsBgStartingColor: data.detailsBgStartingColor || "#FFFFFF",
             detailsBgEndingColor: data.detailsBgEndingColor || "#D2F7FF",
+            detailsLinkBgColor: data.detailsLinkBgColor || "#68211E",
+            detailsTextColor: data.detailsTextColor || "#233259",
           },
         })
       ).id;
@@ -383,6 +387,8 @@ export class ServiceService {
         overviewBgEndingColor?: string;
         detailsBgStartingColor?: string;
         detailsBgEndingColor?: string;
+        detailsLinkBgColor?: string;
+        detailsTextColor?: string;
       } = {
         categoryId: data.categoryId,
         name: data.name,
@@ -392,6 +398,8 @@ export class ServiceService {
         overviewBgEndingColor: data.overviewBgEndingColor || "#642724",
         detailsBgStartingColor: data.detailsBgStartingColor || "#FFFFFF",
         detailsBgEndingColor: data.detailsBgEndingColor || "#D2F7FF",
+        detailsLinkBgColor: data.detailsLinkBgColor || "#68211E",
+        detailsTextColor: data.detailsTextColor || "#233259",
       };
 
       await db.service.update({

@@ -42,7 +42,10 @@ export default async function Service({ searchParams }: ServiceProps) {
             href={`/services/${encodeURIComponent(
               service.name
             )}/serviceDetails?id=${service.id}`}
-            className="px-2 pt-3 pb-1.5 flex flex-col gap-3 items-end bg-[#68211E] border border-[#650F0F] rounded-tl-2xl rounded-tr-lg rounded-bl-lg rounded-br-3xl hover:scale-105 transition-all duration-300"
+            className="px-2 pt-3 pb-1.5 flex flex-col gap-3 items-end border border-[#650F0F] rounded-tl-2xl rounded-tr-lg rounded-bl-lg rounded-br-3xl hover:scale-105 transition-all duration-300"
+            style={{
+              backgroundColor: service.detailsLinkBgColor || "#68211E",
+            }}
           >
             <h2 className="text-white text-3xl">
               Click Here to view more details

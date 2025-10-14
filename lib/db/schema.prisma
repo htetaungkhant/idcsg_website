@@ -176,6 +176,8 @@ model Service {
   overviewBgEndingColor   String @default("#642724") // Hex color code for gradient end
   detailsBgStartingColor  String @default("#FFFFFF") // Hex color code for gradient start
   detailsBgEndingColor    String @default("#D2F7FF") // Hex color code for gradient end
+  detailsLinkBgColor      String @default("#68211E") // Hex color code for details link background
+  detailsTextColor        String @default("#233259") // Hex color code for details text
 
   // Service sections (one-to-one relationships)
   section1 ServiceSection1?

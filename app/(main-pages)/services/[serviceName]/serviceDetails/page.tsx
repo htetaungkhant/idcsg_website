@@ -26,7 +26,12 @@ export default async function ServiceDetails({
 
   return (
     <div className="mx-auto w-[90%] pb-10 flex flex-col gap-y-10">
-      <h1 className="text-6xl text-[#233259] font-semibold">
+      <h1
+        className="text-6xl font-semibold"
+        style={{
+          color: service.detailsTextColor || "#233259",
+        }}
+      >
         {service.category.title}
       </h1>
       {/* Figma => shadow-[4px_4px_12px_0px_rgba(0,0,0,0.25)] */}
@@ -39,7 +44,10 @@ export default async function ServiceDetails({
         }}
       >
         {service.section1 && (
-          <section className="flex gap-2 md:gap-4 lg:gap-8 text-[#233259]">
+          <section
+            className="flex gap-2 md:gap-4 lg:gap-8"
+            style={{ color: service.detailsTextColor || "#233259" }}
+          >
             {service.section1?.imageUrl && (
               <div>
                 <Image
@@ -86,7 +94,10 @@ export default async function ServiceDetails({
           </div>
         )}
         {service.section3 && (
-          <section className="flex gap-2 md:gap-4 lg:gap-8 text-[#233259]">
+          <section
+            className="flex gap-2 md:gap-4 lg:gap-8"
+            style={{ color: service.detailsTextColor || "#233259" }}
+          >
             <div className="flex-1 flex flex-col gap-4">
               {service.section3?.title && (
                 <h1 className="text-3xl lg:text-5xl">
@@ -119,7 +130,10 @@ export default async function ServiceDetails({
         {service.section4 && (
           <section className="flex flex-col gap-4">
             {service.section4?.title && (
-              <h1 className="text-3xl lg:text-5xl text-[#233259]">
+              <h1
+                className="text-3xl lg:text-5xl"
+                style={{ color: service.detailsTextColor || "#233259" }}
+              >
                 {service.section4.title}
               </h1>
             )}
@@ -131,7 +145,10 @@ export default async function ServiceDetails({
         {service.section5 && (
           <section className="flex flex-col gap-4">
             {service.section5?.title && (
-              <h1 className="text-3xl lg:text-5xl text-[#233259]">
+              <h1
+                className="text-3xl lg:text-5xl"
+                style={{ color: service.detailsTextColor || "#233259" }}
+              >
                 {service.section5.title}
               </h1>
             )}

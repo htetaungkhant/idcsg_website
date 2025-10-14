@@ -166,6 +166,14 @@ const serviceFormSchema = z.object({
     message:
       "Details background ending color must be a valid hex color (e.g., #D2F7FF).",
   }),
+  // Additional colors for details section
+  detailsLinkBgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+    message:
+      "Details link background color must be a valid hex color (e.g., #68211E).",
+  }),
+  detailsTextColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+    message: "Details text color must be a valid hex color (e.g., #233259).",
+  }),
   /* Lines 151-153 omitted */
 
   // Section 1 (Image, Title, Description)

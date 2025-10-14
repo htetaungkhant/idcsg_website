@@ -41,6 +41,12 @@ interface Service {
   imageUrl: string; // Main service image
   name: string;
   overview: string;
+  overviewBgStartingColor?: string;
+  overviewBgEndingColor?: string;
+  detailsBgStartingColor?: string;
+  detailsBgEndingColor?: string;
+  detailsLinkBgColor?: string;
+  detailsTextColor?: string;
   section1?: {
     title?: string | null;
     description?: string | null;
@@ -116,6 +122,8 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
       overviewBgEndingColor: "#642724",
       detailsBgStartingColor: "#FFFFFF",
       detailsBgEndingColor: "#D2F7FF",
+      detailsLinkBgColor: "#68211E",
+      detailsTextColor: "#233259",
       section1Title: "",
       section1Description: "",
       section2VideoUrl: "",
@@ -186,6 +194,8 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
             detailsBgStartingColor:
               serviceData.detailsBgStartingColor || "#FFFFFF",
             detailsBgEndingColor: serviceData.detailsBgEndingColor || "#D2F7FF",
+            detailsLinkBgColor: serviceData.detailsLinkBgColor || "#68211E",
+            detailsTextColor: serviceData.detailsTextColor || "#233259",
             section1Title: serviceData.section1?.title || "",
             section1Description: serviceData.section1?.description || "",
             section2VideoUrl: serviceData.section2?.videoUrl || "",
@@ -261,6 +271,8 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
         overviewBgEndingColor: data.overviewBgEndingColor || "#642724",
         detailsBgStartingColor: data.detailsBgStartingColor || "#FFFFFF",
         detailsBgEndingColor: data.detailsBgEndingColor || "#D2F7FF",
+        detailsLinkBgColor: data.detailsLinkBgColor || "#68211E",
+        detailsTextColor: data.detailsTextColor || "#233259",
       };
 
       if (data.image) {
@@ -633,6 +645,66 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                               {...field}
                               disabled={isLoading}
                               placeholder="#D2F7FF"
+                              className="flex-1"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="detailsLinkBgColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Details Link Background Color</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl>
+                            <Input
+                              type="color"
+                              {...field}
+                              disabled={isLoading}
+                              className="w-20 h-10 cursor-pointer"
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={isLoading}
+                              placeholder="#68211E"
+                              className="flex-1"
+                            />
+                          </FormControl>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="detailsTextColor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Details Text Color</FormLabel>
+                        <div className="flex gap-2 items-center">
+                          <FormControl>
+                            <Input
+                              type="color"
+                              {...field}
+                              disabled={isLoading}
+                              className="w-20 h-10 cursor-pointer"
+                            />
+                          </FormControl>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              {...field}
+                              disabled={isLoading}
+                              placeholder="#233259"
                               className="flex-1"
                             />
                           </FormControl>
