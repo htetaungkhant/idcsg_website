@@ -1,6 +1,10 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { FaWhatsapp } from "react-icons/fa";
+import { MdMailOutline } from "react-icons/md";
+import { FaLocationDot } from "react-icons/fa6";
+import { MdAccessTimeFilled } from "react-icons/md";
 
 import { cn } from "@/lib/utils";
 
@@ -122,22 +126,129 @@ export default function Footer({ className }: FooterProps) {
   return (
     <section
       className={cn(
-        "px-20 py-4 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-ubuntu)",
+        "px-4 md:px-8 xl:px-16 py-4 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-ubuntu)",
         className
       )}
     >
-      <div className="py-2 flex items-center justify-between gap-6 max-md:gap-3 border-b border-white">
-        <Link href="/">
-          <Image
-            src="/footer_logo.svg"
-            alt="Logo"
-            width={100}
-            height={100}
-            className="h-15 w-auto"
-          />
-        </Link>
-        <div className="flex flex-col gap-1">
-          <p className="text-center text-sm">
+      <div className="py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 max-md:gap-3 border-b border-white">
+        <ul className="lg:w-80 xl:w-100 flex flex-col gap-1 lg:gap-2 list-none font-bold text-xs xl:text-sm py-2.5">
+          <li>
+            <Link
+              href="https://www.google.com/maps/place/International+Dental+Centre+Pte+Ltd/@1.2825521,103.8470548,17z/data=!4m17!1m10!3m9!1s0x31da190cfc9866a1:0x42565d78ea85c125!2sInternational+Dental+Centre+Pte+Ltd!8m2!3d1.282558!4d103.846992!10e5!14m1!1BCgIgAQ!16s%2Fg%2F1wk7nd23!3m5!1s0x31da190cfc9866a1:0x42565d78ea85c125!8m2!3d1.282558!4d103.846992!16s%2Fg%2F1wk7nd23?entry=ttu&g_ep=EgoyMDI1MTAyMC4wIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <FaLocationDot className="w-4 min-w-4 h-4" />
+              <span>
+                International Dental Centre,
+                <br />
+                No.06 Gemmill Lane Singapore 069249
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="mailto:admin@idcsg.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <MdMailOutline className="w-4 min-w-4 h-4" />
+              <span>admin@idcsg.com</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="https://wa.me/6596870775"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <FaWhatsapp className="w-4 min-w-4 h-4" />
+              <span>+65-96870775</span>
+            </Link>
+          </li>
+          <li className="flex gap-1 xl:gap-1.5 items-center">
+            <MdAccessTimeFilled className="w-4 min-w-4 h-4" />
+            <span>08:00 AM to 05:00 PM</span>
+          </li>
+        </ul>
+        <div className="flex-1 flex flex-col items-center gap-2">
+          <Link href="/">
+            <Image
+              src="/footer_logo.svg"
+              alt="Logo"
+              width={100}
+              height={100}
+              className="h-15 w-auto"
+            />
+          </Link>
+          <ul className="list-none flex items-center gap-4">
+            <li className="hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.facebook.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/facebook.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-6 h-6 rounded-sm object-contain"
+                />
+              </Link>
+            </li>
+            <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.youtube.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/youtube.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-full h-full object-contain"
+                />
+              </Link>
+            </li>
+            <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.google.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/google.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-full h-full object-contain"
+                />
+              </Link>
+            </li>
+            <li className="hover:scale-110 transition-all duration-300">
+              <Link
+                href="https://www.instagram.com/idcsg"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Image
+                  src="/instagram.svg"
+                  alt="Description of image"
+                  width={19}
+                  height={19}
+                  className="w-6 h-6 rounded-sm object-contain"
+                />
+              </Link>
+            </li>
+          </ul>
+        </div>
+        <div className="lg:w-80 xl:w-100 flex flex-col gap-1">
+          <p className="text-right text-sm">
             <Link
               href="/information/patient-info/privacy-policy"
               className="hover:underline"
@@ -150,77 +261,17 @@ export default function Footer({ className }: FooterProps) {
               className="hover:underline"
             >
               Terms of Service
-            </Link>{" "}
-            | Copyright © 2025 International Dental Centre. All rights reserved.
+            </Link>
           </p>
-          <p className="text-center text-[10px]">
+          <p className="text-right text-xs">
+            Copyright © 2025 International Dental Centre. All rights reserved.
+          </p>
+          <p className="text-right text-[10px]">
             IDC® and the IDC logo are registered trademarks of International
             Dental Centre. All other names, trademarks, and logos are the
             property of their respective owners.
           </p>
         </div>
-        <ul className="list-none flex items-center gap-4">
-          <li className="hover:scale-110 transition-all duration-300">
-            <Link
-              href="https://www.facebook.com/idcsg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/facebook.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-6 h-6 rounded-sm object-contain"
-              />
-            </Link>
-          </li>
-          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
-            <Link
-              href="https://www.youtube.com/idcsg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/youtube.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-full h-full object-contain"
-              />
-            </Link>
-          </li>
-          <li className="w-6 h-6 p-0.5 rounded-sm bg-white flex items-center justify-center hover:scale-110 transition-all duration-300">
-            <Link
-              href="https://www.google.com/idcsg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/google.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-full h-full object-contain"
-              />
-            </Link>
-          </li>
-          <li className="hover:scale-110 transition-all duration-300">
-            <Link
-              href="https://www.instagram.com/idcsg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/instagram.svg"
-                alt="Description of image"
-                width={19}
-                height={19}
-                className="w-6 h-6 rounded-sm object-contain"
-              />
-            </Link>
-          </li>
-        </ul>
       </div>
     </section>
   );
