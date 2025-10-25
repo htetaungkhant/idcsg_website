@@ -101,8 +101,7 @@ export default async function Header({
             >
               <FaLocationDot />
               <span className="whitespace-nowrap">
-                No 6 International Dental Centre, No.06 Gemmill Lane Singapore
-                069249
+                International Dental Centre, No.06 Gemmill Lane Singapore 069249
               </span>
             </Link>
           </li>
