@@ -120,16 +120,6 @@ export default function NavLinks({
       </li>
       <li
         className={cn(
-          "w-15 text-center rounded-full",
-          pathname.startsWith("/teams") && "font-bold text-white bg-[#30457C]"
-        )}
-      >
-        <Link href="/teams" className="w-full block">
-          Teams
-        </Link>
-      </li>
-      <li
-        className={cn(
           "w-19 text-center rounded-full relative",
           pathname.startsWith("/services") &&
             "font-bold text-white bg-[#30457C]"
@@ -182,6 +172,16 @@ export default function NavLinks({
             )}
           </div>
         </div>
+      </li>
+      <li
+        className={cn(
+          "w-15 text-center rounded-full",
+          pathname.startsWith("/teams") && "font-bold text-white bg-[#30457C]"
+        )}
+      >
+        <Link href="/teams" className="w-full block">
+          Teams
+        </Link>
       </li>
       <li
         className={cn(
