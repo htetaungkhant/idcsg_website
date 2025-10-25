@@ -59,24 +59,52 @@ export default async function Header({
 
       <div>
         <ul className="flex gap-2.5 xl:gap-5 items-center justify-between list-none font-(family-name:--font-ubuntu-condensed) text-[10px] xl:text-xs border-b border-[#E6E6E6] py-2.5">
-          <li className="flex gap-1 xl:gap-1.5 items-center whitespace-nowrap">
-            <FaWhatsapp />
-            <span>+65-96870775</span>
+          <li>
+            <Link
+              href="https://wa.me/6596870775"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <FaWhatsapp />
+              <span className="whitespace-nowrap">+65-96870775</span>
+            </Link>
           </li>
-          <li className="flex gap-1 xl:gap-1.5 items-center whitespace-nowrap">
-            <FaFax />
-            <span>+65-96870775</span>
+          <li>
+            <Link
+              href="tel:+6563720082"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <FaFax />
+              <span className="whitespace-nowrap">+65-63720082</span>
+            </Link>
           </li>
-          <li className="flex gap-1 xl:gap-1.5 items-center">
-            <MdMailOutline />
-            <span>admin@idcsg.com</span>
+          <li>
+            <Link
+              href="mailto:admin@idcsg.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <MdMailOutline />
+              <span className="whitespace-nowrap">admin@idcsg.com</span>
+            </Link>
           </li>
-          <li className="flex gap-1 xl:gap-1.5 items-center">
-            <FaLocationDot />
-            <span className="whitespace-nowrap">
-              No 6 International Dental Centre, No.06 Gemmill Lane Singapore
-              069249
-            </span>
+          <li>
+            <Link
+              href="https://www.google.com/maps/place/International+Dental+Centre+Pte+Ltd/@1.2825521,103.8470548,17z/data=!4m17!1m10!3m9!1s0x31da190cfc9866a1:0x42565d78ea85c125!2sInternational+Dental+Centre+Pte+Ltd!8m2!3d1.282558!4d103.846992!10e5!14m1!1BCgIgAQ!16s%2Fg%2F1wk7nd23!3m5!1s0x31da190cfc9866a1:0x42565d78ea85c125!8m2!3d1.282558!4d103.846992!16s%2Fg%2F1wk7nd23?entry=ttu&g_ep=EgoyMDI1MTAyMC4wIKXMDSoASAFQAw%3D%3D"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex gap-1 xl:gap-1.5 items-center"
+            >
+              <FaLocationDot />
+              <span className="whitespace-nowrap">
+                No 6 International Dental Centre, No.06 Gemmill Lane Singapore
+                069249
+              </span>
+            </Link>
           </li>
           {/* <button
             className={cn(
@@ -100,7 +128,7 @@ export default async function Header({
           <ul className="list-none flex items-center gap-1.5">
             <li className="hover:scale-110 transition-all duration-300">
               <Link
-                href="https://www.google.com/idcsg"
+                href="https://www.google.com/maps/place/International+Dental+Centre+Pte+Ltd/@1.2825521,103.8470548,17z/data=!4m17!1m10!3m9!1s0x31da190cfc9866a1:0x42565d78ea85c125!2sInternational+Dental+Centre+Pte+Ltd!8m2!3d1.282558!4d103.846992!10e5!14m1!1BCgIgAQ!16s%2Fg%2F1wk7nd23!3m5!1s0x31da190cfc9866a1:0x42565d78ea85c125!8m2!3d1.282558!4d103.846992!16s%2Fg%2F1wk7nd23?entry=ttu&g_ep=EgoyMDI1MTAyMC4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -115,7 +143,7 @@ export default async function Header({
             </li>
             <li className="hover:scale-110 transition-all duration-300">
               <Link
-                href="https://www.facebook.com/idcsg"
+                href="https://www.facebook.com/idcsing/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -130,7 +158,7 @@ export default async function Header({
             </li>
             <li className="hover:scale-110 transition-all duration-300">
               <Link
-                href="https://www.youtube.com/idcsg"
+                href="https://www.youtube.com/@internationaldentalcentre"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -145,7 +173,7 @@ export default async function Header({
             </li>
             <li className="hover:scale-110 transition-all duration-300">
               <Link
-                href="https://www.instagram.com/idcsg"
+                href="https://www.instagram.com/idcsingapore/"
                 target="_blank"
                 rel="noopener noreferrer"
               >

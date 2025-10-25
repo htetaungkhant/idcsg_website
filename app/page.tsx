@@ -65,7 +65,13 @@ export default async function Home() {
             </h1>
 
             <div className="flex gap-6 lg:gap-10 items-center max-md:flex-col">
-              <HomePageBtn>WhatsApp to Book</HomePageBtn>
+              <HomePageBtn
+                href="https://wa.me/6596870775"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp to Book
+              </HomePageBtn>
               {/* <HomePageBtn>Pay Online</HomePageBtn> */}
             </div>
           </section>
