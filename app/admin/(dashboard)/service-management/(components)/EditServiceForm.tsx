@@ -7,7 +7,13 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Plus, Minus, Upload, Video, DollarSign } from "lucide-react";
 import { toast } from "sonner";
+import { HexAlphaColorPicker } from "react-colorful";
 
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Form,
   FormControl,
@@ -541,14 +547,22 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                       <FormItem>
                         <FormLabel>Overview Gradient Start Color</FormLabel>
                         <div className="flex gap-2 items-center">
-                          <FormControl>
-                            <Input
-                              type="color"
-                              {...field}
-                              disabled={isLoading}
-                              className="w-20 h-10 cursor-pointer"
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="w-20 h-10 rounded border-2 cursor-pointer"
+                                style={{ backgroundColor: field.value }}
+                                disabled={isLoading}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-3">
+                              <HexAlphaColorPicker
+                                color={field.value}
+                                onChange={field.onChange}
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormControl>
                             <Input
                               type="text"
@@ -571,14 +585,22 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                       <FormItem>
                         <FormLabel>Overview Gradient End Color</FormLabel>
                         <div className="flex gap-2 items-center">
-                          <FormControl>
-                            <Input
-                              type="color"
-                              {...field}
-                              disabled={isLoading}
-                              className="w-20 h-10 cursor-pointer"
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="w-20 h-10 rounded border-2 cursor-pointer"
+                                style={{ backgroundColor: field.value }}
+                                disabled={isLoading}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-3">
+                              <HexAlphaColorPicker
+                                color={field.value}
+                                onChange={field.onChange}
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormControl>
                             <Input
                               type="text"
@@ -601,14 +623,22 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                       <FormItem>
                         <FormLabel>Details Gradient Start Color</FormLabel>
                         <div className="flex gap-2 items-center">
-                          <FormControl>
-                            <Input
-                              type="color"
-                              {...field}
-                              disabled={isLoading}
-                              className="w-20 h-10 cursor-pointer"
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="w-20 h-10 rounded border-2 cursor-pointer"
+                                style={{ backgroundColor: field.value }}
+                                disabled={isLoading}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-3">
+                              <HexAlphaColorPicker
+                                color={field.value}
+                                onChange={field.onChange}
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormControl>
                             <Input
                               type="text"
@@ -631,14 +661,22 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                       <FormItem>
                         <FormLabel>Details Gradient End Color</FormLabel>
                         <div className="flex gap-2 items-center">
-                          <FormControl>
-                            <Input
-                              type="color"
-                              {...field}
-                              disabled={isLoading}
-                              className="w-20 h-10 cursor-pointer"
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="w-20 h-10 rounded border-2 cursor-pointer"
+                                style={{ backgroundColor: field.value }}
+                                disabled={isLoading}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-3">
+                              <HexAlphaColorPicker
+                                color={field.value}
+                                onChange={field.onChange}
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormControl>
                             <Input
                               type="text"
@@ -661,14 +699,22 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                       <FormItem>
                         <FormLabel>Details Link Background Color</FormLabel>
                         <div className="flex gap-2 items-center">
-                          <FormControl>
-                            <Input
-                              type="color"
-                              {...field}
-                              disabled={isLoading}
-                              className="w-20 h-10 cursor-pointer"
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="w-20 h-10 rounded border-2 cursor-pointer"
+                                style={{ backgroundColor: field.value }}
+                                disabled={isLoading}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-3">
+                              <HexAlphaColorPicker
+                                color={field.value}
+                                onChange={field.onChange}
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormControl>
                             <Input
                               type="text"
@@ -691,14 +737,22 @@ export function EditServiceForm({ serviceId }: EditServiceFormProps) {
                       <FormItem>
                         <FormLabel>Details Text Color</FormLabel>
                         <div className="flex gap-2 items-center">
-                          <FormControl>
-                            <Input
-                              type="color"
-                              {...field}
-                              disabled={isLoading}
-                              className="w-20 h-10 cursor-pointer"
-                            />
-                          </FormControl>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <button
+                                type="button"
+                                className="w-20 h-10 rounded border-2 cursor-pointer"
+                                style={{ backgroundColor: field.value }}
+                                disabled={isLoading}
+                              />
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-3">
+                              <HexAlphaColorPicker
+                                color={field.value}
+                                onChange={field.onChange}
+                              />
+                            </PopoverContent>
+                          </Popover>
                           <FormControl>
                             <Input
                               type="text"
