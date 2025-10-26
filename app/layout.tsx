@@ -7,6 +7,7 @@ import {
   Poppins,
   Ubuntu,
   Ubuntu_Condensed,
+  Roboto,
 } from "next/font/google";
 import "react-international-phone/style.css";
 import "./globals.css";
@@ -52,6 +53,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "International Dental Centre",
   description: "Providing quality dental care services",
@@ -66,7 +72,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         suppressHydrationWarning={true}
-        className={`${oswald.variable} ${oldStandardTT.variable} ${poppins.variable} ${ubuntu.variable} ${ubuntuCondensed.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${oswald.variable} ${oldStandardTT.variable} ${poppins.variable} ${ubuntu.variable} ${ubuntuCondensed.variable} ${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased`}
       >
         <main className="font-(family-name:--font-oswald)">{children}</main>
         <Toaster position="top-center" richColors />
