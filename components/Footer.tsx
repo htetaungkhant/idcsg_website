@@ -92,7 +92,7 @@ export const OriginalFooter: React.FC<FooterProps> = ({ className }) => {
           </li>
         </ul>
       </div>
-      <div className="py-2 font-(family-name:--font-old-standard-tt)">
+      <div className="py-2">
         <p className="text-center max-xl:text-sm max-lg:text-xs">
           Copyright © 2025 International Dental Centre. All rights reserved.
         </p>
@@ -102,7 +102,7 @@ export const OriginalFooter: React.FC<FooterProps> = ({ className }) => {
           of their respective owners.
         </p>
       </div>
-      <div className="w-11/12 pt-3 border-t border-[#DCDCDC] flex items-center justify-center font-(family-name:--font-old-standard-tt)">
+      <div className="w-11/12 pt-3 border-t border-[#DCDCDC] flex items-center justify-center">
         <Link
           href="/information/patient-info/privacy-policy"
           className="text-center block max-xl:text-sm max-lg:text-xs hover:underline"
@@ -126,12 +126,12 @@ export default function Footer({ className }: FooterProps) {
   return (
     <section
       className={cn(
-        "px-4 md:px-8 xl:px-16 py-4 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-ubuntu)",
+        "px-4 md:px-8 xl:px-16 py-2 xl:py-3 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-roboto)",
         className
       )}
     >
-      <div className="py-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 max-md:gap-3 border-b border-white">
-        <ul className="lg:w-80 xl:w-100 flex flex-col gap-1 lg:gap-2 list-none font-bold text-xs xl:text-sm py-2.5">
+      <div className="pb-1 xl:pb-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 max-md:gap-3 border-b border-white">
+        <ul className="lg:w-80 xl:w-100 flex flex-col gap-0.5 lg:gap-1 list-none text-[10px] xl:text-xs">
           <li>
             <Link
               href="https://www.google.com/maps/place/International+Dental+Centre+Pte+Ltd/@1.2825521,103.8470548,17z/data=!4m17!1m10!3m9!1s0x31da190cfc9866a1:0x42565d78ea85c125!2sInternational+Dental+Centre+Pte+Ltd!8m2!3d1.282558!4d103.846992!10e5!14m1!1BCgIgAQ!16s%2Fg%2F1wk7nd23!3m5!1s0x31da190cfc9866a1:0x42565d78ea85c125!8m2!3d1.282558!4d103.846992!16s%2Fg%2F1wk7nd23?entry=ttu&g_ep=EgoyMDI1MTAyMC4wIKXMDSoASAFQAw%3D%3D"
@@ -248,7 +248,7 @@ export default function Footer({ className }: FooterProps) {
           </ul>
         </div>
         <div className="lg:w-80 xl:w-100 flex flex-col gap-1">
-          <p className="text-right text-sm">
+          <p className="text-right text-xs xl:text-sm">
             <Link
               href="/information/patient-info/privacy-policy"
               className="hover:underline"
@@ -263,10 +263,10 @@ export default function Footer({ className }: FooterProps) {
               Terms of Service
             </Link>
           </p>
-          <p className="text-right text-xs">
+          <p className="text-right text-[10px] xl:text-xs">
             Copyright © 2025 International Dental Centre. All rights reserved.
           </p>
-          <p className="text-right text-[10px]">
+          <p className="text-right text-[8px] xl:text-[10px]">
             IDC® and the IDC logo are registered trademarks of International
             Dental Centre. All other names, trademarks, and logos are the
             property of their respective owners.
