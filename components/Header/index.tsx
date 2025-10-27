@@ -36,6 +36,7 @@ export default async function Header({
     return relatedServices.map((service) => ({
       id: service.id,
       name: service.name,
+      categoryTitle: service.category?.title,
     }));
   });
 

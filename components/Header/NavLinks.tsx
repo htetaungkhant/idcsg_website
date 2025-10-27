@@ -10,6 +10,7 @@ import { Category } from "@/app/generated/prisma";
 interface ServiceMenuItemProps {
   id: string;
   name: string;
+  categoryTitle?: string;
   onClick?: () => void;
   children: React.ReactNode;
   className?: string;
@@ -17,12 +18,19 @@ interface ServiceMenuItemProps {
 const ServiceMenuItem = ({
   id,
   name,
+  categoryTitle,
   children,
   onClick,
   className,
 }: ServiceMenuItemProps) => (
   <Link
-    href={name ? `/services/${encodeURIComponent(name)}?id=${id}` : "#"}
+    href={
+      categoryTitle
+        ? `/services/${encodeURIComponent(
+            name
+          )}?id=${id}&category=${encodeURIComponent(categoryTitle)}`
+        : `/services/${encodeURIComponent(name)}?id=${id}`
+    }
     onClick={onClick}
     className={cn(
       "flex justify-between items-center gap-4 text-sm text-gray-700 p-2 border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-blue-500 transition-all duration-300",
@@ -35,7 +43,7 @@ const ServiceMenuItem = ({
 );
 
 interface NavLinksProps {
-  servicesData: { id: string; name: string }[][];
+  servicesData: { id: string; name: string; categoryTitle: string }[][];
   technologyData: { id: string; title: string }[];
   categoryData: Category[];
   className?: string;
@@ -77,21 +85,17 @@ export default function NavLinks({
   React.useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
       if (
-        serviceDropdownRef.current &&
-        !serviceDropdownRef.current.contains(event.target as Node) &&
-        serviceRef.current &&
-        !serviceRef.current.contains(event.target as Node)
+        !serviceDropdownRef.current?.contains(event.target as Node) &&
+        !serviceRef.current?.contains(event.target as Node)
       ) {
-        serviceDropdownRef.current.classList.add("hidden");
+        serviceDropdownRef.current?.classList.add("hidden");
       }
 
       if (
-        informationDropdownRef.current &&
-        !informationDropdownRef.current.contains(event.target as Node) &&
-        informationRef.current &&
-        !informationRef.current.contains(event.target as Node)
+        !informationDropdownRef.current?.contains(event.target as Node) &&
+        !informationRef.current?.contains(event.target as Node)
       ) {
-        informationDropdownRef.current.classList.add("hidden");
+        informationDropdownRef.current?.classList.add("hidden");
       }
     };
 
@@ -127,7 +131,7 @@ export default function NavLinks({
       >
         <span
           ref={serviceRef}
-          className="w-full cursor-pointer"
+          className="w-full cursor-pointer select-none"
           onClick={toggleServiceDropdown}
         >
           Services
@@ -162,6 +166,7 @@ export default function NavLinks({
                   key={`${service}-${index}`}
                   id={service?.id}
                   name={service?.name}
+                  categoryTitle={service?.categoryTitle}
                   onClick={toggleServiceDropdown}
                 >
                   {service?.name}
