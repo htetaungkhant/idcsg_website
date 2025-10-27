@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/;
+
 const authSchema = z.object({
   email: z
     .string()
@@ -149,30 +151,31 @@ const serviceFormSchema = z.object({
       message: "Service overview must be less than 3000 characters.",
     }),
   // Gradient colors for overview section background
-  overviewBgStartingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+  overviewBgStartingColor: z.string().regex(hexColorRegex, {
     message:
-      "Overview background starting color must be a valid hex color (e.g., #CA4E48).",
+      "Overview background starting color must be a valid hex color (e.g., #CA4E48 or #CA4E48FF).",
   }),
-  overviewBgEndingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+  overviewBgEndingColor: z.string().regex(hexColorRegex, {
     message:
-      "Overview background ending color must be a valid hex color (e.g., #642724).",
+      "Overview background ending color must be a valid hex color (e.g., #642724 or #642724FF).",
   }),
   // Gradient colors for details section background
-  detailsBgStartingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+  detailsBgStartingColor: z.string().regex(hexColorRegex, {
     message:
-      "Details background starting color must be a valid hex color (e.g., #FFFFFF).",
+      "Details background starting color must be a valid hex color (e.g., #FFFFFF or #FFFFFFFF).",
   }),
-  detailsBgEndingColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+  detailsBgEndingColor: z.string().regex(hexColorRegex, {
     message:
-      "Details background ending color must be a valid hex color (e.g., #D2F7FF).",
+      "Details background ending color must be a valid hex color (e.g., #D2F7FF or #D2F7FFFF).",
   }),
   // Additional colors for details section
-  detailsLinkBgColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
+  detailsLinkBgColor: z.string().regex(hexColorRegex, {
     message:
-      "Details link background color must be a valid hex color (e.g., #68211E).",
+      "Details link background color must be a valid hex color (e.g., #68211E or #68211EFF).",
   }),
-  detailsTextColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, {
-    message: "Details text color must be a valid hex color (e.g., #233259).",
+  detailsTextColor: z.string().regex(hexColorRegex, {
+    message:
+      "Details text color must be a valid hex color (e.g., #233259 or #233259FF).",
   }),
   /* Lines 151-153 omitted */
 
