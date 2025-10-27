@@ -23,7 +23,7 @@ export default async function TermsOfService() {
       <h1 className="text-6xl text-[#233259] font-semibold">
         Terms of Service
       </h1>
-      <div className="mt-8 flex flex-col gap-y-4 text-lg text-[#233259] font-(family-name:--font-ubuntu)">
+      <div className="mt-8 flex flex-col gap-y-4 text-lg text-[#233259] font-(family-name:--font-roboto)">
         <p>Effective Date: {TermsOfService.hostingDate}</p>
         <div>
           <p

@@ -135,10 +135,10 @@ const MemberCard: React.FC<MemberCardProps> = ({
             <p className="text-lg">{member.designation}</p>
           </div>
           <div className="flex flex-col gap-1.5">
-            <h4 className="font-(family-name:--font-poppins) font-semibold">
+            <h4 className="font-(family-name:--font-roboto) font-semibold">
               About
             </h4>
-            <p className="font-(family-name:--font-old-standard-tt)">
+            <p className="font-(family-name:--font-roboto)">
               {member.description}
             </p>
           </div>

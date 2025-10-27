@@ -22,7 +22,7 @@ export const Section4Card = ({
   return (
     <div
       className={cn(
-        "w-full px-4 py-4 flex flex-col gap-2 lg:gap-4 bg-cover bg-center bg-no-repeat text-white font-(family-name:--font-ubuntu) rounded-2xl overflow-hidden relative",
+        "w-full px-4 py-4 flex flex-col gap-2 lg:gap-4 bg-cover bg-center bg-no-repeat text-white font-(family-name:--font-roboto) rounded-2xl overflow-hidden relative",
         className
       )}
       style={{

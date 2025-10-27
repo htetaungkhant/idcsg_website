@@ -31,7 +31,7 @@ export default async function FirstVisit() {
             image={section.imageUrl || "/3.png"}
           >
             <p
-              className="font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+              className="font-(family-name:--font-roboto) whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: section.description }}
             />
             <div className="flex items-center justify-end gap-5 mt-2">
@@ -58,7 +58,7 @@ export default async function FirstVisit() {
               {firstVisit.informationSection.descriptionTitle}
             </h1>
             <p
-              className="font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+              className="font-(family-name:--font-roboto) whitespace-pre-wrap"
               dangerouslySetInnerHTML={{
                 __html: firstVisit.informationSection.description,
               }}

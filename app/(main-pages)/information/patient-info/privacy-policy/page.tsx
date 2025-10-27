@@ -21,7 +21,7 @@ export default async function PrivacyPolicy() {
   return (
     <div className="mx-auto w-[90%] pb-10">
       <h1 className="text-6xl text-[#233259] font-semibold">Privacy policy</h1>
-      <div className="mt-8 flex flex-col gap-y-4 text-lg text-[#233259] font-(family-name:--font-ubuntu)">
+      <div className="mt-8 flex flex-col gap-y-4 text-lg text-[#233259] font-(family-name:--font-roboto)">
         <p>Effective Date: {privacyPolicy.hostingDate}</p>
         <div>
           <p

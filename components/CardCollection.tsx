@@ -31,7 +31,7 @@ export const CardCollectionStyle1: React.FC<CardCollectionStyle1Props> = ({
       <div className="flex-1 mb-14 flex flex-col gap-y-3 bg-white text-[#233259] px-4 py-5 rounded-2xl shadow-lg relative">
         {title &&
           (typeof title === "string" ? (
-            <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl text-center">
+            <h3 className="font-(family-name:--font-roboto) font-bold text-2xl text-center">
               {title}
             </h3>
           ) : (
@@ -80,7 +80,7 @@ export const CardCollectionStyle2: React.FC<CardCollectionStyle2Props> = ({
       <div className="w-[40%] min-w-[300px] -mb-10 mt-28 ml-10 flex flex-col gap-y-3 bg-white text-[#233259] px-4 py-5 rounded-2xl shadow-lg relative z-10">
         {title &&
           (typeof title === "string" ? (
-            <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl text-center">
+            <h3 className="font-(family-name:--font-roboto) font-bold text-2xl text-center">
               {title}
             </h3>
           ) : (
@@ -140,7 +140,7 @@ export const CardCollectionStyle3: React.FC<CardCollectionStyle3Props> = ({
         <div className="-ml-6 flex-1 flex flex-col gap-y-3 bg-white text-[#233259] px-4 py-5 pl-12 rounded-2xl shadow-lg relative">
           {title &&
             (typeof title === "string" ? (
-              <h3 className="font-(family-name:--font-ubuntu) font-bold text-2xl">
+              <h3 className="font-(family-name:--font-roboto) font-bold text-2xl">
                 {title}
               </h3>
             ) : (
@@ -200,7 +200,7 @@ export const CardCollectionStyle4: React.FC<CardCollectionStyle4Props> = ({
             </div>
           </Link>
         )}
-        <div className="z-10 w-100 xl:w-130 ml-12 flex flex-col gap-y-2 xl:gap-y-4 text-[#233259] bg-white px-5 py-3 rounded-3xl shadow-lg font-(family-name:--font-ubuntu)">
+        <div className="z-10 w-100 xl:w-130 ml-12 flex flex-col gap-y-2 xl:gap-y-4 text-[#233259] bg-white px-5 py-3 rounded-3xl shadow-lg font-(family-name:--font-roboto)">
           {overviewTitle && (
             <h3 className="text-center text-2xl xl:text-4xl font-bold">
               {overviewTitle}
@@ -277,7 +277,7 @@ export const CardCollectionStyle5: React.FC<CardCollectionStyle5Props> = ({
       </div>
 
       <div className="z-10 w-1/2 pt-24 mb-28">
-        <div className="flex flex-col gap-y-2 xl:gap-y-4 text-[#233259] bg-white pl-5 pr-12 py-3 rounded-3xl shadow-lg font-(family-name:--font-ubuntu)">
+        <div className="flex flex-col gap-y-2 xl:gap-y-4 text-[#233259] bg-white pl-5 pr-12 py-3 rounded-3xl shadow-lg font-(family-name:--font-roboto)">
           {overviewTitle && (
             <h3 className="text-center text-2xl xl:text-4xl font-bold">
               {overviewTitle}

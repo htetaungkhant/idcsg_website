@@ -69,7 +69,7 @@ export default async function ServiceDetails({
               <div className="h-full flex flex-col gap-4 justify-between items-end">
                 {service.section1?.description && (
                   <p
-                    className="w-full font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+                    className="w-full font-(family-name:--font-roboto) whitespace-pre-wrap"
                     dangerouslySetInnerHTML={{
                       __html: service.section1?.description,
                     }}
@@ -106,7 +106,7 @@ export default async function ServiceDetails({
               )}
               {service.section3?.description && (
                 <p
-                  className="font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+                  className="font-(family-name:--font-roboto) whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{
                     __html: service.section3?.description,
                   }}
@@ -174,7 +174,7 @@ export default async function ServiceDetails({
                         className="w-full flex justify-between lg:text-lg"
                       >
                         <span className="font-bold">{priceRange.title}</span>
-                        <span className="font-(family-name:--font-ubuntu) font-medium">
+                        <span className="font-(family-name:--font-roboto) font-medium">
                           {!priceRange.endPrice && "Starts from "}
                           {priceRange.startPrice && priceRange.endPrice
                             ? `${formatPrice(
@@ -188,11 +188,6 @@ export default async function ServiceDetails({
                         </span>
                       </div>
                     ))}
-                    <span className="w-full font-light">
-                      (Prices are customized based on your unique needs and are
-                      inclusive of GST. The dentist will advise you of your
-                      treatment costs following your consultation.)
-                    </span>
                     {/* <PrimaryBtn2>Pay Now</PrimaryBtn2> */}
                   </div>
                 )}

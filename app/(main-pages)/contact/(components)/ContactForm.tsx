@@ -94,7 +94,7 @@ export default function ContactForm({ className }: ContactFormProps) {
           <div className="absolute w-[93%] inset-0 bg-gradient-to-r from-[#FFFFFF] to-[#CFDFFF] border border-[#A8A7A7] rounded-2xl shadow-xl" />
 
           <div className="flex justify-between w-[90%]">
-            <h1 className="relative text-4xl font-medium font-(family-name:--font-ubuntu)">
+            <h1 className="relative text-4xl font-medium">
               Write us a message
             </h1>
             <div className="w-12 h-12 bg-white border border-[#ABABAB] rounded-full p-2.5 transition-all duration-300 rotate-45 text-8xl">

@@ -59,7 +59,7 @@ export default function FinancingInsurance() {
         imageTitle="Dental Insurance in Singapore"
         image="/3.png"
       >
-        <p className="font-(family-name:--font-old-standard-tt)">
+        <p className="font-(family-name:--font-roboto)">
           Dental insurance is a specialized form of health coverage designed to
           support the cost of dental care. From routine check-ups and cleanings
           to advanced procedures like root canals and implants, it helps reduce

@@ -14,7 +14,7 @@ export default function Shop() {
       <h1 className="pt-32 text-center text-[#233259] text-5xl lg:text-7xl font-medium">
         We are Coming Soon!!!
       </h1>
-      <p className="text-center text-[#6C6C6C] text-lg lg:text-2xl font-(family-name:--font-ubuntu)">
+      <p className="text-center text-[#6C6C6C] text-lg lg:text-2xl font-(family-name:--font-roboto)">
         Stay tuned for something amazing
       </p>
     </div>

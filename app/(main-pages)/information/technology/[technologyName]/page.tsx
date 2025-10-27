@@ -37,7 +37,7 @@ export default async function TechnologyDetails({
       >
         {technology.description && (
           <p
-            className="font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+            className="font-(family-name:--font-roboto) whitespace-pre-wrap"
             dangerouslySetInnerHTML={{ __html: technology.description }}
           />
         )}
@@ -52,7 +52,7 @@ export default async function TechnologyDetails({
             )}
             {technology.section1?.description && (
               <p
-                className="xl:text-lg font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+                className="xl:text-lg font-(family-name:--font-roboto) whitespace-pre-wrap"
                 dangerouslySetInnerHTML={{
                   __html: technology.section1.description,
                 }}

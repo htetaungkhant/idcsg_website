@@ -31,7 +31,7 @@ export const CustomCard1 = ({
   return (
     <div
       className={cn(
-        "w-60 px-4 py-4 flex flex-col gap-4 bg-cover bg-center bg-no-repeat text-white font-(family-name:--font-ubuntu) rounded-2xl overflow-hidden relative",
+        "w-60 px-4 py-4 flex flex-col gap-4 bg-cover bg-center bg-no-repeat text-white font-(family-name:--font-roboto) rounded-2xl overflow-hidden relative",
         className
       )}
       style={{
@@ -101,7 +101,7 @@ export const CustomCard2 = ({
       <DialogTrigger asChild>
         <div
           className={cn(
-            "cursor-pointer bg-cover bg-center bg-no-repeat w-full h-80 lg:h-100 flex flex-col justify-center items-center gap-y-6 text-white font-(family-name:--font-ubuntu) rounded-2xl overflow-hidden relative",
+            "cursor-pointer bg-cover bg-center bg-no-repeat w-full h-80 lg:h-100 flex flex-col justify-center items-center gap-y-6 text-white font-(family-name:--font-roboto) rounded-2xl overflow-hidden relative",
             className
           )}
           style={{
@@ -161,7 +161,7 @@ export const CustomCard2 = ({
             )}
             {description && (
               <p
-                className="whitespace-pre-wrap text-sm lg:text-base font-(family-name:--font-ubuntu)"
+                className="whitespace-pre-wrap text-sm lg:text-base font-(family-name:--font-roboto)"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}

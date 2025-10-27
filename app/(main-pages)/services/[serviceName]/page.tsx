@@ -72,7 +72,7 @@ export default async function Service({ searchParams }: ServiceProps) {
               Overview
             </h3>
             <p
-              className="text-base xl:text-xl font-(family-name:--font-ubuntu) whitespace-pre-wrap"
+              className="text-base xl:text-xl font-(family-name:--font-roboto) whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: service.overview }}
             />
             <div className="flex items-center justify-center gap-5 mt-2">

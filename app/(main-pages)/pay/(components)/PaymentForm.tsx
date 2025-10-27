@@ -50,7 +50,7 @@ export default function PaymentForm({ className, services }: PaymentFormProps) {
         )}
       >
         <div className="flex justify-between gap-5">
-          <h1 className="text-3xl lg:text-4xl font-medium font-(family-name:--font-ubuntu)">
+          <h1 className="text-3xl lg:text-4xl font-medium font-(family-name:--font-roboto)">
             Pay for Your Dental Service
           </h1>
           <div className="max-w-[40px] max-h-[40px] bg-white border border-[#ABABAB] rounded-full p-2.5 transition-all duration-300 rotate-45 text-8xl">

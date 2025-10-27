@@ -12,7 +12,7 @@ export default function Warranty() {
         imageTitle="Warranty"
         image="/3.png"
       >
-        <p className="font-(family-name:--font-old-standard-tt)">
+        <p className="font-(family-name:--font-roboto)">
           Dental treatment is an investment in your long-term health. At IDC, we
           take that responsibility seriously by delivering care that’s not only
           high quality—but built to last.
@@ -35,7 +35,7 @@ export default function Warranty() {
         </h1>
         <div className="flex gap-x-14">
           <div className="flex-1 px-4 py-4 rounded-2xl shadow-lg bg-white flex flex-col gap-y-4">
-            <h2 className="font-(family-name:--font-poppins) font-bold text-xl">
+            <h2 className="font-(family-name:--font-roboto) font-bold text-xl">
               Bridge, Crown and Veneer Warranty
             </h2>
             <div className="flex gap-x-6">
@@ -48,7 +48,7 @@ export default function Warranty() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <ul className="list-disc list-inside flex-1 font-(family-name:--font-old-standard-tt) flex flex-col gap-y-2 leading-5">
+              <ul className="list-disc list-inside flex-1 font-(family-name:--font-roboto) flex flex-col gap-y-2 leading-5">
                 <li>
                   5 year warranty applies if, under normal conditions, the
                   dental restoration breaks, loosens, cracks or dislodges.
@@ -70,7 +70,7 @@ export default function Warranty() {
             </div>
           </div>
           <div className="flex-1 px-4 py-4 rounded-2xl shadow-lg bg-white flex flex-col gap-y-4">
-            <h2 className="font-(family-name:--font-poppins) font-bold text-xl">
+            <h2 className="font-(family-name:--font-roboto) font-bold text-xl">
               Dental Implant Warranty Plan
             </h2>
             <div className="flex gap-x-6">
@@ -83,7 +83,7 @@ export default function Warranty() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <ul className="list-disc list-inside flex-1 font-(family-name:--font-old-standard-tt) flex flex-col gap-y-2 leading-5">
+              <ul className="list-disc list-inside flex-1 font-(family-name:--font-roboto) flex flex-col gap-y-2 leading-5">
                 <li>
                   10 year warranty applies if the entire procedure was done at
                   our clinic, including the bone grafting, implant placement and
@@ -136,7 +136,7 @@ export default function Warranty() {
           <h1 className="text-[#233259] text-5xl">
             Limited Dental Warranty: Terms & Conditions
           </h1>
-          <div className="font-(family-name:--font-old-standard-tt)">
+          <div className="font-(family-name:--font-roboto)">
             <p className="text-[#ED1C24]">Please Note:</p>
             <p>
               This warranty does not cover travel, accommodation, or any
@@ -145,9 +145,9 @@ export default function Warranty() {
             </p>
           </div>
         </div>
-        <div className="flex-1 flex-col text-[#233259]">
-          <h2 className="text-3xl">Warranty May Be Void If:</h2>
-          <ul className="mt-5 list-disc list-inside flex-1 font-(family-name:--font-old-standard-tt) flex flex-col gap-y-2">
+        <div className="flex-1 flex-col text-[#233259] font-(family-name:--font-roboto)">
+          <h2 className="text-3xl font-semibold">Warranty May Be Void If:</h2>
+          <ul className="mt-5 list-disc list-inside flex-1 flex flex-col gap-y-2">
             <li>
               Routine dental check-ups are missed (every 6 months, or 3–4 months
               for gum disease).
