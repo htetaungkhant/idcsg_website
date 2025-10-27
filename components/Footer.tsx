@@ -126,11 +126,11 @@ export default function Footer({ className }: FooterProps) {
   return (
     <section
       className={cn(
-        "px-4 md:px-8 xl:px-16 py-2 xl:py-3 text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-roboto)",
+        "px-4 md:px-8 xl:px-16 py-2 xl:py-3 border-white text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-roboto)",
         className
       )}
     >
-      <div className="pb-1 xl:pb-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 max-md:gap-3 border-b border-white">
+      <div className="pb-1 xl:pb-2 flex flex-wrap lg:flex-nowrap items-center justify-between gap-6 max-md:gap-3 border-b border-inherit">
         <ul className="lg:w-80 xl:w-100 flex flex-col gap-0.5 lg:gap-1 list-none text-[10px] xl:text-xs">
           <li>
             <Link
