@@ -42,6 +42,15 @@ const ServiceMenuItem = ({
   </Link>
 );
 
+type Menu =
+  | "home"
+  | "services"
+  | "teams"
+  | "information"
+  | "blog"
+  | "shop"
+  | "contact"
+  | null;
 interface NavLinksProps {
   servicesData: { id: string; name: string; categoryTitle: string }[][];
   technologyData: { id: string; title: string }[];
@@ -59,6 +68,7 @@ export default function NavLinks({
   const serviceDropdownRef = React.useRef<HTMLDivElement>(null);
   const informationRef = React.useRef<HTMLDivElement>(null);
   const informationDropdownRef = React.useRef<HTMLDivElement>(null);
+  const [selectedMenu, setSelectedMenu] = React.useState<Menu>(null);
 
   const { serviceRows } = useMemo(() => {
     const maxServices = Math.max(
@@ -75,10 +85,12 @@ export default function NavLinks({
   }, [servicesData]);
 
   const toggleServiceDropdown = () => {
+    setSelectedMenu("services");
     serviceDropdownRef.current?.classList.toggle("hidden");
   };
 
   const toggleInformationDropdown = () => {
+    setSelectedMenu("information");
     informationDropdownRef.current?.classList.toggle("hidden");
   };
 
@@ -97,13 +109,73 @@ export default function NavLinks({
       ) {
         informationDropdownRef.current?.classList.add("hidden");
       }
+
+      if (
+        serviceDropdownRef.current?.classList.contains("hidden") &&
+        informationDropdownRef.current?.classList.contains("hidden")
+      ) {
+        const nav = pathname.split("/")[1];
+        switch (nav) {
+          case "":
+            setSelectedMenu("home");
+            break;
+          case "services":
+            setSelectedMenu("services");
+            break;
+          case "teams":
+            setSelectedMenu("teams");
+            break;
+          case "information":
+            setSelectedMenu("information");
+            break;
+          case "blog":
+            setSelectedMenu("blog");
+            break;
+          case "shop":
+            setSelectedMenu("shop");
+            break;
+          case "contact":
+            setSelectedMenu("contact");
+            break;
+          default:
+            setSelectedMenu(null);
+        }
+      }
     };
 
     document.addEventListener("click", handleOutsideClick);
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, []);
+  }, [pathname]);
+
+  React.useEffect(() => {
+    switch (pathname.split("/")[1]) {
+      case "":
+        setSelectedMenu("home");
+        break;
+      case "services":
+        setSelectedMenu("services");
+        break;
+      case "teams":
+        setSelectedMenu("teams");
+        break;
+      case "information":
+        setSelectedMenu("information");
+        break;
+      case "blog":
+        setSelectedMenu("blog");
+        break;
+      case "shop":
+        setSelectedMenu("shop");
+        break;
+      case "contact":
+        setSelectedMenu("contact");
+        break;
+      default:
+        setSelectedMenu(null);
+    }
+  }, [pathname]);
 
   return (
     <ul
@@ -115,7 +187,9 @@ export default function NavLinks({
       <li
         className={cn(
           "w-15 text-center rounded-full",
-          pathname === "/" && "font-bold text-white bg-[#30457C]"
+          pathname === "/" &&
+            selectedMenu === "home" &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <Link href="/" className="w-full block">
@@ -125,7 +199,7 @@ export default function NavLinks({
       <li
         className={cn(
           "w-19 text-center rounded-full relative",
-          pathname.startsWith("/services") &&
+          (pathname.startsWith("/services") || selectedMenu === "services") &&
             "font-bold text-white bg-[#30457C]"
         )}
       >
@@ -181,7 +255,9 @@ export default function NavLinks({
       <li
         className={cn(
           "w-15 text-center rounded-full",
-          pathname.startsWith("/teams") && "font-bold text-white bg-[#30457C]"
+          pathname.startsWith("/teams") &&
+            selectedMenu === "teams" &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <Link href="/teams" className="w-full block">
@@ -191,7 +267,8 @@ export default function NavLinks({
       <li
         className={cn(
           "w-25 text-center rounded-full relative",
-          pathname.startsWith("/information") &&
+          (pathname.startsWith("/information") ||
+            selectedMenu === "information") &&
             "font-bold text-white bg-[#30457C]"
         )}
       >
@@ -377,7 +454,9 @@ export default function NavLinks({
       <li
         className={cn(
           "w-15 text-center rounded-full",
-          pathname.startsWith("/blog") && "font-bold text-white bg-[#30457C]"
+          pathname.startsWith("/blog") &&
+            selectedMenu === "blog" &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <Link href="/blog" className="w-full block">
@@ -387,7 +466,9 @@ export default function NavLinks({
       <li
         className={cn(
           "w-15 text-center rounded-full",
-          pathname.startsWith("/shop") && "font-bold text-white bg-[#30457C]"
+          pathname.startsWith("/shop") &&
+            selectedMenu === "shop" &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <Link href="/shop" className="w-full block">
@@ -407,7 +488,9 @@ export default function NavLinks({
       <li
         className={cn(
           "w-19 text-center rounded-full",
-          pathname.startsWith("/contact") && "font-bold text-white bg-[#30457C]"
+          pathname.startsWith("/contact") &&
+            selectedMenu === "contact" &&
+            "font-bold text-white bg-[#30457C]"
         )}
       >
         <Link href="/contact" className="w-full block">
