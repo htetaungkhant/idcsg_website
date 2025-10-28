@@ -38,7 +38,7 @@ export const HomePageBtn: React.FC<
         href={props.href}
         {...props}
         className={cn(
-          "group flex gap-2.5 items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer",
+          "group flex gap-2.5 items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer select-none",
           props.className
         )}
       >
@@ -51,7 +51,7 @@ export const HomePageBtn: React.FC<
     <button
       {...props}
       className={cn(
-        "group flex gap-2.5 items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer",
+        "group flex gap-2.5 items-center justify-between bg-[#6f5653]/50 backdrop-blur-md border border-white/20 text-white text-base font-semibold rounded-full pl-6 pr-1.5 py-1.5 shadow-lg transition-all duration-300 transform hover:bg-white hover:text-[#1e3a8a] hover:scale-105 focus-within:ring-0 cursor-pointer select-none",
         props.className
       )}
     >

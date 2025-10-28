@@ -126,7 +126,7 @@ export default function Footer({ className }: FooterProps) {
   return (
     <section
       className={cn(
-        "px-4 md:px-8 xl:px-16 py-2 xl:py-3 border-white text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-roboto)",
+        "px-4 md:px-8 xl:px-16 py-2 xl:py-3 border-white text-white bg-gradient-to-br from-[#595e6a99] to-[#1018284e] backdrop-blur-lg rounded-t-2xl font-(family-name:--font-roboto) select-none",
         className
       )}
     >

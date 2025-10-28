@@ -60,7 +60,7 @@ export default async function Home() {
           <Header />
 
           <section className="mt-28 flex-1 flex flex-col gap-10 lg:gap-18 items-center justify-center">
-            <h1 className="text-white text-center text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-(family-name:--font-oswald) font-bold">
+            <h1 className="text-white text-center text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-(family-name:--font-oswald) font-bold select-none">
               International Dental Centre
             </h1>
 
